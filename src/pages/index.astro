@@ -1,415 +1,498 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
-const missions = [
+const grades = [
   {
-    icon: '🔢',
-    title: 'Khám phá các con số',
-    description: 'Đếm số, so sánh và làm quen với thế giới số học.',
-    color: 'from-blue-400 to-cyan-400',
+    grade: 1,
+    title: 'Toán lớp 1',
+    description: 'Số đến 100, phép tính, hình học, độ dài và thời gian.',
+    modules: 10,
+    status: 'ready',
+    href: '/lop-1',
+    icon: '1',
+    color: 'from-violet-500 to-indigo-600',
+    shadow: 'shadow-violet-200',
   },
   {
-    icon: '➕',
-    title: 'Phép tính vui nhộn',
-    description: 'Học cộng, trừ qua hình ảnh và trò chơi tương tác.',
-    color: 'from-violet-400 to-purple-500',
+    grade: 2,
+    title: 'Toán lớp 2',
+    description: 'Phép tính có nhớ, bảng nhân chia và đo lường.',
+    modules: 0,
+    status: 'planned',
+    href: '#',
+    icon: '2',
+    color: 'from-cyan-400 to-sky-500',
+    shadow: 'shadow-sky-200',
   },
   {
-    icon: '🧩',
-    title: 'Thử thách tư duy',
-    description: 'Tìm quy luật, giải đố và rèn khả năng suy luận.',
-    color: 'from-orange-400 to-amber-400',
+    grade: 3,
+    title: 'Toán lớp 3',
+    description: 'Nhân chia, phân số cơ bản, chu vi và diện tích.',
+    modules: 0,
+    status: 'planned',
+    href: '#',
+    icon: '3',
+    color: 'from-emerald-400 to-teal-500',
+    shadow: 'shadow-emerald-200',
+  },
+  {
+    grade: 4,
+    title: 'Toán lớp 4',
+    description: 'Số lớn, phân số, trung bình cộng và hình học.',
+    modules: 0,
+    status: 'planned',
+    href: '#',
+    icon: '4',
+    color: 'from-orange-400 to-amber-500',
+    shadow: 'shadow-orange-200',
+  },
+  {
+    grade: 5,
+    title: 'Toán lớp 5',
+    description: 'Số thập phân, tỷ số, phần trăm và thể tích.',
+    modules: 0,
+    status: 'planned',
+    href: '#',
+    icon: '5',
+    color: 'from-pink-400 to-rose-500',
+    shadow: 'shadow-pink-200',
   },
 ];
 
-const lessons = [
+const features = [
   {
-    number: 1,
-    title: 'Đếm từ 1 đến 10',
-    description: 'Cùng Sóc Nâu đếm những đồ vật đáng yêu.',
-    stars: 0,
-    unlocked: true,
-    href: '/hoc/dem-so',
+    icon: '🎯',
+    title: 'Luyện đúng nội dung đang học',
+    description:
+      'Chọn chủ đề tương ứng với tiến độ trên lớp, không cần học theo một lộ trình bắt buộc.',
   },
   {
-    number: 2,
-    title: 'So sánh các số',
-    description: 'Gấu Mật đang tìm số lớn hơn và nhỏ hơn.',
-    stars: 0,
-    unlocked: false,
-    href: '#',
+    icon: '🧠',
+    title: 'Câu hỏi thích ứng',
+    description:
+      'Mỗi lượt có câu hỏi mới và tự tăng cường những dạng bài trẻ thường làm sai.',
   },
   {
-    number: 3,
-    title: 'Phép cộng đầu tiên',
-    description: 'Gộp các nhóm đồ vật lại với nhau.',
-    stars: 0,
-    unlocked: false,
-    href: '#',
+    icon: '📊',
+    title: 'Theo dõi năng lực thực tế',
+    description:
+      'Phụ huynh biết trẻ đã vững kỹ năng nào và nội dung nào cần luyện thêm.',
   },
 ];
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <meta
-      name="description"
-      content="Đảo Toán Học giúp trẻ tiểu học học Toán qua trò chơi, hình ảnh và những cuộc phiêu lưu vui nhộn."
-    />
-    <title>Đảo Toán Học – Học Toán thật vui</title>
-  </head>
-
-  <body class="min-h-screen bg-[#f7fbff] text-slate-800">
-    <header
-      class="sticky top-0 z-50 border-b border-sky-100 bg-white/90 backdrop-blur"
+<BaseLayout
+  title="Đảo Toán Học – Luyện Toán tiểu học"
+  description="Website luyện tập Toán lớp 1 đến lớp 5 với câu hỏi trực quan, đa dạng và phù hợp tiến độ học trên lớp."
+>
+  <header class="relative z-50 border-b border-slate-200/70 bg-white/85 backdrop-blur-xl">
+    <div
+      class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8"
     >
-      <div
-        class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8"
-      >
-        <a href="/" class="flex items-center gap-3">
-          <span
-            class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 text-2xl shadow-lg shadow-orange-200"
-          >
-            🐿️
-          </span>
+      <a href="/" class="flex items-center gap-3">
+        <div
+          class="grid h-11 w-11 place-items-center rounded-2xl bg-slate-950 text-xl text-white shadow-lg"
+        >
+          ∑
+        </div>
 
-          <div>
-            <p class="text-lg font-black text-slate-900">Đảo Toán Học</p>
-            <p class="text-xs font-semibold text-slate-500">
-              Học vui mỗi ngày
-            </p>
-          </div>
+        <div>
+          <p class="text-lg font-black tracking-tight text-slate-950">
+            Đảo Toán Học
+          </p>
+          <p class="text-xs font-semibold text-slate-500">
+            Luyện tập thông minh
+          </p>
+        </div>
+      </a>
+
+      <nav class="hidden items-center gap-1 md:flex">
+        <a
+          href="#cap-lop"
+          class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+        >
+          Chọn lớp
         </a>
-
-        <nav class="hidden items-center gap-2 md:flex">
-          <a
-            href="#hanh-trinh"
-            class="rounded-xl px-4 py-2 font-bold text-slate-600 transition hover:bg-sky-50 hover:text-sky-600"
-          >
-            Hành trình
-          </a>
-
-          <a
-            href="#nhiem-vu"
-            class="rounded-xl px-4 py-2 font-bold text-slate-600 transition hover:bg-sky-50 hover:text-sky-600"
-          >
-            Nhiệm vụ
-          </a>
-
-          <a
-            href="#phu-huynh"
-            class="rounded-xl px-4 py-2 font-bold text-slate-600 transition hover:bg-sky-50 hover:text-sky-600"
-          >
-            Góc phụ huynh
-          </a>
-        </nav>
 
         <a
-          href="/hoc/dem-so"
-          class="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700"
+          href="#phuong-phap"
+          class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
         >
-          Học thử ngay
+          Phương pháp
         </a>
+
+        <a
+          href="#phu-huynh"
+          class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+        >
+          Phụ huynh
+        </a>
+      </nav>
+
+      <a
+        href="/lop-1"
+        class="rounded-xl bg-slate-950 px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+      >
+        Bắt đầu luyện
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="relative overflow-hidden bg-white">
+      <div
+        class="absolute inset-x-0 top-0 h-[600px] bg-[radial-gradient(circle_at_15%_20%,rgba(196,181,253,0.38),transparent_34%),radial-gradient(circle_at_85%_5%,rgba(125,211,252,0.3),transparent_32%)]"
+      >
       </div>
-    </header>
 
-    <main>
-      <section class="relative overflow-hidden">
-        <div
-          class="absolute -left-20 top-20 h-64 w-64 rounded-full bg-cyan-200/40 blur-3xl"
-        >
-        </div>
-
-        <div
-          class="absolute -right-20 top-0 h-80 w-80 rounded-full bg-violet-200/40 blur-3xl"
-        >
-        </div>
-
-        <div
-          class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 md:px-8 lg:grid-cols-2 lg:py-24"
-        >
-          <div>
-            <div
-              class="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-black text-amber-700"
-            >
-              <span>⭐</span>
-              Toán tiểu học qua trò chơi
-            </div>
-
-            <h1
-              class="max-w-2xl text-4xl font-black leading-tight text-slate-900 md:text-6xl"
-            >
-              Mỗi bài Toán là một
-              <span
-                class="bg-gradient-to-r from-violet-600 to-sky-500 bg-clip-text text-transparent"
-              >
-                chuyến phiêu lưu
-              </span>
-            </h1>
-
-            <p
-              class="mt-6 max-w-xl text-lg font-medium leading-8 text-slate-600"
-            >
-              Cùng Sóc Nâu và Gấu Mật khám phá những hòn đảo kỳ thú,
-              giải câu đố, thu thập sao vàng và luyện Toán thật vui mỗi ngày.
-            </p>
-
-            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="/hoc/dem-so"
-                class="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 px-7 py-4 text-center font-black text-white shadow-xl shadow-violet-200 transition hover:-translate-y-1"
-              >
-                Bắt đầu hành trình 🚀
-              </a>
-
-              <a
-                href="#phu-huynh"
-                class="rounded-2xl border-2 border-slate-200 bg-white px-7 py-4 text-center font-black text-slate-700 transition hover:border-sky-300 hover:bg-sky-50"
-              >
-                Dành cho phụ huynh
-              </a>
-            </div>
-
-            <div
-              class="mt-8 flex flex-wrap gap-5 text-sm font-bold text-slate-500"
-            >
-              <span>✓ Bài học ngắn 5–10 phút</span>
-              <span>✓ Phù hợp trẻ lớp 1–2</span>
-              <span>✓ Học thử miễn phí</span>
-            </div>
+      <div
+        class="relative mx-auto grid max-w-7xl items-center gap-14 px-4 py-20 md:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:py-28"
+      >
+        <div>
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-extrabold text-violet-700"
+          >
+            <span class="h-2 w-2 rounded-full bg-violet-500"></span>
+            Dành cho học sinh tiểu học
           </div>
 
-          <div class="relative mx-auto w-full max-w-lg">
-            <div
-              class="rotate-2 rounded-[2.5rem] border-4 border-white bg-gradient-to-br from-sky-300 via-cyan-200 to-emerald-200 p-6 shadow-2xl shadow-sky-200/70"
+          <h1
+            class="mt-7 max-w-3xl text-5xl font-black leading-[1.08] tracking-[-0.045em] text-slate-950 md:text-7xl"
+          >
+            Hiểu bài trên lớp.
+            <span
+              class="bg-gradient-to-r from-violet-600 to-blue-500 bg-clip-text text-transparent"
             >
-              <div
-                class="rounded-[2rem] bg-white/90 p-7 text-center backdrop-blur"
-              >
-                <div class="flex items-end justify-center gap-4">
-                  <span class="text-8xl">🐿️</span>
-                  <span class="text-6xl">🐻</span>
-                </div>
+              Luyện tập hiệu quả.
+            </span>
+          </h1>
 
-                <p
-                  class="mt-4 text-sm font-black uppercase tracking-widest text-violet-600"
-                >
-                  Nhiệm vụ hôm nay
+          <p
+            class="mt-7 max-w-2xl text-lg font-medium leading-8 text-slate-600 md:text-xl"
+          >
+            Hệ thống bài luyện Toán lớp 1–5 bám sát nội dung đang học,
+            tạo câu hỏi đa dạng và giúp phụ huynh nhận ra kỹ năng trẻ
+            cần củng cố.
+          </p>
+
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="/lop-1"
+              class="rounded-2xl bg-violet-600 px-7 py-4 text-center font-black text-white shadow-xl shadow-violet-200 transition hover:-translate-y-1 hover:bg-violet-700"
+            >
+              Khám phá Toán lớp 1
+            </a>
+
+            <a
+              href="#phuong-phap"
+              class="rounded-2xl border border-slate-300 bg-white px-7 py-4 text-center font-black text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+            >
+              Cách website hoạt động
+            </a>
+          </div>
+
+          <div
+            class="mt-9 flex flex-wrap gap-x-7 gap-y-3 text-sm font-bold text-slate-500"
+          >
+            <span class="flex items-center gap-2">
+              <span class="text-emerald-500">✓</span>
+              Không quảng cáo
+            </span>
+
+            <span class="flex items-center gap-2">
+              <span class="text-emerald-500">✓</span>
+              Không khóa theo lộ trình
+            </span>
+
+            <span class="flex items-center gap-2">
+              <span class="text-emerald-500">✓</span>
+              Tối ưu cho máy tính bảng
+            </span>
+          </div>
+        </div>
+
+        <div class="relative mx-auto w-full max-w-xl">
+          <div
+            class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-300/50"
+          >
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <p class="text-sm font-bold text-slate-500">
+                  Buổi luyện hôm nay
                 </p>
+                <p class="mt-1 text-xl font-black text-slate-950">
+                  Các số từ 0 đến 10
+                </p>
+              </div>
 
-                <h2 class="mt-2 text-2xl font-black text-slate-900">
-                  Giúp Sóc Nâu tìm 8 quả táo
-                </h2>
-
-                <div class="my-6 flex flex-wrap justify-center gap-3 text-4xl">
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                  <span>🍎</span>
-                </div>
-
-                <a
-                  href="/hoc/dem-so"
-                  class="inline-flex rounded-2xl bg-emerald-500 px-6 py-3 font-black text-white shadow-lg shadow-emerald-200 transition hover:-translate-y-1 hover:bg-emerald-600"
-                >
-                  Làm thử bài này
-                </a>
+              <div
+                class="grid h-12 w-12 place-items-center rounded-2xl bg-violet-100 text-2xl"
+              >
+                🔢
               </div>
             </div>
 
-            <div
-              class="absolute -left-5 top-10 -rotate-12 rounded-2xl bg-white p-3 text-3xl shadow-lg"
-            >
-              ✏️
+            <div class="mt-5 grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-slate-50 p-4">
+                <p class="text-xs font-extrabold uppercase tracking-wide text-slate-400">
+                  Thời gian
+                </p>
+                <p class="mt-2 text-2xl font-black text-slate-950">
+                  6 phút
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-emerald-50 p-4">
+                <p class="text-xs font-extrabold uppercase tracking-wide text-emerald-500">
+                  Hoàn thành
+                </p>
+                <p class="mt-2 text-2xl font-black text-emerald-700">
+                  8/10
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-amber-50 p-4">
+                <p class="text-xs font-extrabold uppercase tracking-wide text-amber-500">
+                  Tiến bộ
+                </p>
+                <p class="mt-2 text-2xl font-black text-amber-700">
+                  +12%
+                </p>
+              </div>
             </div>
 
-            <div
-              class="absolute -right-4 bottom-14 rotate-12 rounded-2xl bg-white p-3 text-3xl shadow-lg"
-            >
-              🏆
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="nhiem-vu" class="mx-auto max-w-7xl px-4 py-16 md:px-8">
-        <div class="text-center">
-          <p class="font-black uppercase tracking-widest text-violet-600">
-            Học từng bước nhỏ
-          </p>
-
-          <h2 class="mt-3 text-3xl font-black text-slate-900 md:text-4xl">
-            Hôm nay bé muốn khám phá gì?
-          </h2>
-
-          <p class="mx-auto mt-4 max-w-2xl font-medium text-slate-600">
-            Mỗi hoạt động được thiết kế ngắn gọn, trực quan và vừa sức với
-            trẻ tiểu học.
-          </p>
-        </div>
-
-        <div class="mt-10 grid gap-6 md:grid-cols-3">
-          {
-            missions.map((mission) => (
-              <article
-                class="group rounded-3xl border border-slate-100 bg-white p-6 shadow-lg shadow-slate-200/50 transition hover:-translate-y-2 hover:shadow-xl"
-              >
-                <div
-                  class={`grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br text-3xl shadow-lg ${mission.color}`}
-                >
-                  {mission.icon}
+            <div class="mt-5 rounded-2xl bg-slate-950 p-5 text-white">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-slate-400">
+                    Kỹ năng nên luyện thêm
+                  </p>
+                  <p class="mt-1 text-lg font-black">
+                    Tách – gộp số
+                  </p>
                 </div>
 
-                <h3 class="mt-5 text-xl font-black text-slate-900">
-                  {mission.title}
+                <span class="text-3xl">🧩</span>
+              </div>
+
+              <div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-700">
+                <div
+                  class="h-full w-[62%] rounded-full bg-gradient-to-r from-violet-400 to-cyan-400"
+                >
+                </div>
+              </div>
+
+              <div class="mt-3 flex justify-between text-xs font-bold text-slate-400">
+                <span>Đang tiến bộ</span>
+                <span>62%</span>
+              </div>
+            </div>
+
+            <div class="mt-5 grid gap-3 sm:grid-cols-2">
+              <div
+                class="flex items-center gap-3 rounded-2xl border border-slate-200 p-4"
+              >
+                <span
+                  class="grid h-11 w-11 place-items-center rounded-xl bg-orange-100 text-2xl"
+                >
+                  🐿️
+                </span>
+
+                <div>
+                  <p class="font-black text-slate-900">Sóc Nâu</p>
+                  <p class="text-xs font-semibold text-slate-500">
+                    Hướng dẫn bài luyện
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-center gap-3 rounded-2xl border border-slate-200 p-4"
+              >
+                <span
+                  class="grid h-11 w-11 place-items-center rounded-xl bg-amber-100 text-2xl"
+                >
+                  🐻
+                </span>
+
+                <div>
+                  <p class="font-black text-slate-900">Gấu Mật</p>
+                  <p class="text-xs font-semibold text-slate-500">
+                    Gợi ý khi cần
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="absolute -bottom-7 -left-7 -z-10 h-full w-full rounded-[2rem] bg-gradient-to-br from-violet-200 to-sky-200"
+          >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cap-lop" class="py-20">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <p class="font-extrabold uppercase tracking-[0.18em] text-violet-600">
+              Chương trình luyện tập
+            </p>
+
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+              Chọn cấp lớp phù hợp
+            </h2>
+          </div>
+
+          <p class="max-w-xl font-medium leading-7 text-slate-600">
+            Trẻ có thể truy cập trực tiếp nội dung đang học, không cần
+            hoàn thành tuần tự các lớp hoặc chủ đề trước đó.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+          {
+            grades.map((grade) => (
+              grade.status === 'ready' ? (
+                <a
+                  href={grade.href}
+                  class="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-2 hover:border-violet-200 hover:shadow-xl"
+                >
+                  <div
+                    class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white shadow-lg ${grade.color} ${grade.shadow}`}
+                  >
+                    {grade.icon}
+                  </div>
+
+                  <h3 class="mt-5 text-xl font-black text-slate-950">
+                    {grade.title}
+                  </h3>
+
+                  <p class="mt-2 min-h-20 text-sm font-medium leading-6 text-slate-500">
+                    {grade.description}
+                  </p>
+
+                  <div class="mt-5 flex items-center justify-between">
+                    <span class="text-sm font-extrabold text-violet-600">
+                      {grade.modules} mục luyện
+                    </span>
+                    <span class="transition group-hover:translate-x-1">
+                      →
+                    </span>
+                  </div>
+                </a>
+              ) : (
+                <article class="rounded-3xl border border-slate-200 bg-slate-50 p-5 opacity-70">
+                  <div
+                    class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white ${grade.color}`}
+                  >
+                    {grade.icon}
+                  </div>
+
+                  <h3 class="mt-5 text-xl font-black text-slate-800">
+                    {grade.title}
+                  </h3>
+
+                  <p class="mt-2 min-h-20 text-sm font-medium leading-6 text-slate-500">
+                    {grade.description}
+                  </p>
+
+                  <span class="mt-5 inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-extrabold text-slate-500">
+                    Đang chuẩn bị
+                  </span>
+                </article>
+              )
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="phuong-phap" class="bg-slate-950 py-20 text-white">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div class="max-w-3xl">
+          <p class="font-extrabold uppercase tracking-[0.18em] text-violet-400">
+            Phương pháp
+          </p>
+
+          <h2 class="mt-3 text-3xl font-black tracking-tight md:text-5xl">
+            Bổ trợ việc học, không thay thế giáo viên
+          </h2>
+
+          <p class="mt-5 text-lg font-medium leading-8 text-slate-400">
+            Website tập trung vào luyện tập, phản hồi và phát hiện kỹ
+            năng còn yếu. Nội dung giảng dạy chính vẫn dựa trên giáo
+            viên và sách giáo khoa.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          {
+            features.map((feature, index) => (
+              <article class="rounded-3xl border border-slate-800 bg-slate-900 p-7">
+                <div class="flex items-center justify-between">
+                  <span class="text-3xl">{feature.icon}</span>
+                  <span class="text-sm font-black text-slate-600">
+                    0{index + 1}
+                  </span>
+                </div>
+
+                <h3 class="mt-7 text-xl font-black">
+                  {feature.title}
                 </h3>
 
-                <p class="mt-3 font-medium leading-7 text-slate-600">
-                  {mission.description}
+                <p class="mt-3 font-medium leading-7 text-slate-400">
+                  {feature.description}
                 </p>
-
-                <a
-                  href="/hoc/dem-so"
-                  class="mt-5 inline-block font-black text-violet-600 transition group-hover:translate-x-1"
-                >
-                  Khám phá ngay →
-                </a>
               </article>
             ))
           }
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section
-        id="hanh-trinh"
-        class="bg-gradient-to-b from-sky-50 to-white py-16"
-      >
-        <div class="mx-auto max-w-5xl px-4 md:px-8">
-          <div class="text-center">
-            <p class="font-black uppercase tracking-widest text-sky-600">
-              Hành trình của bé
+    <section id="phu-huynh" class="bg-white py-20">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div
+          class="grid items-center gap-10 overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-violet-600 to-indigo-700 p-8 text-white shadow-2xl shadow-violet-200 md:grid-cols-[1fr_auto] md:p-12"
+        >
+          <div>
+            <p class="font-extrabold uppercase tracking-[0.18em] text-violet-200">
+              Dành cho phụ huynh
             </p>
 
-            <h2 class="mt-3 text-3xl font-black text-slate-900 md:text-4xl">
-              Những bài học đầu tiên
+            <h2 class="mt-3 max-w-3xl text-3xl font-black tracking-tight md:text-5xl">
+              Biết con cần luyện gì, không chỉ biết con được bao nhiêu điểm
             </h2>
+
+            <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-violet-100">
+              Xem kết quả theo từng kỹ năng, lịch sử luyện tập và những
+              dạng bài trẻ thường gặp khó khăn.
+            </p>
           </div>
 
-          <div class="mt-10 space-y-5">
-            {
-              lessons.map((lesson) => (
-                <article
-                  class:list={[
-                    'flex items-center gap-5 rounded-3xl border bg-white p-5 shadow-md transition',
-                    lesson.unlocked
-                      ? 'border-sky-100 hover:-translate-y-1 hover:shadow-lg'
-                      : 'border-slate-100 opacity-60',
-                  ]}
-                >
-                  <div
-                    class:list={[
-                      'grid h-16 w-16 shrink-0 place-items-center rounded-2xl text-xl font-black text-white',
-                      lesson.unlocked
-                        ? 'bg-gradient-to-br from-sky-400 to-blue-500'
-                        : 'bg-slate-300',
-                    ]}
-                  >
-                    {lesson.unlocked ? lesson.number : '🔒'}
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <h3 class="text-lg font-black text-slate-900">
-                      {lesson.title}
-                    </h3>
-
-                    <p class="mt-1 font-medium text-slate-500">
-                      {lesson.description}
-                    </p>
-
-                    <div class="mt-2 text-lg">
-                      {[1, 2, 3].map((star) => (
-                        <span
-                          class={star <= lesson.stars
-                            ? ''
-                            : 'grayscale opacity-25'}
-                        >
-                          ⭐
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {
-                    lesson.unlocked ? (
-                      <a
-                        href={lesson.href}
-                        class="hidden rounded-2xl bg-emerald-500 px-5 py-3 font-black text-white transition hover:bg-emerald-600 sm:block"
-                      >
-                        Bắt đầu
-                      </a>
-                    ) : (
-                      <button
-                        disabled
-                        class="hidden cursor-not-allowed rounded-2xl bg-slate-200 px-5 py-3 font-black text-slate-400 sm:block"
-                      >
-                        Chưa mở
-                      </button>
-                    )
-                  }
-                </article>
-              ))
-            }
-          </div>
+          <button
+            class="rounded-2xl bg-white px-7 py-4 font-black text-violet-700 shadow-xl transition hover:-translate-y-1"
+          >
+            Sắp ra mắt
+          </button>
         </div>
-      </section>
-
-      <section id="phu-huynh" class="mx-auto max-w-7xl px-4 py-16 md:px-8">
-        <div
-          class="overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-violet-600 to-indigo-600 p-8 text-white shadow-2xl shadow-violet-200 md:p-12"
-        >
-          <div class="grid items-center gap-8 md:grid-cols-[1fr_auto]">
-            <div>
-              <p class="font-black uppercase tracking-widest text-violet-200">
-                Dành cho bố mẹ
-              </p>
-
-              <h2 class="mt-3 text-3xl font-black md:text-4xl">
-                Đồng hành cùng quá trình học của con
-              </h2>
-
-              <p class="mt-4 max-w-2xl text-lg leading-8 text-violet-100">
-                Theo dõi thời gian học, kết quả từng kỹ năng và nhận gợi ý
-                bài luyện phù hợp cho bé.
-              </p>
-            </div>
-
-            <button
-              class="rounded-2xl bg-white px-7 py-4 font-black text-violet-700 shadow-lg transition hover:-translate-y-1"
-            >
-              Xem góc phụ huynh
-            </button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="border-t border-slate-200 bg-white">
-      <div
-        class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm font-semibold text-slate-500 md:flex-row md:items-center md:justify-between md:px-8"
-      >
-        <p>© 2026 Đảo Toán Học</p>
-        <p>Học đúng cách, tiến bộ mỗi ngày.</p>
       </div>
-    </footer>
-  </body>
-</html>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm font-semibold text-slate-500 md:flex-row md:items-center md:justify-between md:px-8"
+    >
+      <p>© 2026 Đảo Toán Học</p>
+
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-slate-900">Bảo mật</a>
+        <a href="#" class="hover:text-slate-900">Điều khoản</a>
+      </div>
+    </div>
+  </footer>
+</BaseLayout>

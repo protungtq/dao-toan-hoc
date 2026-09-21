@@ -1,0 +1,333 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+import {
+  grade1PracticeModules,
+  grade1PracticeModes,
+  getGrade1ModulesBySemester,
+} from '../data/grade1Curriculum';
+
+const semester1Modules = getGrade1ModulesBySemester(1);
+const semester2Modules = getGrade1ModulesBySemester(2);
+
+function getStatusLabel(status: string) {
+  if (status === 'ready') return 'Có thể luyện';
+  if (status === 'building') return 'Đang xây dựng';
+  return 'Dự kiến';
+}
+
+function getStatusClass(status: string) {
+  if (status === 'ready') {
+    return 'bg-emerald-100 text-emerald-700';
+  }
+
+  if (status === 'building') {
+    return 'bg-amber-100 text-amber-700';
+  }
+
+  return 'bg-slate-100 text-slate-500';
+}
+---
+
+<BaseLayout
+  title="Toán lớp 1 – Đảo Toán Học"
+  description="Mười nhóm luyện tập Toán lớp 1, bám sát nội dung học trên lớp và sách giáo khoa."
+>
+  <header class="border-b border-slate-200 bg-white">
+    <div
+      class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8"
+    >
+      <a href="/" class="flex items-center gap-3">
+        <div
+          class="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 font-black text-white"
+        >
+          ∑
+        </div>
+
+        <div>
+          <p class="font-black text-slate-950">Đảo Toán Học</p>
+          <p class="text-xs font-semibold text-slate-500">
+            Luyện tập thông minh
+          </p>
+        </div>
+      </a>
+
+      <a
+        href="/"
+        class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-black text-slate-600 transition hover:bg-slate-50"
+      >
+        ← Trang chủ
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="relative overflow-hidden bg-white">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(196,181,253,0.35),transparent_32%),radial-gradient(circle_at_85%_20%,rgba(125,211,252,0.28),transparent_30%)]"
+      >
+      </div>
+
+      <div
+        class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:px-8 lg:grid-cols-[1fr_auto]"
+      >
+        <div>
+          <div
+            class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-extrabold text-violet-700"
+          >
+            Chương trình luyện tập lớp 1
+          </div>
+
+          <h1
+            class="mt-6 text-4xl font-black tracking-[-0.04em] text-slate-950 md:text-6xl"
+          >
+            Toán lớp 1
+          </h1>
+
+          <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">
+            Chọn đúng nội dung đang học trên lớp để luyện thêm. Trẻ có
+            thể vào bất kỳ mục nào, không cần hoàn thành tuần tự.
+          </p>
+
+          <div class="mt-7 flex flex-wrap gap-3">
+            <span
+              class="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600"
+            >
+              {grade1PracticeModules.length} mục luyện tập
+            </span>
+
+            <span
+              class="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600"
+            >
+              Học kỳ I và II
+            </span>
+
+            <span
+              class="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-600"
+            >
+              Câu hỏi ngẫu nhiên
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="hidden h-36 w-36 place-items-center rounded-[2.5rem] bg-gradient-to-br from-violet-500 to-indigo-600 text-7xl font-black text-white shadow-2xl shadow-violet-200 lg:grid"
+        >
+          1
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-white">
+      <div
+        class="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:grid-cols-2 md:grid-cols-4 md:px-8"
+      >
+        {
+          grade1PracticeModes.map((mode) => (
+            <div class="flex items-center gap-3 rounded-2xl bg-slate-50 p-4">
+              <span class="text-2xl">{mode.icon}</span>
+
+              <div>
+                <p class="font-black text-slate-900">
+                  {mode.title}
+                </p>
+                <p class="text-xs font-semibold text-slate-500">
+                  {mode.questionCount} câu · khoảng {mode.estimatedMinutes} phút
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div>
+          <p class="font-extrabold uppercase tracking-[0.16em] text-violet-600">
+            Học kỳ I
+          </p>
+
+          <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">
+            Nền tảng Toán học đầu tiên
+          </h2>
+        </div>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {
+            semester1Modules.map((practiceModule) => (
+              <article
+                class="group flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div
+                    class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white shadow-lg ${practiceModule.color}`}
+                  >
+                    {practiceModule.icon}
+                  </div>
+
+                  <span
+                    class={`rounded-full px-3 py-1 text-xs font-extrabold ${getStatusClass(practiceModule.developmentStatus)}`}
+                  >
+                    {getStatusLabel(practiceModule.developmentStatus)}
+                  </span>
+                </div>
+
+                <p class="mt-5 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                  Mục {practiceModule.number} · Bài {
+                    practiceModule.textbookLessons[0]
+                  }–{
+                    practiceModule.textbookLessons[
+                      practiceModule.textbookLessons.length - 1
+                    ]
+                  }
+                </p>
+
+                <h3 class="mt-2 text-xl font-black text-slate-950">
+                  {practiceModule.title}
+                </h3>
+
+                <p class="mt-3 flex-1 font-medium leading-7 text-slate-500">
+                  {practiceModule.description}
+                </p>
+
+                <div class="mt-5 flex flex-wrap gap-2">
+                  {
+                    practiceModule.skills.slice(0, 3).map((skill) => (
+                      <span
+                        class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600"
+                      >
+                        {skill.icon} {skill.title}
+                      </span>
+                    ))
+                  }
+
+                  {
+                    practiceModule.skills.length > 3 && (
+                      <span
+                        class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500"
+                      >
+                        +{practiceModule.skills.length - 3}
+                      </span>
+                    )
+                  }
+                </div>
+
+                {
+                  practiceModule.developmentStatus === 'ready' ? (
+                    <a
+                      href="/hoc/dem-so"
+                      class="mt-6 flex items-center justify-between rounded-2xl bg-slate-950 px-5 py-4 font-black text-white transition group-hover:bg-violet-600"
+                    >
+                      <span>Bắt đầu luyện</span>
+                      <span>→</span>
+                    </a>
+                  ) : (
+                    <div
+                      class="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-center font-black text-slate-400"
+                    >
+                      Đang chuẩn bị nội dung
+                    </div>
+                  )
+                }
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white py-16">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div>
+          <p class="font-extrabold uppercase tracking-[0.16em] text-sky-600">
+            Học kỳ II
+          </p>
+
+          <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">
+            Mở rộng số học và kỹ năng thực tế
+          </h2>
+        </div>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {
+            semester2Modules.map((practiceModule) => (
+              <article
+                class="group flex flex-col rounded-3xl border border-slate-200 bg-[#fafbfc] p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div
+                    class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white shadow-lg ${practiceModule.color}`}
+                  >
+                    {practiceModule.icon}
+                  </div>
+
+                  <span
+                    class={`rounded-full px-3 py-1 text-xs font-extrabold ${getStatusClass(practiceModule.developmentStatus)}`}
+                  >
+                    {getStatusLabel(practiceModule.developmentStatus)}
+                  </span>
+                </div>
+
+                <p class="mt-5 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                  Mục {practiceModule.number} · Bài {
+                    practiceModule.textbookLessons[0]
+                  }–{
+                    practiceModule.textbookLessons[
+                      practiceModule.textbookLessons.length - 1
+                    ]
+                  }
+                </p>
+
+                <h3 class="mt-2 text-xl font-black text-slate-950">
+                  {practiceModule.title}
+                </h3>
+
+                <p class="mt-3 flex-1 font-medium leading-7 text-slate-500">
+                  {practiceModule.description}
+                </p>
+
+                <div class="mt-5 flex flex-wrap gap-2">
+                  {
+                    practiceModule.skills.slice(0, 3).map((skill) => (
+                      <span
+                        class="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm"
+                      >
+                        {skill.icon} {skill.title}
+                      </span>
+                    ))
+                  }
+
+                  {
+                    practiceModule.skills.length > 3 && (
+                      <span
+                        class="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-500 shadow-sm"
+                      >
+                        +{practiceModule.skills.length - 3}
+                      </span>
+                    )
+                  }
+                </div>
+
+                <div
+                  class="mt-6 rounded-2xl bg-slate-200/70 px-5 py-4 text-center font-black text-slate-400"
+                >
+                  Đang chuẩn bị nội dung
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm font-semibold text-slate-500 md:flex-row md:items-center md:justify-between md:px-8"
+    >
+      <p>© 2026 Đảo Toán Học</p>
+      <a href="/" class="hover:text-slate-900">Về trang chủ</a>
+    </div>
+  </footer>
+</BaseLayout>

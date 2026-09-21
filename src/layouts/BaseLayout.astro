@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Nền tảng luyện tập Toán tiểu học trực quan và sinh động.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#6d5dfc" />
+
+    <title>{title}</title>
+  </head>
+
+  <body class="min-h-screen bg-[#f6f7fb] text-slate-900 antialiased">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    font-family:
+      Inter, "Segoe UI", Arial, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: #c4b5fd;
+    color: #312e81;
+  }
+</style>
