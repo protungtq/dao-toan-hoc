@@ -26,16 +26,18 @@ const lessons = [
   {
     number: 1,
     title: 'Đếm từ 1 đến 10',
-    description: 'Cùng Dino đếm những đồ vật đáng yêu.',
-    stars: 3,
+    description: 'Cùng Sóc Nâu đếm những đồ vật đáng yêu.',
+    stars: 0,
     unlocked: true,
+    href: '/hoc/dem-so',
   },
   {
     number: 2,
     title: 'So sánh các số',
-    description: 'Số nào lớn hơn, số nào nhỏ hơn?',
+    description: 'Gấu Mật đang tìm số lớn hơn và nhỏ hơn.',
     stars: 0,
-    unlocked: true,
+    unlocked: false,
+    href: '#',
   },
   {
     number: 3,
@@ -43,6 +45,7 @@ const lessons = [
     description: 'Gộp các nhóm đồ vật lại với nhau.',
     stars: 0,
     unlocked: false,
+    href: '#',
   },
 ];
 ---
@@ -71,9 +74,9 @@ const lessons = [
       >
         <a href="/" class="flex items-center gap-3">
           <span
-            class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-2xl shadow-lg shadow-emerald-200"
+            class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 text-2xl shadow-lg shadow-orange-200"
           >
-            🦕
+            🐿️
           </span>
 
           <div>
@@ -107,11 +110,12 @@ const lessons = [
           </a>
         </nav>
 
-        <button
+        <a
+          href="/hoc/dem-so"
           class="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700"
         >
-          Bắt đầu học
-        </button>
+          Học thử ngay
+        </a>
       </div>
     </header>
 
@@ -152,13 +156,13 @@ const lessons = [
             <p
               class="mt-6 max-w-xl text-lg font-medium leading-8 text-slate-600"
             >
-              Cùng Dino khám phá những hòn đảo kỳ thú, giải câu đố, thu
-              thập sao vàng và luyện Toán thật vui mỗi ngày.
+              Cùng Sóc Nâu và Gấu Mật khám phá những hòn đảo kỳ thú,
+              giải câu đố, thu thập sao vàng và luyện Toán thật vui mỗi ngày.
             </p>
 
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#hanh-trinh"
+                href="/hoc/dem-so"
                 class="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 px-7 py-4 text-center font-black text-white shadow-xl shadow-violet-200 transition hover:-translate-y-1"
               >
                 Bắt đầu hành trình 🚀
@@ -172,7 +176,9 @@ const lessons = [
               </a>
             </div>
 
-            <div class="mt-8 flex flex-wrap gap-5 text-sm font-bold text-slate-500">
+            <div
+              class="mt-8 flex flex-wrap gap-5 text-sm font-bold text-slate-500"
+            >
               <span>✓ Bài học ngắn 5–10 phút</span>
               <span>✓ Phù hợp trẻ lớp 1–2</span>
               <span>✓ Học thử miễn phí</span>
@@ -186,14 +192,19 @@ const lessons = [
               <div
                 class="rounded-[2rem] bg-white/90 p-7 text-center backdrop-blur"
               >
-                <div class="text-8xl">🦕</div>
+                <div class="flex items-end justify-center gap-4">
+                  <span class="text-8xl">🐿️</span>
+                  <span class="text-6xl">🐻</span>
+                </div>
 
-                <p class="mt-4 text-sm font-black uppercase tracking-widest text-violet-600">
+                <p
+                  class="mt-4 text-sm font-black uppercase tracking-widest text-violet-600"
+                >
                   Nhiệm vụ hôm nay
                 </p>
 
                 <h2 class="mt-2 text-2xl font-black text-slate-900">
-                  Giúp Dino tìm 8 quả táo
+                  Giúp Sóc Nâu tìm 8 quả táo
                 </h2>
 
                 <div class="my-6 flex flex-wrap justify-center gap-3 text-4xl">
@@ -207,19 +218,12 @@ const lessons = [
                   <span>🍎</span>
                 </div>
 
-                <div class="rounded-2xl bg-slate-100 p-4">
-                  <div class="mb-2 flex justify-between text-sm font-black">
-                    <span>Tiến độ</span>
-                    <span class="text-emerald-600">2/3 bài</span>
-                  </div>
-
-                  <div class="h-3 overflow-hidden rounded-full bg-white">
-                    <div
-                      class="h-full w-2/3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
-                    >
-                    </div>
-                  </div>
-                </div>
+                <a
+                  href="/hoc/dem-so"
+                  class="inline-flex rounded-2xl bg-emerald-500 px-6 py-3 font-black text-white shadow-lg shadow-emerald-200 transition hover:-translate-y-1 hover:bg-emerald-600"
+                >
+                  Làm thử bài này
+                </a>
               </div>
             </div>
 
@@ -274,18 +278,22 @@ const lessons = [
                   {mission.description}
                 </p>
 
-                <button
-                  class="mt-5 font-black text-violet-600 transition group-hover:translate-x-1"
+                <a
+                  href="/hoc/dem-so"
+                  class="mt-5 inline-block font-black text-violet-600 transition group-hover:translate-x-1"
                 >
                   Khám phá ngay →
-                </button>
+                </a>
               </article>
             ))
           }
         </div>
       </section>
 
-      <section id="hanh-trinh" class="bg-gradient-to-b from-sky-50 to-white py-16">
+      <section
+        id="hanh-trinh"
+        class="bg-gradient-to-b from-sky-50 to-white py-16"
+      >
         <div class="mx-auto max-w-5xl px-4 md:px-8">
           <div class="text-center">
             <p class="font-black uppercase tracking-widest text-sky-600">
@@ -330,24 +338,34 @@ const lessons = [
 
                     <div class="mt-2 text-lg">
                       {[1, 2, 3].map((star) => (
-                        <span class={star <= lesson.stars ? '' : 'grayscale opacity-25'}>
+                        <span
+                          class={star <= lesson.stars
+                            ? ''
+                            : 'grayscale opacity-25'}
+                        >
                           ⭐
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <button
-                    disabled={!lesson.unlocked}
-                    class:list={[
-                      'hidden rounded-2xl px-5 py-3 font-black sm:block',
-                      lesson.unlocked
-                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
-                        : 'cursor-not-allowed bg-slate-200 text-slate-400',
-                    ]}
-                  >
-                    {lesson.stars > 0 ? 'Học lại' : 'Bắt đầu'}
-                  </button>
+                  {
+                    lesson.unlocked ? (
+                      <a
+                        href={lesson.href}
+                        class="hidden rounded-2xl bg-emerald-500 px-5 py-3 font-black text-white transition hover:bg-emerald-600 sm:block"
+                      >
+                        Bắt đầu
+                      </a>
+                    ) : (
+                      <button
+                        disabled
+                        class="hidden cursor-not-allowed rounded-2xl bg-slate-200 px-5 py-3 font-black text-slate-400 sm:block"
+                      >
+                        Chưa mở
+                      </button>
+                    )
+                  }
                 </article>
               ))
             }
