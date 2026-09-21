@@ -199,7 +199,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '🔺',
     color: 'from-emerald-400 to-teal-500',
     backgroundColor: 'bg-emerald-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'recognize-flat-shapes',
@@ -266,7 +266,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '➕',
     color: 'from-violet-400 to-purple-500',
     backgroundColor: 'bg-violet-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'addition-to-10',
@@ -347,7 +347,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '🧊',
     color: 'from-orange-400 to-amber-500',
     backgroundColor: 'bg-orange-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'recognize-solids',
@@ -414,7 +414,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '📚',
     color: 'from-pink-400 to-rose-500',
     backgroundColor: 'bg-pink-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'review-numbers-to-10',

@@ -1,15 +1,37 @@
+export type SkillId =
+  | 'count-recognize'
+  | 'quantity-compare'
+  | 'number-compare'
+  | 'number-bonds'
+  | 'sequence';
+
 export type QuestionType =
   | 'count'
+  | 'recognize-number'
+  | 'compare-groups'
+  | 'compare-number'
+  | 'number-bond'
   | 'missing-number'
-  | 'compare'
-  | 'choose-group'
-  | 'before-after'
-  | 'order';
+  | 'before-after';
+
+export type AnswerValue = number | string;
+
+export const SKILL_LABELS: Record<SkillId, string> = {
+  'count-recognize': 'Đếm và nhận biết số',
+  'quantity-compare': 'Nhiều hơn, ít hơn, bằng nhau',
+  'number-compare': 'So sánh số',
+  'number-bonds': 'Tách – gộp số',
+  sequence: 'Dãy số, số trước và số sau',
+};
 
 type BaseQuestion = {
   id: string;
   type: QuestionType;
+  skillId: SkillId;
   instruction: string;
+  correctAnswer: AnswerValue;
+  answers: AnswerValue[];
+  hintSteps: [string, string, string];
   explanation: string;
 };
 
@@ -18,421 +40,379 @@ export type CountQuestion = BaseQuestion & {
   object: string;
   objectName: string;
   count: number;
-  answers: number[];
+};
+
+export type RecognizeNumberQuestion = BaseQuestion & {
+  type: 'recognize-number';
+  number: number;
+  numberWord: string;
+};
+
+export type CompareGroupsQuestion = BaseQuestion & {
+  type: 'compare-groups';
+  object: string;
+  leftCount: number;
+  rightCount: number;
+  task: 'more' | 'less' | 'relation';
+};
+
+export type CompareNumberQuestion = BaseQuestion & {
+  type: 'compare-number';
+  left: number;
+  right: number;
+};
+
+export type NumberBondQuestion = BaseQuestion & {
+  type: 'number-bond';
+  whole: number;
+  knownPart: number;
+  missingPart: number;
+  object: string;
 };
 
 export type MissingNumberQuestion = BaseQuestion & {
   type: 'missing-number';
   sequence: Array<number | null>;
-  correctAnswer: number;
-  answers: number[];
-};
-
-export type CompareQuestion = BaseQuestion & {
-  type: 'compare';
-  left: number;
-  right: number;
-  answers: string[];
-  correctAnswer: string;
-};
-
-export type ChooseGroupQuestion = BaseQuestion & {
-  type: 'choose-group';
-  object: string;
-  objectName: string;
-  target: number;
-  groups: number[];
 };
 
 export type BeforeAfterQuestion = BaseQuestion & {
   type: 'before-after';
   referenceNumber: number;
   direction: 'before' | 'after';
-  correctAnswer: number;
-  answers: number[];
-};
-
-export type OrderQuestion = BaseQuestion & {
-  type: 'order';
-  numbers: number[];
-  direction: 'ascending' | 'descending';
-  correctAnswer: string;
-  answers: string[];
 };
 
 export type CountingQuestion =
   | CountQuestion
+  | RecognizeNumberQuestion
+  | CompareGroupsQuestion
+  | CompareNumberQuestion
+  | NumberBondQuestion
   | MissingNumberQuestion
-  | CompareQuestion
-  | ChooseGroupQuestion
-  | BeforeAfterQuestion
-  | OrderQuestion;
+  | BeforeAfterQuestion;
 
-type ObjectItem = {
-  icon: string;
-  singularName: string;
-};
+const OBJECTS = [
+  { icon: '🍎', name: 'quả táo' },
+  { icon: '🍊', name: 'quả cam' },
+  { icon: '🍓', name: 'quả dâu' },
+  { icon: '🥕', name: 'củ cà rốt' },
+  { icon: '🌻', name: 'bông hoa' },
+  { icon: '⭐', name: 'ngôi sao' },
+  { icon: '🐝', name: 'chú ong' },
+  { icon: '⚽', name: 'quả bóng' },
+  { icon: '✏️', name: 'chiếc bút chì' },
+  { icon: '🎈', name: 'quả bóng bay' },
+] as const;
 
-const objects: ObjectItem[] = [
-  { icon: '🍎', singularName: 'quả táo' },
-  { icon: '🍊', singularName: 'quả cam' },
-  { icon: '🍓', singularName: 'quả dâu' },
-  { icon: '🧁', singularName: 'chiếc bánh' },
-  { icon: '🍯', singularName: 'hũ mật ong' },
-  { icon: '🥕', singularName: 'củ cà rốt' },
-  { icon: '🌻', singularName: 'bông hoa' },
-  { icon: '⭐', singularName: 'ngôi sao' },
-  { icon: '🐝', singularName: 'chú ong' },
-  { icon: '🐞', singularName: 'chú bọ rùa' },
-  { icon: '⚽', singularName: 'quả bóng' },
-  { icon: '✏️', singularName: 'chiếc bút chì' },
-  { icon: '🎈', singularName: 'quả bóng bay' },
-  { icon: '🐟', singularName: 'chú cá' },
-  { icon: '🍪', singularName: 'chiếc bánh quy' },
+const NUMBER_WORDS = [
+  'không', 'một', 'hai', 'ba', 'bốn', 'năm',
+  'sáu', 'bảy', 'tám', 'chín', 'mười',
 ];
 
 function randomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function randomItem<T>(items: T[]): T {
+function randomItem<T>(items: readonly T[]): T {
   return items[randomInteger(0, items.length - 1)];
 }
 
-export function shuffle<T>(items: T[]): T[] {
+export function shuffle<T>(items: readonly T[]): T[] {
   const result = [...items];
-
   for (let index = result.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1));
-
-    [result[index], result[randomIndex]] = [
-      result[randomIndex],
-      result[index],
-    ];
+    [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
   }
-
   return result;
 }
 
-function createNumberAnswers(
-  correctAnswer: number,
-  min = 1,
-  max = 10,
-  total = 4
-) {
-  const values = new Set<number>([correctAnswer]);
-
-  let distance = 1;
-
-  while (values.size < total) {
-    const lower = correctAnswer - distance;
-    const higher = correctAnswer + distance;
-
-    if (lower >= min) {
-      values.add(lower);
-    }
-
-    if (values.size < total && higher <= max) {
-      values.add(higher);
-    }
-
-    distance += 1;
-
-    if (distance > max + 2) {
-      const fallback = randomInteger(min, max);
-      values.add(fallback);
-    }
-  }
-
-  return shuffle(Array.from(values)).slice(0, total);
+function createId(type: QuestionType) {
+  return `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function createUniqueId(type: QuestionType) {
-  return `${type}-${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2, 10)}`;
+function createNumberAnswers(correct: number, total = 4) {
+  const values = new Set<number>([correct]);
+  let distance = 1;
+  while (values.size < total) {
+    if (correct - distance >= 0) values.add(correct - distance);
+    if (values.size < total && correct + distance <= 10) {
+      values.add(correct + distance);
+    }
+    distance += 1;
+  }
+  return shuffle([...values]);
 }
 
 function createCountQuestion(): CountQuestion {
-  const selectedObject = randomItem(objects);
-  const count = randomInteger(2, 10);
+  const selected = randomItem(OBJECTS);
+  const count = randomInteger(0, 10);
+  return {
+    id: createId('count'),
+    type: 'count',
+    skillId: 'count-recognize',
+    instruction: `Có tất cả bao nhiêu ${selected.name}?`,
+    object: selected.icon,
+    objectName: selected.name,
+    count,
+    correctAnswer: count,
+    answers: createNumberAnswers(count),
+    hintSteps: [
+      count === 0
+        ? 'Quan sát xem trong khung có đồ vật nào không.'
+        : 'Chạm mắt vào từng đồ vật và đếm lần lượt.',
+      count === 0
+        ? 'Không có đồ vật nào được biểu diễn bằng số 0.'
+        : `Có thể đếm: ${Array.from({ length: count }, (_, i) => i + 1).join(', ')}.`,
+      `Đáp án là ${count}.`,
+    ],
+    explanation:
+      count === 0
+        ? `Không có ${selected.name} nào nên ta chọn số 0.`
+        : `Đếm lần lượt từng ${selected.name}, ta được ${count}.`,
+  };
+}
+
+function createRecognizeQuestion(): RecognizeNumberQuestion {
+  const number = randomInteger(0, 10);
+  return {
+    id: createId('recognize-number'),
+    type: 'recognize-number',
+    skillId: 'count-recognize',
+    instruction: `Chọn thẻ số “${NUMBER_WORDS[number]}”.`,
+    number,
+    numberWord: NUMBER_WORDS[number],
+    correctAnswer: number,
+    answers: createNumberAnswers(number),
+    hintSteps: [
+      `Đọc chậm tiếng “${NUMBER_WORDS[number]}” rồi nhớ lại mặt số.`,
+      'Số cần tìm nằm trong phạm vi từ 0 đến 10.',
+      `“${NUMBER_WORDS[number]}” được viết là ${number}.`,
+    ],
+    explanation: `Tiếng “${NUMBER_WORDS[number]}” được viết bằng chữ số ${number}.`,
+  };
+}
+
+function createCompareGroupsQuestion(): CompareGroupsQuestion {
+  const selected = randomItem(OBJECTS);
+  const task = randomItem<CompareGroupsQuestion['task']>([
+    'more', 'less', 'relation',
+  ]);
+  let leftCount = randomInteger(0, 8);
+  let rightCount = randomInteger(0, 8);
+
+  if (task !== 'relation' && leftCount === rightCount) {
+    rightCount = leftCount === 8 ? leftCount - 1 : leftCount + 1;
+  } else if (task === 'relation' && Math.random() < 0.35) {
+    rightCount = leftCount;
+  }
+
+  const sideAnswer =
+    task === 'less'
+      ? leftCount < rightCount ? 'Bên trái' : 'Bên phải'
+      : leftCount > rightCount ? 'Bên trái' : 'Bên phải';
+  const relationAnswer =
+    leftCount === rightCount
+      ? 'Bằng nhau'
+      : leftCount > rightCount ? 'Bên trái nhiều hơn' : 'Bên phải nhiều hơn';
+  const correctAnswer = task === 'relation' ? relationAnswer : sideAnswer;
 
   return {
-    id: createUniqueId('count'),
-    type: 'count',
-    instruction: `Có tất cả bao nhiêu ${selectedObject.singularName}?`,
-    object: selectedObject.icon,
-    objectName: selectedObject.singularName,
-    count,
-    answers: createNumberAnswers(count),
-    explanation: `Đếm lần lượt từng ${selectedObject.singularName}, ta được ${count}.`,
+    id: createId('compare-groups'),
+    type: 'compare-groups',
+    skillId: 'quantity-compare',
+    instruction:
+      task === 'more'
+        ? 'Bên nào có nhiều đồ vật hơn?'
+        : task === 'less'
+          ? 'Bên nào có ít đồ vật hơn?'
+          : 'So sánh số lượng của hai bên.',
+    object: selected.icon,
+    leftCount,
+    rightCount,
+    task,
+    correctAnswer,
+    answers:
+      task === 'relation'
+        ? shuffle(['Bên trái nhiều hơn', 'Bằng nhau', 'Bên phải nhiều hơn'])
+        : shuffle(['Bên trái', 'Bên phải']),
+    hintSteps: [
+      'Nối tưởng tượng từng đồ vật bên trái với một đồ vật bên phải.',
+      `Bên trái có ${leftCount}, bên phải có ${rightCount}.`,
+      `Đáp án đúng là “${correctAnswer}”.`,
+    ],
+    explanation: `Bên trái có ${leftCount}, bên phải có ${rightCount}; vì vậy ${correctAnswer.toLowerCase()}.`,
+  };
+}
+
+function createCompareNumberQuestion(): CompareNumberQuestion {
+  const left = randomInteger(0, 10);
+  let right = randomInteger(0, 10);
+  if (Math.random() < 0.25) right = left;
+  const correctAnswer = left > right ? '>' : left < right ? '<' : '=';
+  return {
+    id: createId('compare-number'),
+    type: 'compare-number',
+    skillId: 'number-compare',
+    instruction: 'Chọn dấu thích hợp.',
+    left,
+    right,
+    correctAnswer,
+    answers: shuffle(['<', '=', '>']),
+    hintSteps: [
+      'Có thể hình dung mỗi số bằng một nhóm chấm tròn.',
+      `${left} ${left === right ? 'bằng' : left > right ? 'lớn hơn' : 'bé hơn'} ${right}.`,
+      `Dấu cần chọn là ${correctAnswer}.`,
+    ],
+    explanation: `${left} ${correctAnswer} ${right}.`,
+  };
+}
+
+function createNumberBondQuestion(): NumberBondQuestion {
+  const whole = randomInteger(2, 10);
+  const knownPart = randomInteger(0, whole);
+  const missingPart = whole - knownPart;
+  const selected = randomItem(OBJECTS);
+  return {
+    id: createId('number-bond'),
+    type: 'number-bond',
+    skillId: 'number-bonds',
+    instruction: `${whole} gồm ${knownPart} và mấy?`,
+    whole,
+    knownPart,
+    missingPart,
+    object: selected.icon,
+    correctAnswer: missingPart,
+    answers: createNumberAnswers(missingPart),
+    hintSteps: [
+      `Lấy đủ ${whole} đồ vật rồi tách riêng ${knownPart} đồ vật.`,
+      `Đếm số đồ vật còn lại sau khi tách ${knownPart}.`,
+      `${whole} gồm ${knownPart} và ${missingPart}.`,
+    ],
+    explanation: `${whole} được tách thành ${knownPart} và ${missingPart}.`,
   };
 }
 
 function createMissingNumberQuestion(): MissingNumberQuestion {
-  const sequenceLength = randomItem([4, 5]);
-  const start = randomInteger(1, 10 - sequenceLength + 1);
-
+  const length = randomItem([4, 5]);
+  const start = randomInteger(0, 10 - length + 1);
   const sequence: Array<number | null> = Array.from(
-    { length: sequenceLength },
+    { length },
     (_, index) => start + index
   );
-
-  const missingIndex = randomInteger(1, sequenceLength - 1);
+  const missingIndex = randomInteger(0, length - 1);
   const correctAnswer = sequence[missingIndex] as number;
-
   sequence[missingIndex] = null;
-
   return {
-    id: createUniqueId('missing-number'),
+    id: createId('missing-number'),
     type: 'missing-number',
+    skillId: 'sequence',
     instruction: 'Số nào còn thiếu trong dãy?',
     sequence,
     correctAnswer,
     answers: createNumberAnswers(correctAnswer),
-    explanation: `Dãy số tăng lần lượt từng đơn vị. Số còn thiếu là ${correctAnswer}.`,
-  };
-}
-
-function createCompareQuestion(): CompareQuestion {
-  let left = randomInteger(1, 10);
-  let right = randomInteger(1, 10);
-
-  const shouldBeEqual = Math.random() < 0.25;
-
-  if (shouldBeEqual) {
-    right = left;
-  } else {
-    while (right === left) {
-      right = randomInteger(1, 10);
-    }
-  }
-
-  const correctAnswer = left > right ? '>' : left < right ? '<' : '=';
-
-  const relation =
-    correctAnswer === '>'
-      ? 'lớn hơn'
-      : correctAnswer === '<'
-        ? 'nhỏ hơn'
-        : 'bằng';
-
-  return {
-    id: createUniqueId('compare'),
-    type: 'compare',
-    instruction: 'Chọn dấu thích hợp',
-    left,
-    right,
-    answers: shuffle(['<', '=', '>']),
-    correctAnswer,
-    explanation: `${left} ${relation} ${right}, vì vậy đáp án đúng là dấu ${correctAnswer}.`,
-  };
-}
-
-function createChooseGroupQuestion(): ChooseGroupQuestion {
-  const selectedObject = randomItem(objects);
-  const target = randomInteger(3, 9);
-
-  const groups = createNumberAnswers(target, 1, 10, 3);
-
-  return {
-    id: createUniqueId('choose-group'),
-    type: 'choose-group',
-    instruction: `Nhóm nào có đúng ${target} ${selectedObject.singularName}?`,
-    object: selectedObject.icon,
-    objectName: selectedObject.singularName,
-    target,
-    groups,
-    explanation: `Nhóm đúng có tất cả ${target} ${selectedObject.singularName}.`,
+    hintSteps: [
+      'Đọc dãy từ trái sang phải, mỗi số tăng thêm 1.',
+      `Dãy bắt đầu từ ${start} và kết thúc ở ${start + length - 1}.`,
+      `Số còn thiếu là ${correctAnswer}.`,
+    ],
+    explanation: `Dãy tăng từng đơn vị nên số còn thiếu là ${correctAnswer}.`,
   };
 }
 
 function createBeforeAfterQuestion(): BeforeAfterQuestion {
   const direction = randomItem<'before' | 'after'>(['before', 'after']);
-
   const referenceNumber =
-    direction === 'before'
-      ? randomInteger(2, 10)
-      : randomInteger(1, 9);
-
+    direction === 'before' ? randomInteger(1, 10) : randomInteger(0, 9);
   const correctAnswer =
-    direction === 'before'
-      ? referenceNumber - 1
-      : referenceNumber + 1;
-
-  const directionText =
-    direction === 'before' ? 'đứng ngay trước' : 'đứng ngay sau';
-
+    direction === 'before' ? referenceNumber - 1 : referenceNumber + 1;
+  const directionText = direction === 'before' ? 'đứng ngay trước' : 'đứng ngay sau';
   return {
-    id: createUniqueId('before-after'),
+    id: createId('before-after'),
     type: 'before-after',
+    skillId: 'sequence',
     instruction: `Số nào ${directionText} số ${referenceNumber}?`,
     referenceNumber,
     direction,
     correctAnswer,
     answers: createNumberAnswers(correctAnswer),
+    hintSteps: [
+      'Nhẩm dãy số từ 0 đến 10 quanh số đã cho.',
+      direction === 'before'
+        ? 'Số đứng trước bé hơn số đã cho 1 đơn vị.'
+        : 'Số đứng sau lớn hơn số đã cho 1 đơn vị.',
+      `Đáp án là ${correctAnswer}.`,
+    ],
     explanation: `Số ${correctAnswer} ${directionText} số ${referenceNumber}.`,
   };
 }
 
-function createOrderQuestion(): OrderQuestion {
-  const direction = randomItem<'ascending' | 'descending'>([
-    'ascending',
-    'descending',
-  ]);
-
-  const numberSet = new Set<number>();
-
-  while (numberSet.size < 3) {
-    numberSet.add(randomInteger(1, 10));
+function createQuestion(skillId: SkillId): CountingQuestion {
+  if (skillId === 'count-recognize') {
+    return Math.random() < 0.65 ? createCountQuestion() : createRecognizeQuestion();
   }
-
-  const numbers = Array.from(numberSet);
-
-  const correctNumbers = [...numbers].sort((first, second) =>
-    direction === 'ascending'
-      ? first - second
-      : second - first
-  );
-
-  const correctAnswer = correctNumbers.join(' – ');
-
-  const wrongAnswers = new Set<string>();
-
-  while (wrongAnswers.size < 3) {
-    const candidate = shuffle(numbers).join(' – ');
-
-    if (candidate !== correctAnswer) {
-      wrongAnswers.add(candidate);
-    }
-  }
-
-  return {
-    id: createUniqueId('order'),
-    type: 'order',
-    instruction:
-      direction === 'ascending'
-        ? 'Chọn dãy số từ bé đến lớn'
-        : 'Chọn dãy số từ lớn đến bé',
-    numbers,
-    direction,
-    correctAnswer,
-    answers: shuffle([
-      correctAnswer,
-      ...Array.from(wrongAnswers),
-    ]),
-    explanation:
-      direction === 'ascending'
-        ? `Thứ tự từ bé đến lớn là ${correctAnswer}.`
-        : `Thứ tự từ lớn đến bé là ${correctAnswer}.`,
-  };
+  if (skillId === 'quantity-compare') return createCompareGroupsQuestion();
+  if (skillId === 'number-compare') return createCompareNumberQuestion();
+  if (skillId === 'number-bonds') return createNumberBondQuestion();
+  return Math.random() < 0.55
+    ? createMissingNumberQuestion()
+    : createBeforeAfterQuestion();
 }
 
-function createQuestionByType(
-  type: QuestionType
-): CountingQuestion {
-  if (type === 'count') return createCountQuestion();
-  if (type === 'missing-number') return createMissingNumberQuestion();
-  if (type === 'compare') return createCompareQuestion();
-  if (type === 'choose-group') return createChooseGroupQuestion();
-  if (type === 'before-after') return createBeforeAfterQuestion();
-
-  return createOrderQuestion();
+function getSkillPlan(total: number): SkillId[] {
+  if (total === 5) {
+    return ['count-recognize', 'quantity-compare', 'number-compare', 'number-bonds', 'sequence'];
+  }
+  if (total === 10) {
+    return [
+      'count-recognize', 'count-recognize', 'count-recognize',
+      'quantity-compare', 'quantity-compare',
+      'number-compare', 'number-compare',
+      'number-bonds', 'number-bonds', 'sequence',
+    ];
+  }
+  if (total === 15) {
+    return [
+      ...Array<SkillId>(4).fill('count-recognize'),
+      ...Array<SkillId>(3).fill('quantity-compare'),
+      ...Array<SkillId>(3).fill('number-compare'),
+      ...Array<SkillId>(3).fill('number-bonds'),
+      ...Array<SkillId>(2).fill('sequence'),
+    ];
+  }
+  const skills = Object.keys(SKILL_LABELS) as SkillId[];
+  return Array.from({ length: Math.max(1, total) }, (_, index) => skills[index % skills.length]);
 }
 
-function createQuestionSignature(question: CountingQuestion) {
-  if (question.type === 'count') {
-    return `${question.type}-${question.object}-${question.count}`;
+function signature(question: CountingQuestion) {
+  if (question.type === 'count') return `${question.type}-${question.object}-${question.count}`;
+  if (question.type === 'recognize-number') return `${question.type}-${question.number}`;
+  if (question.type === 'compare-groups') {
+    return `${question.type}-${question.task}-${question.leftCount}-${question.rightCount}`;
   }
-
-  if (question.type === 'missing-number') {
-    return `${question.type}-${question.sequence.join('-')}`;
-  }
-
-  if (question.type === 'compare') {
-    return `${question.type}-${question.left}-${question.right}`;
-  }
-
-  if (question.type === 'choose-group') {
-    return `${question.type}-${question.object}-${question.target}`;
-  }
-
-  if (question.type === 'before-after') {
-    return `${question.type}-${question.direction}-${question.referenceNumber}`;
-  }
-
-  return `${question.type}-${question.direction}-${question.numbers.join('-')}`;
+  if (question.type === 'compare-number') return `${question.type}-${question.left}-${question.right}`;
+  if (question.type === 'number-bond') return `${question.type}-${question.whole}-${question.knownPart}`;
+  if (question.type === 'missing-number') return `${question.type}-${question.sequence.join('-')}`;
+  return `${question.type}-${question.direction}-${question.referenceNumber}`;
 }
 
-function arrangeQuestionTypes(totalQuestions: number) {
-  const baseTypes: QuestionType[] = [
-    'count',
-    'choose-group',
-    'missing-number',
-    'before-after',
-    'compare',
-    'order',
-  ];
-
-  const result: QuestionType[] = [];
-
-  while (result.length < totalQuestions) {
-    const shuffledTypes = shuffle(baseTypes);
-
-    for (const type of shuffledTypes) {
-      if (result.length >= totalQuestions) break;
-
-      const lastType = result[result.length - 1];
-      const secondLastType = result[result.length - 2];
-
-      if (type === lastType && type === secondLastType) {
-        continue;
-      }
-
-      result.push(type);
-    }
-  }
-
-  return result;
-}
-
-export function generateCountingQuestions(
-  totalQuestions = 10
-): CountingQuestion[] {
-  const types = arrangeQuestionTypes(totalQuestions);
+export function generateCountingQuestions(totalQuestions = 10): CountingQuestion[] {
   const questions: CountingQuestion[] = [];
   const signatures = new Set<string>();
 
-  for (const type of types) {
-    let question = createQuestionByType(type);
-    let signature = createQuestionSignature(question);
-    let safetyCount = 0;
-
-    while (signatures.has(signature) && safetyCount < 30) {
-      question = createQuestionByType(type);
-      signature = createQuestionSignature(question);
-      safetyCount += 1;
+  for (const skillId of shuffle(getSkillPlan(totalQuestions))) {
+    let question = createQuestion(skillId);
+    let currentSignature = signature(question);
+    let retries = 0;
+    while (signatures.has(currentSignature) && retries < 40) {
+      question = createQuestion(skillId);
+      currentSignature = signature(question);
+      retries += 1;
     }
-
-    signatures.add(signature);
+    signatures.add(currentSignature);
     questions.push(question);
   }
-
   return questions;
 }
 
-export function getCorrectAnswer(
-  question: CountingQuestion
-): number | string {
-  if (question.type === 'count') return question.count;
-  if (question.type === 'missing-number') {
-    return question.correctAnswer;
-  }
-  if (question.type === 'compare') return question.correctAnswer;
-  if (question.type === 'before-after') {
-    return question.correctAnswer;
-  }
-  if (question.type === 'order') return question.correctAnswer;
-
-  return question.target;
+export function getCorrectAnswer(question: CountingQuestion): AnswerValue {
+  return question.correctAnswer;
 }
