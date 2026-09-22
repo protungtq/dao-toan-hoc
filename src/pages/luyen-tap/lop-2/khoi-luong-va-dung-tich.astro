@@ -2,17 +2,12 @@
 import '../../../styles/global.css';
 import MassCapacityGame from '../../../components/MassCapacityGame';
 import SoundToggle from '../../../components/SoundToggle';
+import SiteHead from '../../../components/SiteHead.astro';
 ---
 
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Luyện nhận biết ki-lô-gam, lít, cân khối lượng và so sánh dung tích dành cho học sinh lớp 2." />
-    <link rel="canonical" href="/luyen-tap/lop-2/khoi-luong-va-dung-tich" />
-    <title>Khối lượng và dung tích – Trạng Toán</title>
-  </head>
+  <head><SiteHead title="Khối lượng và dung tích – Toán lớp 2 – Trạng Toán" description="Luyện nhận biết ki-lô-gam, lít, cân khối lượng và so sánh dung tích dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/khoi-luong-va-dung-tich" /></head>
   <body class="min-h-screen bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800">
     <MassCapacityGame client:load />
     <SoundToggle client:load />

@@ -1,0 +1,41 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+}
+
+const {
+  title,
+  description = 'Trạng Toán – Nền tảng luyện Toán tiểu học trực quan, sinh động và bám sát nội dung học trên lớp.',
+  canonical = Astro.url.pathname,
+} = Astro.props;
+
+const slogan = 'Luyện mỗi ngày · Giỏi từng bước';
+const canonicalUrl = Astro.site ? new URL(canonical, Astro.site) : canonical;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content={description} />
+<meta name="application-name" content="Trạng Toán" />
+<meta name="apple-mobile-web-app-title" content="Trạng Toán" />
+<meta name="theme-color" content="#be123c" />
+<meta name="color-scheme" content="light" />
+<link rel="icon" href="/icon/favicon.ico" sizes="any" />
+<link rel="icon" href="/icon/favicon-32x32.png" type="image/png" sizes="32x32" />
+<link rel="icon" href="/icon/favicon-16x16.png" type="image/png" sizes="16x16" />
+<link rel="apple-touch-icon" href="/icon/apple-touch-icon.png" sizes="180x180" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:locale" content="vi_VN" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Trạng Toán" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="trang-toan:slogan" content={slogan} />
+<title>{title}</title>

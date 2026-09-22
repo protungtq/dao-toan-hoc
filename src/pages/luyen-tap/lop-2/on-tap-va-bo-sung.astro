@@ -2,17 +2,12 @@
 import '../../../styles/global.css';
 import Grade2ReviewGame from '../../../components/Grade2ReviewGame';
 import SoundToggle from '../../../components/SoundToggle';
+import SiteHead from '../../../components/SiteHead.astro';
 ---
 
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Ôn số đến 100, tia số, thành phần phép tính và cộng trừ không nhớ dành cho học sinh lớp 2." />
-    <link rel="canonical" href="/luyen-tap/lop-2/on-tap-va-bo-sung" />
-    <title>Ôn tập và bổ sung Toán lớp 2 – Trạng Toán</title>
-  </head>
+  <head><SiteHead title="Ôn tập và bổ sung – Toán lớp 2 – Trạng Toán" description="Ôn số đến 100, tia số, thành phần phép tính và cộng trừ không nhớ dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/on-tap-va-bo-sung" /></head>
   <body class="min-h-screen bg-gradient-to-br from-cyan-100 via-white to-blue-100 text-slate-800">
     <Grade2ReviewGame client:load />
     <SoundToggle client:load />
