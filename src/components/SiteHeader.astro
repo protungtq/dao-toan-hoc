@@ -17,11 +17,15 @@ const { compact = false } = Astro.props;
     </a>
 
     {compact ? (
-      <a href="/" class="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-600 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700">← Trang chủ</a>
+      <nav class="flex shrink-0 items-center gap-2" aria-label="Điều hướng nhanh">
+        <a href="/thanh-tich" class="rounded-xl bg-amber-50 px-3 py-2 text-sm font-black text-amber-700 transition hover:bg-amber-100"><span aria-hidden="true">🏆</span><span class="hidden sm:inline"> Thành tích</span></a>
+        <a href="/" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-600 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700">← <span class="hidden sm:inline">Trang chủ</span></a>
+      </nav>
     ) : (
       <nav class="hidden items-center gap-1 md:flex" aria-label="Điều hướng chính">
         <a href="#chon-lop" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">Chọn lớp</a>
         <a href="#hoc-ngay" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">Học ngay</a>
+        <a href="/thanh-tich" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-amber-50 hover:text-amber-700">Thành tích</a>
         <a href="#phu-huynh" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">Phụ huynh</a>
       </nav>
     )}

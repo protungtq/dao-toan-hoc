@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import LearningDashboard from '../components/LearningDashboard';
+---
+<BaseLayout title="Thành tích học tập – Trạng Toán" description="Theo dõi lượt luyện, chuỗi ngày học, điểm số và kỹ năng cần củng cố trên Trạng Toán.">
+  <SiteHeader compact />
+  <main class="min-h-[70vh] bg-gradient-to-br from-violet-50 via-white to-sky-50 py-12 md:py-16"><div class="mx-auto max-w-7xl px-4 md:px-8"><div class="mb-9"><p class="font-black tracking-[0.14em] text-violet-700">Hành trình của bé</p><h1 class="mt-3 text-4xl font-black tracking-tight text-slate-950 md:text-5xl">Thành tích học tập</h1><p class="mt-4 max-w-2xl font-medium leading-7 text-slate-600">Dữ liệu chỉ được lưu trên thiết bị này và không cần tài khoản.</p></div><LearningDashboard client:load /></div></main>
+  <SiteFooter />
+</BaseLayout>

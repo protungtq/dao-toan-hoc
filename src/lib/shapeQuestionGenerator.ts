@@ -101,9 +101,9 @@ const COMPOSITES = [
   {
     id: 'house',
     name: 'ngôi nhà',
-    answer: 'Hình vuông và hình tam giác',
+    answer: 'Hình chữ nhật và hình tam giác',
     explanation:
-      'Thân nhà giống hình vuông, mái nhà giống hình tam giác.',
+      'Mái nhà giống hình tam giác; thân nhà và cửa ra vào giống hình chữ nhật.',
   },
   {
     id: 'robot',
@@ -122,7 +122,7 @@ const COMPOSITES = [
   {
     id: 'boat',
     name: 'chiếc thuyền',
-    answer: 'Hình tam giác và hình chữ nhật',
+    answer: 'Hình chữ nhật và hình tam giác',
     explanation:
       'Cánh buồm giống hình tam giác, thân thuyền được ghép bằng hình chữ nhật.',
   },
@@ -132,6 +132,14 @@ const COMPOSITES = [
   answer: string;
   explanation: string;
 }>;
+
+const COMPOSITION_ANSWERS = [
+  'Hình chữ nhật và hình tam giác',
+  'Hình vuông, hình chữ nhật và hình tròn',
+  'Hình tròn và hình tam giác',
+  'Hình vuông và hình tam giác',
+  'Hình tròn và hình chữ nhật',
+] as const;
 
 function randomInteger(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -291,8 +299,7 @@ function lifeQuestion(): LifeShapeQuestion {
 
 function composeQuestion(): ComposeShapeQuestion {
   const item = randomItem(COMPOSITES);
-  const wrongAnswers = COMPOSITES
-    .map((candidate) => candidate.answer)
+  const wrongAnswers = COMPOSITION_ANSWERS
     .filter((answer) => answer !== item.answer);
   return {
     id: id('compose'),

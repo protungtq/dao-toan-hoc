@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { recordSkillResult } from '../lib/learningProfile';
+import { recordLearningSession, recordSkillResult } from '../lib/learningProfile';
 
-type SkillAttempt = { skillId: string; correctFirstTry: boolean };
+type SkillAttempt = { questionId?: string; skillId: string; correctFirstTry: boolean };
 type Props = { score: number; correct: number; total: number; stars: number; attempts?: SkillAttempt[] };
 const SITE_URL = 'https://trangtoan.so1.asia';
 
@@ -54,9 +54,17 @@ export default function ResultShare(props: Props) {
 
   useEffect(() => {
     if (!props.attempts?.length) return;
-    const marker = `trang-toan:recorded:${location.pathname}:${props.attempts.map((item) => `${item.skillId}-${item.correctFirstTry ? 1 : 0}`).join('|')}`;
+    const marker = `trang-toan:recorded:${location.pathname}:${props.attempts.map((item) => `${item.questionId ?? item.skillId}-${item.correctFirstTry ? 1 : 0}`).join('|')}`;
     if (sessionStorage.getItem(marker)) return;
     props.attempts.forEach((item) => recordSkillResult(item.skillId, item.correctFirstTry));
+    recordLearningSession({
+      path: location.pathname,
+      title: document.title.split(' – ')[0] || 'Bài luyện tập',
+      score: props.score,
+      correct: props.correct,
+      total: props.total,
+      stars: props.stars,
+    });
     sessionStorage.setItem(marker, '1');
   }, [props.attempts]);
 

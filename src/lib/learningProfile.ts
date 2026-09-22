@@ -7,6 +7,23 @@ export type SkillProgress = {
 type LearningProfile = Record<string, SkillProgress>;
 
 const STORAGE_KEY = 'trang-toan:learning-profile:v1';
+const ACTIVITY_KEY = 'trang-toan:activity:v1';
+
+export type LearningSession = {
+  id: string;
+  path: string;
+  title: string;
+  score: number;
+  correct: number;
+  total: number;
+  stars: number;
+  completedAt: number;
+  day: string;
+};
+
+export type LearningActivity = {
+  sessions: LearningSession[];
+};
 
 function readProfile(): LearningProfile {
   if (typeof window === 'undefined') return {};
@@ -61,5 +78,62 @@ export function buildAdaptiveQuestionSet<T extends { skillId: string }>(factory:
 }
 
 export function clearLearningProfile() {
-  if (typeof window !== 'undefined') localStorage.removeItem(STORAGE_KEY);
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(ACTIVITY_KEY);
+  }
+}
+
+function localDay(timestamp = Date.now()) {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function readLearningActivity(): LearningActivity {
+  if (typeof window === 'undefined') return { sessions: [] };
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ACTIVITY_KEY) ?? '{"sessions":[]}') as LearningActivity;
+    return { sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [] };
+  } catch {
+    return { sessions: [] };
+  }
+}
+
+export function recordLearningSession(input: Omit<LearningSession, 'id' | 'completedAt' | 'day'>) {
+  if (typeof window === 'undefined') return;
+  const activity = readLearningActivity();
+  const completedAt = Date.now();
+  const session: LearningSession = {
+    ...input,
+    id: `${completedAt}-${Math.random().toString(36).slice(2, 8)}`,
+    completedAt,
+    day: localDay(completedAt),
+  };
+  activity.sessions = [session, ...activity.sessions].slice(0, 100);
+  localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activity));
+  window.dispatchEvent(new CustomEvent('trang-toan:activity-updated'));
+  return session;
+}
+
+export function calculateStreak(sessions: LearningSession[]) {
+  const days = new Set(sessions.map((session) => session.day));
+  if (!days.size) return 0;
+  const cursor = new Date();
+  if (!days.has(localDay(cursor.getTime()))) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (!days.has(localDay(cursor.getTime()))) return 0;
+  }
+  let streak = 0;
+  while (days.has(localDay(cursor.getTime()))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+export function getSkillProgress() {
+  return readProfile();
 }
