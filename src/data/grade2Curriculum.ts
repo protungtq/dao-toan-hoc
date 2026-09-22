@@ -125,7 +125,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-multiplication-division', grade: 2, number: 8,
     title: 'Phép nhân và phép chia', shortTitle: 'Nhân và chia', slug: 'phep-nhan-va-phep-chia',
     description: 'Làm quen phép nhân, phép chia và luyện bảng nhân, bảng chia 2 và 5.',
-    semester: 2, textbookLessons: [37, 38, 39, 40, 41, 42, 43, 44, 45], icon: '✖️', color: 'from-purple-500 to-violet-600', backgroundColor: 'bg-purple-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [37, 38, 39, 40, 41, 42, 43, 44, 45], icon: '✖️', color: 'from-purple-500 to-violet-600', backgroundColor: 'bg-purple-50', developmentStatus: 'ready',
     skills: [
       { id: 'multiplication-concept', title: 'Phép nhân', description: 'Chuyển tổng các số hạng bằng nhau thành phép nhân.', icon: '✖️', questionTypes: ['equal-groups', 'repeated-addition'], defaultWeight: 20 },
       { id: 'tables-2-5', title: 'Bảng nhân 2 và 5', description: 'Tính và vận dụng bảng nhân 2, bảng nhân 5.', icon: '🔢', questionTypes: ['times-table-2', 'times-table-5'], defaultWeight: 30 },
