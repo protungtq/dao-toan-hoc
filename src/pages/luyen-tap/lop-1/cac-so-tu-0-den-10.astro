@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import CountingGame from '../../../components/CountingGame';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -19,12 +20,13 @@ import CountingGame from '../../../components/CountingGame';
       rel="canonical"
       href="/luyen-tap/lop-1/cac-so-tu-0-den-10"
     />
-    <title>Các số từ 0 đến 10 – Đảo Toán Học</title>
+    <title>Các số từ 0 đến 10 – Trạng Toán</title>
   </head>
 
   <body
     class="min-h-screen bg-gradient-to-br from-sky-100 via-white to-violet-100 text-slate-800"
   >
     <CountingGame client:load />
+    <SoundToggle client:load />
   </body>
 </html>

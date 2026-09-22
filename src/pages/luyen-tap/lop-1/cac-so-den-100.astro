@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import NumbersTo100Game from '../../../components/NumbersTo100Game';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -19,12 +20,13 @@ import NumbersTo100Game from '../../../components/NumbersTo100Game';
       rel="canonical"
       href="/luyen-tap/lop-1/cac-so-den-100"
     />
-    <title>Các số đến 100 – Đảo Toán Học</title>
+    <title>Các số đến 100 – Trạng Toán</title>
   </head>
 
   <body
     class="min-h-screen bg-gradient-to-br from-cyan-100 via-white to-sky-100 text-slate-800"
   >
     <NumbersTo100Game client:load />
+    <SoundToggle client:load />
   </body>
 </html>

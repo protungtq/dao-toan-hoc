@@ -1,3 +1,4 @@
+import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -86,22 +87,22 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
     return (
       <svg viewBox="0 0 240 200" className="h-52 w-64" role="img" aria-label="Ngôi nhà ghép từ các hình">
         <polygon points="120,15 25,95 215,95" fill="#f97316" />
-        <rect x="48" y="95" width="144" height="92" rx="8" fill="#38bdf8" />
-        <rect x="100" y="125" width="42" height="62" rx="5" fill="#8b5cf6" />
+        <rect x="48" y="95" width="144" height="92" fill="#38bdf8" />
+        <rect x="100" y="125" width="42" height="62" fill="#8b5cf6" />
       </svg>
     );
   }
   if (composite === 'robot') {
     return (
       <svg viewBox="0 0 240 220" className="h-52 w-64" role="img" aria-label="Rô-bốt ghép từ các hình">
-        <rect x="75" y="15" width="90" height="70" rx="8" fill="#a78bfa" />
+        <rect x="75" y="15" width="90" height="70" fill="#a78bfa" />
         <circle cx="102" cy="48" r="9" fill="white" />
         <circle cx="138" cy="48" r="9" fill="white" />
-        <rect x="68" y="95" width="104" height="82" rx="8" fill="#38bdf8" />
-        <rect x="34" y="102" width="28" height="70" rx="8" fill="#10b981" />
-        <rect x="178" y="102" width="28" height="70" rx="8" fill="#10b981" />
-        <rect x="82" y="182" width="28" height="34" rx="6" fill="#f97316" />
-        <rect x="130" y="182" width="28" height="34" rx="6" fill="#f97316" />
+        <rect x="68" y="95" width="104" height="82" fill="#38bdf8" />
+        <rect x="34" y="102" width="28" height="70" fill="#10b981" />
+        <rect x="178" y="102" width="28" height="70" fill="#10b981" />
+        <rect x="82" y="182" width="28" height="34" fill="#f97316" />
+        <rect x="130" y="182" width="28" height="34" fill="#f97316" />
       </svg>
     );
   }
@@ -115,10 +116,10 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
   }
   return (
     <svg viewBox="0 0 260 200" className="h-52 w-64" role="img" aria-label="Chiếc thuyền ghép từ các hình">
-      <rect x="126" y="20" width="8" height="115" rx="4" fill="#475569" />
+      <rect x="126" y="20" width="8" height="115" fill="#475569" />
       <polygon points="126,25 45,125 126,125" fill="#38bdf8" />
       <polygon points="136,45 210,125 136,125" fill="#a78bfa" />
-      <rect x="38" y="128" width="184" height="48" rx="18" fill="#f97316" />
+      <rect x="38" y="128" width="184" height="48" fill="#f97316" />
     </svg>
   );
 }
@@ -189,7 +190,7 @@ export default function ShapesGame() {
     const nextAttempts = attempts + 1;
     setAttempts(nextAttempts);
     setSelectedAnswer(answer);
-    if (answer === question.correctAnswer) {
+    if (answer === question.correctAnswer) {playCorrectSound();
       setCanContinue(true);
       setResults((current) => [
         ...current,
@@ -201,7 +202,7 @@ export default function ShapesGame() {
         },
       ]);
     } else {
-      setHintLevel(Math.min(nextAttempts, 3));
+      playWrongSound();setHintLevel(Math.min(nextAttempts, 3));
     }
   }
 
@@ -220,7 +221,7 @@ export default function ShapesGame() {
         setBestResult(saved);
       }
     }
-    setScreen('result');
+    playFinalSound();setScreen('result');
   }
 
   function startMistakeReview() {

@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import TimeCalendarGame from '../../../components/TimeCalendarGame';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -13,10 +14,11 @@ import TimeCalendarGame from '../../../components/TimeCalendarGame';
       content="Luyện xem giờ đúng, nhận biết các ngày trong tuần và đọc lịch dành cho học sinh lớp 1."
     />
     <link rel="canonical" href="/luyen-tap/lop-1/thoi-gian-gio-va-lich" />
-    <title>Thời gian, giờ và lịch – Đảo Toán Học</title>
+    <title>Thời gian, giờ và lịch – Trạng Toán</title>
   </head>
 
   <body class="min-h-screen bg-gradient-to-br from-yellow-100 via-white to-orange-100 text-slate-800">
     <TimeCalendarGame client:load />
+    <SoundToggle client:load />
   </body>
 </html>

@@ -1,3 +1,4 @@
+import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -131,7 +132,7 @@ export default function LengthGame() {
     const nextAttempts = attempts + 1;
     setAttempts(nextAttempts);
     setSelectedAnswer(answer);
-    if (answer === question.correctAnswer) {
+    if (answer === question.correctAnswer) {playCorrectSound();
       setCanContinue(true);
       setResults((current) => [
         ...current,
@@ -143,7 +144,7 @@ export default function LengthGame() {
         },
       ]);
     } else {
-      setHintLevel(Math.min(nextAttempts, 3));
+      playWrongSound();setHintLevel(Math.min(nextAttempts, 3));
     }
   }
 
@@ -162,7 +163,7 @@ export default function LengthGame() {
         setBestResult(saved);
       }
     }
-    setScreen('result');
+    playFinalSound();setScreen('result');
   }
 
   function startMistakeReview() {

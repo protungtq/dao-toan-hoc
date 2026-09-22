@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import ShapesGame from '../../../components/ShapesGame';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -19,12 +20,13 @@ import ShapesGame from '../../../components/ShapesGame';
       rel="canonical"
       href="/luyen-tap/lop-1/lam-quen-voi-hinh-phang"
     />
-    <title>Làm quen với hình phẳng – Đảo Toán Học</title>
+    <title>Làm quen với hình phẳng – Trạng Toán</title>
   </head>
 
   <body
     class="min-h-screen bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800"
   >
     <ShapesGame client:load />
+    <SoundToggle client:load />
   </body>
 </html>

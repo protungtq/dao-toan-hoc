@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import SolidPositionGame from '../../../components/SolidPositionGame';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -19,12 +20,13 @@ import SolidPositionGame from '../../../components/SolidPositionGame';
       rel="canonical"
       href="/luyen-tap/lop-1/hinh-khoi-va-vi-tri"
     />
-    <title>Hình khối và vị trí – Đảo Toán Học</title>
+    <title>Hình khối và vị trí – Trạng Toán</title>
   </head>
 
   <body
     class="min-h-screen bg-gradient-to-br from-orange-100 via-white to-amber-100 text-slate-800"
   >
     <SolidPositionGame client:load />
+    <SoundToggle client:load />
   </body>
 </html>

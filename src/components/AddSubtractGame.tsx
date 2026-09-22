@@ -1,3 +1,4 @@
+import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -128,7 +129,7 @@ export default function AddSubtractGame() {
     const nextAttempts = attempts + 1;
     setAttempts(nextAttempts);
     setSelectedAnswer(answer);
-    if (answer === question.correctAnswer) {
+    if (answer === question.correctAnswer) {playCorrectSound();
       setCanContinue(true);
       setResults((current) => [
         ...current,
@@ -140,7 +141,7 @@ export default function AddSubtractGame() {
         },
       ]);
     } else {
-      setHintLevel(Math.min(nextAttempts, 3));
+      playWrongSound();setHintLevel(Math.min(nextAttempts, 3));
     }
   }
 
@@ -159,7 +160,7 @@ export default function AddSubtractGame() {
         setBestResult(saved);
       }
     }
-    setScreen('result');
+    playFinalSound();setScreen('result');
   }
 
   function startMistakeReview() {

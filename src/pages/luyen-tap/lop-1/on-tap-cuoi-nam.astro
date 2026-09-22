@@ -1,6 +1,7 @@
 ---
 import '../../../styles/global.css';
 import FinalReviewGame from '../../../components/FinalReviewGame';
+import SoundToggle from '../../../components/SoundToggle';
 ---
 
 <!doctype html>
@@ -13,10 +14,11 @@ import FinalReviewGame from '../../../components/FinalReviewGame';
       content="Ôn tập cuối năm môn Toán lớp 1 với số đến 100, phép tính, bài toán, hình học và đo lường."
     />
     <link rel="canonical" href="/luyen-tap/lop-1/on-tap-cuoi-nam" />
-    <title>Ôn tập cuối năm – Đảo Toán Học</title>
+    <title>Ôn tập cuối năm – Trạng Toán</title>
   </head>
 
   <body class="min-h-screen bg-gradient-to-br from-fuchsia-100 via-white to-purple-100 text-slate-800">
     <FinalReviewGame client:load />
+    <SoundToggle client:load />
   </body>
 </html>

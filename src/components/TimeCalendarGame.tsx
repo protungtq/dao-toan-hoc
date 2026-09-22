@@ -1,3 +1,4 @@
+import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -88,10 +89,13 @@ export default function TimeCalendarGame() {
     if (!question || canContinue) return;
     const nextAttempts = attempts + 1;
     setAttempts(nextAttempts); setSelectedAnswer(answer);
-    if (answer === question.correctAnswer) {
+    if (answer === question.correctAnswer) {playCorrectSound();
       setCanContinue(true);
       setResults((current) => [...current, { questionId: question.id, skillId: question.skillId, attempts: nextAttempts, correctFirstTry: nextAttempts === 1 }]);
-    } else setHintLevel(Math.min(nextAttempts, 3));
+    } else {
+      playWrongSound();
+      setHintLevel(Math.min(nextAttempts, 3));
+    }
   }
   function nextQuestion() {
     if (questionIndex < questions.length - 1) { setQuestionIndex((current) => current + 1); resetAnswer(); return; }
@@ -101,7 +105,7 @@ export default function TimeCalendarGame() {
       const saved = { score, stars: starsFor(score) };
       if (!bestResult || score > bestResult.score) { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); setBestResult(saved); }
     }
-    setScreen('result');
+    playFinalSound();setScreen('result');
   }
   function startMistakeReview() {
     const missedIds = new Set(results.filter((item) => !item.correctFirstTry).map((item) => item.questionId));

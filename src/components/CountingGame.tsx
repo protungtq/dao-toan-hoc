@@ -1,3 +1,4 @@
+import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
@@ -129,6 +130,7 @@ export default function CountingGame() {
     setSelectedAnswer(answer);
 
     if (answer === correctAnswer) {
+      playCorrectSound();
       setCanContinue(true);
       setResults((current) => [
         ...current,
@@ -141,7 +143,7 @@ export default function CountingGame() {
       ]);
       return;
     }
-    setHintLevel(Math.min(nextAttempts, 3));
+    playWrongSound();setHintLevel(Math.min(nextAttempts, 3));
   }
 
   function tryAgain() {
@@ -169,7 +171,7 @@ export default function CountingGame() {
         setBestResult(saved);
       }
     }
-    setScreen('result');
+    playFinalSound();setScreen('result');
   }
 
   function startNewSession() {
