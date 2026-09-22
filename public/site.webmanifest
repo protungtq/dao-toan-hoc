@@ -1,22 +1,48 @@
 {
   "name": "Trạng Toán",
   "short_name": "Trạng Toán",
-  "description": "Luyện Toán tiểu học trực quan và sinh động.",
+  "description": "Luyện Toán tiểu học trực quan, sinh động và bám sát bài học trên lớp.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#ffffff",
-  "theme_color": "#be123c",
-  "lang": "vi",
+  "theme_color": "#7c3aed",
+  "lang": "vi-VN",
+  "categories": ["education", "kids"],
   "icons": [
     {
       "src": "/icon/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Luyện Toán lớp 1",
+      "short_name": "Lớp 1",
+      "url": "/lop-1",
+      "icons": [{ "src": "/icon/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Luyện Toán lớp 2",
+      "short_name": "Lớp 2",
+      "url": "/lop-2",
+      "icons": [{ "src": "/icon/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Xem thành tích",
+      "short_name": "Thành tích",
+      "url": "/thanh-tich",
+      "icons": [{ "src": "/icon/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ]
 }
