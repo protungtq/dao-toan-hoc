@@ -309,11 +309,23 @@ function getStatusClass(status: string) {
                   }
                 </div>
 
-                <div
-                  class="mt-6 rounded-2xl bg-slate-200/70 px-5 py-4 text-center font-black text-slate-400"
-                >
-                  Đang chuẩn bị nội dung
-                </div>
+                {
+                  practiceModule.developmentStatus === 'ready' ? (
+                    <a
+                      href={`/luyen-tap/lop-1/${practiceModule.slug}`}
+                      class="mt-6 flex items-center justify-between rounded-2xl bg-slate-950 px-5 py-4 font-black text-white transition group-hover:bg-sky-600"
+                    >
+                      <span>Bắt đầu luyện</span>
+                      <span>→</span>
+                    </a>
+                  ) : (
+                    <div
+                      class="mt-6 rounded-2xl bg-slate-200/70 px-5 py-4 text-center font-black text-slate-400"
+                    >
+                      Đang chuẩn bị nội dung
+                    </div>
+                  )
+                }
               </article>
             ))
           }

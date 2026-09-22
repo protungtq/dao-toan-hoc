@@ -472,7 +472,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '💯',
     color: 'from-cyan-400 to-sky-500',
     backgroundColor: 'bg-cyan-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'tens-and-ones',
@@ -555,7 +555,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '📏',
     color: 'from-lime-400 to-green-500',
     backgroundColor: 'bg-lime-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'compare-length',
@@ -633,7 +633,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '➖',
     color: 'from-indigo-400 to-blue-600',
     backgroundColor: 'bg-indigo-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'add-two-one-digit',
@@ -711,7 +711,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '🕐',
     color: 'from-yellow-400 to-orange-500',
     backgroundColor: 'bg-yellow-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'tell-time',
@@ -780,7 +780,7 @@ export const grade1PracticeModules: PracticeModule[] = [
     icon: '🏆',
     color: 'from-fuchsia-400 to-purple-600',
     backgroundColor: 'bg-fuchsia-50',
-    developmentStatus: 'building',
+    developmentStatus: 'ready',
     skills: [
       {
         id: 'final-review-numbers',
