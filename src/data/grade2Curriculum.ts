@@ -194,7 +194,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-final-review', grade: 2, number: 14,
     title: 'Ôn tập cuối năm', shortTitle: 'Ôn tập cuối năm', slug: 'on-tap-cuoi-nam',
     description: 'Ôn tổng hợp số, phép tính, hình học, đo lường, thống kê và xác suất.',
-    semester: 2, textbookLessons: [68, 69, 70, 71, 72, 73, 74, 75], icon: '🏆', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [68, 69, 70, 71, 72, 73, 74, 75], icon: '🏆', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'ready',
     skills: [
       { id: 'final-numbers-arithmetic', title: 'Số và phép tính', description: 'Ôn số đến 1 000 và các phép tính đã học.', icon: '🔢', questionTypes: ['final-number', 'final-add-subtract'], defaultWeight: 30 },
       { id: 'final-multiply-divide', title: 'Nhân và chia', description: 'Ôn bảng nhân, bảng chia 2 và 5.', icon: '✖️', questionTypes: ['final-multiply-divide'], defaultWeight: 20 },
