@@ -171,7 +171,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-add-subtract-to-1000', grade: 2, number: 12,
     title: 'Phép cộng, phép trừ trong phạm vi 1 000', shortTitle: 'Cộng trừ đến 1 000', slug: 'cong-tru-trong-pham-vi-1000',
     description: 'Luyện đặt tính và cộng, trừ có nhớ hoặc không nhớ trong phạm vi 1 000.',
-    semester: 2, textbookLessons: [59, 60, 61, 62, 63], icon: '🧮', color: 'from-indigo-500 to-blue-600', backgroundColor: 'bg-indigo-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [59, 60, 61, 62, 63], icon: '🧮', color: 'from-indigo-500 to-blue-600', backgroundColor: 'bg-indigo-50', developmentStatus: 'ready',
     skills: [
       { id: 'addition-no-carry-1000', title: 'Cộng không nhớ', description: 'Cộng các số trong phạm vi 1 000 không nhớ.', icon: '➕', questionTypes: ['addition-no-carry-1000'], defaultWeight: 20 },
       { id: 'addition-carry-1000', title: 'Cộng có nhớ', description: 'Cộng các số trong phạm vi 1 000 có nhớ.', icon: '🧮', questionTypes: ['addition-carry-1000'], defaultWeight: 30 },
@@ -183,7 +183,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-statistics-probability', grade: 2, number: 13,
     title: 'Thống kê và xác suất đơn giản', shortTitle: 'Thống kê và xác suất', slug: 'thong-ke-va-xac-suat-don-gian',
     description: 'Thu thập, phân loại, kiểm đếm dữ liệu và nhận biết khả năng xảy ra.',
-    semester: 2, textbookLessons: [64, 65, 66, 67], icon: '📊', color: 'from-teal-400 to-cyan-500', backgroundColor: 'bg-teal-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [64, 65, 66, 67], icon: '📊', color: 'from-teal-400 to-cyan-500', backgroundColor: 'bg-teal-50', developmentStatus: 'ready',
     skills: [
       { id: 'collect-classify-data', title: 'Thu thập và phân loại', description: 'Phân nhóm và kiểm đếm dữ liệu.', icon: '🗂️', questionTypes: ['classify-data', 'count-data'], defaultWeight: 35 },
       { id: 'picture-chart', title: 'Biểu đồ tranh', description: 'Đọc, hoàn thành và trả lời câu hỏi từ biểu đồ tranh.', icon: '📊', questionTypes: ['read-picture-chart', 'complete-picture-chart'], defaultWeight: 35 },
