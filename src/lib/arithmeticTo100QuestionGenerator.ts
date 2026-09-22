@@ -1,3 +1,5 @@
+import { additionStory, subtractionStory } from './storyContexts';
+
 export type Arithmetic100SkillId =
   | 'add-two-one-digit'
   | 'add-two-two-digit'
@@ -141,9 +143,9 @@ function wordProblem(): Arithmetic100Question {
   const object = randomItem(STORY_OBJECTS);
   const base = operation === 'addition' ? addTwoTwoDigit() : subtractTwoTwoDigit();
   const result = base.correctAnswer;
-  const story = operation === 'addition'
-    ? `Lớp 1A có ${base.left} ${object.name}, lớp 1B có ${base.right} ${object.name}. Cả hai lớp có tất cả bao nhiêu ${object.name}?`
-    : `Cửa hàng có ${base.left} ${object.name}, đã bán ${base.right} ${object.name}. Cửa hàng còn lại bao nhiêu ${object.name}?`;
+  const context = operation === 'addition'
+    ? additionStory(base.left, base.right, object.name, object.icon)
+    : subtractionStory(base.left, base.right, object.name, object.icon);
   const sign = operation === 'addition' ? '+' : '−';
   return {
     ...base,
@@ -152,14 +154,14 @@ function wordProblem(): Arithmetic100Question {
     skillId: 'word-problems-to-100',
     instruction: 'Đọc bài toán và chọn đáp số.',
     layout: 'horizontal',
-    story,
-    objectIcon: object.icon,
+    story: context.story,
+    objectIcon: context.icon,
     hintSteps: [
-      operation === 'addition' ? '“Cả hai” và “tất cả” cho biết cần làm phép cộng.' : '“Đã bán” và “còn lại” cho biết cần làm phép trừ.',
+      operation === 'addition' ? `Các từ “${context.clue}” gợi ý phép cộng.` : `Các từ “${context.clue}” gợi ý phép trừ.`,
       `Phép tính cần làm là ${base.left} ${sign} ${base.right}.`,
       `${base.left} ${sign} ${base.right} = ${result}.`,
     ],
-    explanation: `${base.left} ${sign} ${base.right} = ${result}. Đáp số: ${result} ${object.name}.`,
+    explanation: `${base.left} ${sign} ${base.right} = ${result}. Đáp số: ${result} ${context.unit}.`,
   };
 }
 

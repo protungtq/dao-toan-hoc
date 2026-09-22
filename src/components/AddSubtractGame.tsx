@@ -1,3 +1,5 @@
+import ResultShare from './ResultShare';
+import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -438,7 +440,7 @@ export default function AddSubtractGame() {
               })}
             </div>
           </div>
-          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          <ResultShare score={summary.score} correct={summary.correct} total={results.length} stars={summary.stars} attempts={results} /><div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {!reviewMode && missed > 0 && <button type="button" onClick={startMistakeReview} className="rounded-2xl bg-orange-500 px-6 py-4 font-black text-white">Ôn lại {missed} câu cần nhớ</button>}
             <button type="button" onClick={() => prepareSession(practiceSize)} className="rounded-2xl bg-violet-600 px-6 py-4 font-black text-white">Luyện bộ câu mới</button>
             <a href="/lop-1" className="rounded-2xl border-2 border-slate-200 px-6 py-4 font-black text-slate-700">Về lớp 1</a>

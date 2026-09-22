@@ -1,3 +1,5 @@
+import { additionStory, subtractionStory } from './storyContexts';
+
 export type ArithmeticSkillId =
   | 'addition-to-10'
   | 'subtraction-to-10'
@@ -283,50 +285,52 @@ function wordProblemQuestion(): WordProblemQuestion {
     const first = randomInteger(1, 7);
     const change = randomInteger(1, 10 - first);
     const result = first + change;
+    const context = additionStory(first, change, selected.name, selected.icon);
     return {
       id: createId('word-addition'),
       type: 'word-problem',
       skillId: 'word-problems',
       operation,
-      object: selected.icon,
-      objectName: selected.name,
+      object: context.icon,
+      objectName: context.unit,
       first,
       change,
-      story: `Có ${first} ${selected.name}, thêm ${change} ${selected.name}. Hỏi có tất cả bao nhiêu?`,
+      story: context.story,
       instruction: 'Đọc tình huống và chọn kết quả.',
       answers: numberAnswers(result),
       correctAnswer: result,
       hintSteps: [
-        'Từ “thêm” cho biết cần dùng phép cộng.',
+        `Các từ “${context.clue}” cho biết cần dùng phép cộng.`,
         `Gộp ${first} với ${change}.`,
         `${first} + ${change} = ${result}.`,
       ],
-      explanation: `Có thêm nên dùng phép cộng: ${first} + ${change} = ${result}.`,
+      explanation: `${first} + ${change} = ${result}. Đáp số: ${result} ${context.unit}.`,
     };
   }
 
   const first = randomInteger(2, 10);
   const change = randomInteger(1, first);
   const result = first - change;
+  const context = subtractionStory(first, change, selected.name, selected.icon);
   return {
     id: createId('word-subtraction'),
     type: 'word-problem',
     skillId: 'word-problems',
     operation,
-    object: selected.icon,
-    objectName: selected.name,
+    object: context.icon,
+    objectName: context.unit,
     first,
     change,
-    story: `Có ${first} ${selected.name}, bớt đi ${change} ${selected.name}. Hỏi còn lại bao nhiêu?`,
+    story: context.story,
     instruction: 'Đọc tình huống và chọn kết quả.',
     answers: numberAnswers(result),
     correctAnswer: result,
     hintSteps: [
-      'Từ “bớt đi” cho biết cần dùng phép trừ.',
+      `Các từ “${context.clue}” cho biết cần dùng phép trừ.`,
       `Lấy ${first} bớt ${change}.`,
       `${first} − ${change} = ${result}.`,
     ],
-    explanation: `Bớt đi nên dùng phép trừ: ${first} − ${change} = ${result}.`,
+    explanation: `${first} − ${change} = ${result}. Đáp số: ${result} ${context.unit}.`,
   };
 }
 

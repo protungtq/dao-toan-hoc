@@ -1,3 +1,5 @@
+import ResultShare from './ResultShare';
+import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -601,7 +603,7 @@ export default function CountingGame() {
             </div>
           </div>
 
-          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          <ResultShare score={summary.score} correct={summary.correct} total={results.length} stars={summary.stars} attempts={results} /><div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {!reviewMode && missedCount > 0 && (
               <button
                 type="button"

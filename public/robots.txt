@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trangtoan.so1.asia/sitemap-index.xml
