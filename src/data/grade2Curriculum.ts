@@ -101,7 +101,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-time-calendar', grade: 2, number: 6,
     title: 'Ngày, giờ, phút và tháng', shortTitle: 'Thời gian và lịch', slug: 'ngay-gio-phut-va-thang',
     description: 'Đọc đồng hồ, xem lịch và nhận biết quan hệ giữa các đơn vị thời gian.',
-    semester: 1, textbookLessons: [29, 30, 31, 32], icon: '🕐', color: 'from-yellow-400 to-orange-500', backgroundColor: 'bg-yellow-50', developmentStatus: 'building',
+    semester: 1, textbookLessons: [29, 30, 31, 32], icon: '🕐', color: 'from-yellow-400 to-orange-500', backgroundColor: 'bg-yellow-50', developmentStatus: 'ready',
     skills: [
       { id: 'hours-minutes', title: 'Giờ và phút', description: 'Đọc giờ hơn, giờ kém trên đồng hồ.', icon: '🕐', questionTypes: ['read-clock-five-minutes', 'match-digital-time'], defaultWeight: 40 },
       { id: 'days-months', title: 'Ngày và tháng', description: 'Nhận biết số ngày và thứ tự các tháng.', icon: '📅', questionTypes: ['days-in-month', 'month-order'], defaultWeight: 30 },
@@ -111,12 +111,13 @@ export const grade2PracticeModules: Grade2Module[] = [
   {
     id: 'grade-2-semester-1-review', grade: 2, number: 7,
     title: 'Ôn tập học kỳ I', shortTitle: 'Ôn tập học kỳ I', slug: 'on-tap-hoc-ky-1',
-    description: 'Ôn phép tính, hình phẳng, đo lường và bài toán tổng hợp.',
-    semester: 1, textbookLessons: [33, 34, 35, 36], icon: '📚', color: 'from-pink-400 to-rose-500', backgroundColor: 'bg-pink-50', developmentStatus: 'building',
+    description: 'Ôn phép tính, hình phẳng, đo lường, giờ lịch và bài toán tổng hợp.',
+    semester: 1, textbookLessons: [33, 34, 35, 36], icon: '📚', color: 'from-pink-400 to-rose-500', backgroundColor: 'bg-pink-50', developmentStatus: 'ready',
     skills: [
-      { id: 'semester-1-arithmetic', title: 'Ôn phép tính', description: 'Ôn cộng trừ trong phạm vi 20 và 100.', icon: '➕', questionTypes: ['review-add-subtract'], defaultWeight: 35 },
-      { id: 'semester-1-geometry', title: 'Ôn hình phẳng', description: 'Ôn điểm, đường và hình tứ giác.', icon: '📐', questionTypes: ['review-flat-geometry'], defaultWeight: 25 },
-      { id: 'semester-1-measurement', title: 'Ôn đo lường', description: 'Ôn ki-lô-gam, lít và thời gian.', icon: '⚖️', questionTypes: ['review-measurement-time'], defaultWeight: 20 },
+      { id: 'semester-1-arithmetic', title: 'Ôn phép tính', description: 'Ôn cộng trừ trong phạm vi 20 và 100.', icon: '➕', questionTypes: ['review-add-subtract'], defaultWeight: 25 },
+      { id: 'semester-1-geometry', title: 'Ôn hình phẳng', description: 'Ôn điểm, đường và hình tứ giác.', icon: '📐', questionTypes: ['review-flat-geometry'], defaultWeight: 20 },
+      { id: 'semester-1-measurement', title: 'Ôn đo lường', description: 'Ôn ki-lô-gam và lít.', icon: '⚖️', questionTypes: ['review-measurement'], defaultWeight: 15 },
+      { id: 'semester-1-time-calendar', title: 'Ôn giờ và lịch', description: 'Ôn đọc đồng hồ và xem lịch.', icon: '🕐', questionTypes: ['review-time-calendar'], defaultWeight: 20 },
       { id: 'semester-1-word-problems', title: 'Ôn bài toán', description: 'Giải bài toán thực tế tổng hợp.', icon: '📖', questionTypes: ['review-word-problem'], defaultWeight: 20 },
     ],
   },
