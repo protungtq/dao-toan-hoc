@@ -137,7 +137,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-solids', grade: 2, number: 9,
     title: 'Khối trụ và khối cầu', shortTitle: 'Hình khối', slug: 'khoi-tru-va-khoi-cau',
     description: 'Nhận biết khối trụ, khối cầu và liên hệ với đồ vật thực tế.',
-    semester: 2, textbookLessons: [46, 47], icon: '⚽', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [46, 47], icon: '⚽', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'ready',
     skills: [
       { id: 'recognize-cylinder', title: 'Khối trụ', description: 'Nhận biết đặc điểm và đồ vật dạng khối trụ.', icon: '🥫', questionTypes: ['identify-cylinder', 'cylinder-object'], defaultWeight: 45 },
       { id: 'recognize-sphere', title: 'Khối cầu', description: 'Nhận biết đặc điểm và đồ vật dạng khối cầu.', icon: '⚽', questionTypes: ['identify-sphere', 'sphere-object'], defaultWeight: 45 },
@@ -148,7 +148,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-numbers-to-1000', grade: 2, number: 10,
     title: 'Các số trong phạm vi 1 000', shortTitle: 'Số đến 1 000', slug: 'cac-so-trong-pham-vi-1000',
     description: 'Đọc, viết, phân tích và so sánh các số có ba chữ số.',
-    semester: 2, textbookLessons: [48, 49, 50, 51, 52, 53, 54], icon: '🔟', color: 'from-sky-500 to-blue-600', backgroundColor: 'bg-sky-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [48, 49, 50, 51, 52, 53, 54], icon: '🔟', color: 'from-sky-500 to-blue-600', backgroundColor: 'bg-sky-50', developmentStatus: 'ready',
     skills: [
       { id: 'hundreds-tens-ones', title: 'Trăm, chục và đơn vị', description: 'Nhận biết cấu tạo số có ba chữ số.', icon: '🧱', questionTypes: ['base-ten-blocks', 'place-value-1000'], defaultWeight: 30 },
       { id: 'read-write-1000', title: 'Đọc và viết số', description: 'Đọc, viết số và viết số thành tổng.', icon: '✍️', questionTypes: ['read-number-1000', 'expanded-form'], defaultWeight: 30 },
@@ -160,7 +160,7 @@ export const grade2PracticeModules: Grade2Module[] = [
     id: 'grade-2-length-money', grade: 2, number: 11,
     title: 'Độ dài và tiền Việt Nam', shortTitle: 'Độ dài và tiền', slug: 'do-dai-va-tien-viet-nam',
     description: 'Luyện đơn vị đề-xi-mét, mét, ki-lô-mét và nhận biết tiền Việt Nam.',
-    semester: 2, textbookLessons: [55, 56, 57, 58], icon: '📏', color: 'from-lime-400 to-green-500', backgroundColor: 'bg-lime-50', developmentStatus: 'building',
+    semester: 2, textbookLessons: [55, 56, 57, 58], icon: '📏', color: 'from-lime-400 to-green-500', backgroundColor: 'bg-lime-50', developmentStatus: 'ready',
     skills: [
       { id: 'length-units-grade-2', title: 'Đề-xi-mét, mét, ki-lô-mét', description: 'Chọn và đổi đơn vị độ dài phù hợp.', icon: '📏', questionTypes: ['choose-length-unit', 'convert-simple-length'], defaultWeight: 35 },
       { id: 'measure-length-grade-2', title: 'Đo và ước lượng', description: 'Đo, ước lượng và so sánh độ dài.', icon: '📐', questionTypes: ['measure-length', 'estimate-length'], defaultWeight: 30 },
