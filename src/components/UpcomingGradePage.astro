@@ -1,0 +1,23 @@
+---
+import SiteHeader from './SiteHeader.astro';
+import SiteFooter from './SiteFooter.astro';
+interface Props { grade: number; description: string; mascot: string; gradient: string; pale: string; text: string; border: string }
+const { grade, description, mascot, gradient, pale, text, border } = Astro.props;
+---
+<SiteHeader compact />
+<main class="min-h-[calc(100vh-150px)] bg-slate-50">
+  <section class={`relative overflow-hidden bg-gradient-to-br ${pale}`}>
+    <div class="absolute inset-0 opacity-35 [background-image:radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:26px_26px]"></div>
+    <div class="relative mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 md:px-8 lg:grid-cols-[1fr_auto] lg:py-20">
+      <div><div class={`inline-flex rounded-full border bg-white/80 px-4 py-2 text-sm font-black ${border} ${text}`}>Chương trình luyện tập lớp {grade}</div><h1 class="mt-6 text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Toán lớp {grade}</h1><p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">{description}</p></div>
+      <div class="relative mx-auto hidden lg:block"><div class={`grid h-40 w-40 place-items-center rounded-[2.5rem] bg-gradient-to-br text-7xl font-black text-white shadow-2xl ${gradient}`}>{grade}</div><span class="absolute -bottom-5 -right-5 text-6xl">{mascot}</span></div>
+    </div>
+  </section>
+  <section class="mx-auto max-w-5xl px-4 py-12 md:px-8 md:py-16">
+    <div class="grid items-center gap-8 overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-7 shadow-xl md:grid-cols-[auto_1fr] md:p-12">
+      <div class={`grid h-28 w-28 place-items-center rounded-3xl bg-gradient-to-br text-6xl ${pale}`}>{mascot}</div>
+      <div><span class={`text-sm font-black ${text}`}>Sắp ra mắt</span><h2 class="mt-2 text-3xl font-black text-slate-950">Các mục luyện tập đang được chuẩn bị</h2><p class="mt-4 font-medium leading-7 text-slate-600">Khung Toán lớp {grade} đã sẵn sàng. Danh sách chủ đề và bài luyện sẽ được bổ sung theo chương trình sách giáo khoa.</p><a href="/" class={`mt-7 inline-flex rounded-2xl bg-gradient-to-r px-6 py-4 font-black text-white shadow-lg transition hover:-translate-y-1 ${gradient}`}>Khám phá lớp khác →</a></div>
+    </div>
+  </section>
+</main>
+<SiteFooter />

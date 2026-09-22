@@ -1,22 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import UpcomingGradePage from '../components/UpcomingGradePage.astro';
 ---
-
-<BaseLayout title="Toán lớp 3 – Trạng Toán" description="Chương trình luyện tập Toán lớp 3 dành cho học sinh tiểu học.">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
-      <a href="/" class="flex items-center gap-3"><div class="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 font-black text-white">T</div><div><p class="font-black text-slate-950">Trạng Toán</p><p class="text-xs font-semibold text-slate-500">Luyện mỗi ngày · Giỏi từng bước</p></div></a>
-      <a href="/" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-black text-slate-600">← Trang chủ</a>
-    </div>
-  </header>
-  <main class="min-h-[calc(100vh-150px)] bg-slate-50">
-    <section class="relative overflow-hidden bg-white">
-      <div class="absolute -right-24 -top-32 h-96 w-96 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 opacity-20 blur-3xl"></div>
-      <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:px-8 lg:grid-cols-[1fr_auto]">
-        <div><div class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700">Chương trình luyện tập lớp 3</div><h1 class="mt-6 text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Toán lớp 3</h1><p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">Nhân chia, số đến 100 000, hình học và đo lường.</p></div>
-        <div class="hidden h-36 w-36 place-items-center rounded-[2.5rem] bg-gradient-to-br from-emerald-400 to-teal-600 text-7xl font-black text-white shadow-2xl shadow-emerald-200 lg:grid">3</div>
-      </div>
-    </section>
-    <section class="mx-auto max-w-4xl px-4 py-16 text-center md:px-8"><div class="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-xl md:p-12"><div class="text-7xl">🐿️</div><h2 class="mt-5 text-3xl font-black text-slate-950">Các mục luyện tập đang được chuẩn bị</h2><p class="mx-auto mt-4 max-w-2xl font-medium leading-7 text-slate-600">Khung Toán lớp 3 đã sẵn sàng. Danh sách chủ đề và các bài luyện sẽ được bổ sung theo chương trình sách giáo khoa.</p><a href="/" class="mt-8 inline-flex rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4 font-black text-white">Về trang chủ</a></div></section>
-  </main>
-</BaseLayout>
+<BaseLayout title="Toán lớp 3 – Trạng Toán" description="Chương trình luyện tập Toán lớp 3 dành cho học sinh tiểu học."><UpcomingGradePage grade={3} description="Nhân chia, số đến 100 000, hình học và đo lường." mascot="🐿️" gradient="from-emerald-400 to-teal-600" pale="from-emerald-50 via-white to-teal-50" text="text-emerald-700" border="border-emerald-200" /></BaseLayout>

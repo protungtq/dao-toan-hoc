@@ -1,0 +1,8 @@
+<footer class="border-t border-slate-200 bg-white">
+  <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm font-semibold text-slate-500 md:flex-row md:items-center md:justify-between md:px-8">
+    <div><p class="font-black text-slate-800">Trạng Toán</p><p class="mt-1 text-xs">Luyện mỗi ngày · Giỏi từng bước</p></div>
+    <nav class="flex flex-wrap gap-2" aria-label="Chọn lớp ở chân trang">
+      {[1, 2, 3, 4, 5].map((grade) => <a href={`/lop-${grade}`} class="rounded-lg px-3 py-2 transition hover:bg-violet-50 hover:text-violet-700">Lớp {grade}</a>)}
+    </nav>
+  </div>
+</footer>
