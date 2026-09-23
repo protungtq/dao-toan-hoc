@@ -1,20 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import TimeCalendarGame from '../../../components/TimeCalendarGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Thời gian, giờ và lịch – Toán lớp 1 – Trạng Toán" description="Luyện xem giờ đúng, nhận biết các ngày trong tuần và đọc lịch dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/thoi-gian-gio-va-lich" /></head>
-
-  <body class="min-h-screen bg-gradient-to-br from-yellow-100 via-white to-orange-100 text-slate-800">
-    <TimeCalendarGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Thời gian, giờ và lịch – Toán lớp 1 – Trạng Toán"
+  description="Luyện xem giờ đúng, nhận biết các ngày trong tuần và đọc lịch dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/thoi-gian-gio-va-lich"
+  bodyClass="bg-gradient-to-br from-yellow-100 via-white to-orange-100 text-slate-800"
+>
+  <TimeCalendarGame client:load />
+</PracticeLayout>

@@ -1,20 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import ArithmeticTo100Game from '../../../components/ArithmeticTo100Game';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Phép cộng, phép trừ trong phạm vi 100 – Toán lớp 1 – Trạng Toán" description="Luyện phép cộng và phép trừ không nhớ trong phạm vi 100 dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/cong-tru-trong-pham-vi-100" /></head>
-
-  <body class="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-sky-100 text-slate-800">
-    <ArithmeticTo100Game client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Phép cộng, phép trừ trong phạm vi 100 – Toán lớp 1 – Trạng Toán"
+  description="Luyện phép cộng và phép trừ không nhớ trong phạm vi 100 dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/cong-tru-trong-pham-vi-100"
+  bodyClass="bg-gradient-to-br from-indigo-100 via-white to-sky-100 text-slate-800"
+>
+  <ArithmeticTo100Game client:load />
+</PracticeLayout>

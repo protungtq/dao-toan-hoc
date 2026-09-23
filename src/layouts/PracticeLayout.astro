@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+import SiteHead from '../components/SiteHead.astro';
+import SoundToggle from '../components/SoundToggle';
+import TvNavigation from '../components/TvNavigation.astro';
+import PwaControls from '../components/PwaControls.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  bodyClass = 'bg-gradient-to-br from-violet-100 via-white to-sky-100 text-slate-800',
+} = Astro.props;
+const grade = canonical.match(/\/lop-(\d)/)?.[1];
+const lessonSlug = canonical.split('/').filter(Boolean).at(-1);
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <SiteHead title={title} description={description} canonical={canonical} />
+  </head>
+
+  <body
+    class={`min-h-screen ${bodyClass}`}
+    data-practice-page
+    data-grade={grade}
+    data-lesson-slug={lessonSlug}
+  >
+    <slot />
+    <SoundToggle client:load />
+    <TvNavigation />
+    <PwaControls />
+  </body>
+</html>

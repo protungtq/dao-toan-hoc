@@ -1,22 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import NumbersTo100Game from '../../../components/NumbersTo100Game';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Các số đến 100 – Toán lớp 1 – Trạng Toán" description="Luyện đọc, viết, phân tích, so sánh số có hai chữ số và bảng số đến 100 dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/cac-so-den-100" /></head>
-
-  <body
-    class="min-h-screen bg-gradient-to-br from-cyan-100 via-white to-sky-100 text-slate-800"
-  >
-    <NumbersTo100Game client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Các số đến 100 – Toán lớp 1 – Trạng Toán"
+  description="Luyện đọc, viết, phân tích, so sánh số có hai chữ số và bảng số đến 100 dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/cac-so-den-100"
+  bodyClass="bg-gradient-to-br from-cyan-100 via-white to-sky-100 text-slate-800"
+>
+  <NumbersTo100Game client:load />
+</PracticeLayout>

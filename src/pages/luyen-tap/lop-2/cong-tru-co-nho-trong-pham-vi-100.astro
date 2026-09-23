@@ -1,19 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import CarryTo100Game from '../../../components/CarryTo100Game';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Phép cộng, phép trừ có nhớ trong phạm vi 100 – Toán lớp 2 – Trạng Toán" description="Luyện đặt tính và cộng, trừ có nhớ trong phạm vi 100 dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/cong-tru-co-nho-trong-pham-vi-100" /></head>
-  <body class="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 text-slate-800">
-    <CarryTo100Game client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Phép cộng, phép trừ có nhớ trong phạm vi 100 – Toán lớp 2 – Trạng Toán"
+  description="Luyện đặt tính và cộng, trừ có nhớ trong phạm vi 100 dành cho học sinh lớp 2."
+  canonical="/luyen-tap/lop-2/cong-tru-co-nho-trong-pham-vi-100"
+  bodyClass="bg-gradient-to-br from-blue-100 via-white to-indigo-100 text-slate-800"
+>
+  <CarryTo100Game client:load />
+</PracticeLayout>

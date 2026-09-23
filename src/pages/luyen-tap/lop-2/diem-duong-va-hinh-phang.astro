@@ -1,12 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import FlatGeometryGame from '../../../components/FlatGeometryGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
-<!doctype html>
-<html lang="vi"><head><SiteHead title="Điểm, đường và hình phẳng – Toán lớp 2 – Trạng Toán" description="Luyện nhận biết điểm, các loại đường, đường gấp khúc và hình tứ giác dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/diem-duong-va-hinh-phang" /></head><body class="min-h-screen bg-gradient-to-br from-orange-100 via-white to-amber-100 text-slate-800"><FlatGeometryGame client:load/><SoundToggle client:load/>    <TvNavigation />
-    <PwaControls />
-  </body></html>
+
+<PracticeLayout
+  title="Điểm, đường và hình phẳng – Toán lớp 2 – Trạng Toán"
+  description="Luyện nhận biết điểm, các loại đường, đường gấp khúc và hình tứ giác dành cho học sinh lớp 2."
+  canonical="/luyen-tap/lop-2/diem-duong-va-hinh-phang"
+  bodyClass="bg-gradient-to-br from-orange-100 via-white to-amber-100 text-slate-800"
+>
+  <FlatGeometryGame client:load />
+</PracticeLayout>

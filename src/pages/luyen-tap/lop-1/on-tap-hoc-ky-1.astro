@@ -1,22 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import Semester1ReviewGame from '../../../components/Semester1ReviewGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Ôn tập học kỳ I – Toán lớp 1 – Trạng Toán" description="Ôn tập học kỳ I Toán lớp 1: các số đến 10, phép cộng, phép trừ, hình phẳng, hình khối và vị trí." canonical="/luyen-tap/lop-1/on-tap-hoc-ky-1" /></head>
-
-  <body
-    class="min-h-screen bg-gradient-to-br from-rose-100 via-white to-orange-100 text-slate-800"
-  >
-    <Semester1ReviewGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Ôn tập học kỳ I – Toán lớp 1 – Trạng Toán"
+  description="Ôn tập học kỳ I Toán lớp 1: các số đến 10, phép cộng, phép trừ, hình phẳng, hình khối và vị trí."
+  canonical="/luyen-tap/lop-1/on-tap-hoc-ky-1"
+  bodyClass="bg-gradient-to-br from-rose-100 via-white to-orange-100 text-slate-800"
+>
+  <Semester1ReviewGame client:load />
+</PracticeLayout>

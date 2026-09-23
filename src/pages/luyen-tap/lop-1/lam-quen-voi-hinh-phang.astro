@@ -1,22 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import ShapesGame from '../../../components/ShapesGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Làm quen với hình phẳng – Toán lớp 1 – Trạng Toán" description="Luyện nhận biết, phân loại và ghép hình vuông, hình tròn, hình tam giác, hình chữ nhật dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/lam-quen-voi-hinh-phang" /></head>
-
-  <body
-    class="min-h-screen bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800"
-  >
-    <ShapesGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Làm quen với hình phẳng – Toán lớp 1 – Trạng Toán"
+  description="Luyện nhận biết, phân loại và ghép hình vuông, hình tròn, hình tam giác, hình chữ nhật dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/lam-quen-voi-hinh-phang"
+  bodyClass="bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800"
+>
+  <ShapesGame client:load />
+</PracticeLayout>

@@ -1,11 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import StatisticsProbabilityGame from '../../../components/StatisticsProbabilityGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
-<!doctype html><html lang="vi"><head><SiteHead title="Thống kê và xác suất đơn giản – Toán lớp 2 – Trạng Toán" description="Luyện thu thập, phân loại, kiểm đếm, đọc biểu đồ tranh và nhận biết khả năng xảy ra dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/thong-ke-va-xac-suat-don-gian" /></head><body class="min-h-screen bg-gradient-to-br from-teal-100 via-white to-sky-100 text-slate-800"><StatisticsProbabilityGame client:load/><SoundToggle client:load/>    <TvNavigation />
-    <PwaControls />
-  </body></html>
+
+<PracticeLayout
+  title="Thống kê và xác suất đơn giản – Toán lớp 2 – Trạng Toán"
+  description="Luyện thu thập, phân loại, kiểm đếm, đọc biểu đồ tranh và nhận biết khả năng xảy ra dành cho học sinh lớp 2."
+  canonical="/luyen-tap/lop-2/thong-ke-va-xac-suat-don-gian"
+  bodyClass="bg-gradient-to-br from-teal-100 via-white to-sky-100 text-slate-800"
+>
+  <StatisticsProbabilityGame client:load />
+</PracticeLayout>

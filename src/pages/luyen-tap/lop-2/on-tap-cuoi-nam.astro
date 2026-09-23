@@ -1,11 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import Grade2FinalGame from '../../../components/Grade2FinalGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
-<!doctype html><html lang="vi"><head><SiteHead title="Ôn tập cuối năm – Toán lớp 2 – Trạng Toán" description="Ôn tập cuối năm Toán lớp 2 với số, phép tính, hình học, đo lường, thống kê và xác suất." canonical="/luyen-tap/lop-2/on-tap-cuoi-nam" /></head><body class="min-h-screen bg-gradient-to-br from-fuchsia-100 via-white to-indigo-100 text-slate-800"><Grade2FinalGame client:load/><SoundToggle client:load/>    <TvNavigation />
-    <PwaControls />
-  </body></html>
+
+<PracticeLayout
+  title="Ôn tập cuối năm – Toán lớp 2 – Trạng Toán"
+  description="Ôn tập cuối năm Toán lớp 2 với số, phép tính, hình học, đo lường, thống kê và xác suất."
+  canonical="/luyen-tap/lop-2/on-tap-cuoi-nam"
+  bodyClass="bg-gradient-to-br from-fuchsia-100 via-white to-indigo-100 text-slate-800"
+>
+  <Grade2FinalGame client:load />
+</PracticeLayout>

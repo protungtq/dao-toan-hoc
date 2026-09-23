@@ -1,11 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import NumbersTo1000Game from '../../../components/NumbersTo1000Game';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
-<!doctype html><html lang="vi"><head><SiteHead title="Các số trong phạm vi 1 000 – Toán lớp 2 – Trạng Toán" description="Luyện đọc, viết, phân tích và so sánh các số có ba chữ số trong phạm vi 1 000." canonical="/luyen-tap/lop-2/cac-so-trong-pham-vi-1000" /></head><body class="min-h-screen bg-gradient-to-br from-sky-100 via-white to-indigo-100 text-slate-800"><NumbersTo1000Game client:load/><SoundToggle client:load/>    <TvNavigation />
-    <PwaControls />
-  </body></html>
+
+<PracticeLayout
+  title="Các số trong phạm vi 1 000 – Toán lớp 2 – Trạng Toán"
+  description="Luyện đọc, viết, phân tích và so sánh các số có ba chữ số trong phạm vi 1 000."
+  canonical="/luyen-tap/lop-2/cac-so-trong-pham-vi-1000"
+  bodyClass="bg-gradient-to-br from-sky-100 via-white to-indigo-100 text-slate-800"
+>
+  <NumbersTo1000Game client:load />
+</PracticeLayout>

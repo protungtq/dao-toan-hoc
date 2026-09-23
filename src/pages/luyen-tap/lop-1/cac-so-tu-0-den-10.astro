@@ -1,22 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import CountingGame from '../../../components/CountingGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Các số từ 0 đến 10 – Toán lớp 1 – Trạng Toán" description="Luyện đếm, nhận biết, so sánh và tách – gộp các số từ 0 đến 10 dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/cac-so-tu-0-den-10" /></head>
-
-  <body
-    class="min-h-screen bg-gradient-to-br from-sky-100 via-white to-violet-100 text-slate-800"
-  >
-    <CountingGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Các số từ 0 đến 10 – Toán lớp 1 – Trạng Toán"
+  description="Luyện đếm, nhận biết, so sánh và tách – gộp các số từ 0 đến 10 dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/cac-so-tu-0-den-10"
+  bodyClass="bg-gradient-to-br from-sky-100 via-white to-violet-100 text-slate-800"
+>
+  <CountingGame client:load />
+</PracticeLayout>

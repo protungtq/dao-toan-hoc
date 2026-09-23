@@ -1,19 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import MassCapacityGame from '../../../components/MassCapacityGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Khối lượng và dung tích – Toán lớp 2 – Trạng Toán" description="Luyện nhận biết ki-lô-gam, lít, cân khối lượng và so sánh dung tích dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/khoi-luong-va-dung-tich" /></head>
-  <body class="min-h-screen bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800">
-    <MassCapacityGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Khối lượng và dung tích – Toán lớp 2 – Trạng Toán"
+  description="Luyện nhận biết ki-lô-gam, lít, cân khối lượng và so sánh dung tích dành cho học sinh lớp 2."
+  canonical="/luyen-tap/lop-2/khoi-luong-va-dung-tich"
+  bodyClass="bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800"
+>
+  <MassCapacityGame client:load />
+</PracticeLayout>

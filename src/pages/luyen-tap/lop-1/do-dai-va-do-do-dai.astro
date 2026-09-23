@@ -1,22 +1,13 @@
 ---
-import '../../../styles/global.css';
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import LengthGame from '../../../components/LengthGame';
-import SoundToggle from '../../../components/SoundToggle';
-import SiteHead from '../../../components/SiteHead.astro';
-import TvNavigation from '../../../components/TvNavigation.astro';
-import PwaControls from '../../../components/PwaControls.astro';
 ---
 
-<!doctype html>
-<html lang="vi">
-  <head><SiteHead title="Độ dài và đo độ dài – Toán lớp 1 – Trạng Toán" description="Luyện so sánh, ước lượng và đo độ dài bằng xăng-ti-mét dành cho học sinh lớp 1." canonical="/luyen-tap/lop-1/do-dai-va-do-do-dai" /></head>
-
-  <body
-    class="min-h-screen bg-gradient-to-br from-lime-100 via-white to-emerald-100 text-slate-800"
-  >
-    <LengthGame client:load />
-    <SoundToggle client:load />
-    <TvNavigation />
-    <PwaControls />
-  </body>
-</html>
+<PracticeLayout
+  title="Độ dài và đo độ dài – Toán lớp 1 – Trạng Toán"
+  description="Luyện so sánh, ước lượng và đo độ dài bằng xăng-ti-mét dành cho học sinh lớp 1."
+  canonical="/luyen-tap/lop-1/do-dai-va-do-do-dai"
+  bodyClass="bg-gradient-to-br from-lime-100 via-white to-emerald-100 text-slate-800"
+>
+  <LengthGame client:load />
+</PracticeLayout>
