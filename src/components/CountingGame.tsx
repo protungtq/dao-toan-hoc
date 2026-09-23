@@ -1,4 +1,5 @@
 import ResultShare from './ResultShare';
+import SolutionExplanation from './SolutionExplanation';
 import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
@@ -705,9 +706,7 @@ export default function CountingGame() {
                 <span className="text-3xl">🎉</span>
                 <div>
                   <h2 className="text-xl font-black text-emerald-700">Chính xác!</h2>
-                  <p className="mt-1 font-semibold leading-7 text-slate-600">
-                    {question.explanation}
-                  </p>
+                  <SolutionExplanation steps={question.hintSteps} conclusion={question.explanation} />
                 </div>
               </div>
               <button

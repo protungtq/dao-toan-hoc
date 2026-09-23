@@ -1,4 +1,5 @@
 import ResultShare from './ResultShare';
+import SolutionExplanation from './SolutionExplanation';
 import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
@@ -509,7 +510,7 @@ export default function ShapesGame() {
         )}
         {canContinue && selectedAnswer === question.correctAnswer && (
           <div className="mt-6 rounded-3xl border-2 border-emerald-200 bg-emerald-50 p-5">
-            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row"><div className="flex items-start gap-3"><span className="text-3xl">🎉</span><div><h2 className="text-xl font-black text-emerald-700">Chính xác!</h2><p className="mt-1 font-semibold leading-7 text-slate-600">{question.explanation}</p></div></div><button type="button" onClick={nextQuestion} className="w-full rounded-2xl bg-emerald-600 px-6 py-4 font-black text-white sm:w-auto">{questionIndex === questions.length - 1 ? 'Xem kết quả' : 'Câu tiếp theo →'}</button></div>
+            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row"><div className="flex items-start gap-3"><span className="text-3xl">🎉</span><div><h2 className="text-xl font-black text-emerald-700">Chính xác!</h2><SolutionExplanation steps={question.hintSteps} conclusion={question.explanation} /></div></div><button type="button" onClick={nextQuestion} className="w-full rounded-2xl bg-emerald-600 px-6 py-4 font-black text-white sm:w-auto">{questionIndex === questions.length - 1 ? 'Xem kết quả' : 'Câu tiếp theo →'}</button></div>
           </div>
         )}
       </section>
