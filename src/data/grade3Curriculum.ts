@@ -177,7 +177,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-multiply-divide-to-100000', grade: 3, number: 14,
     title: 'Nhân, chia trong phạm vi 100 000', shortTitle: 'Nhân chia đến 100 000', slug: 'nhan-chia-trong-pham-vi-100000',
     description: 'Nhân và chia số có năm chữ số với số có một chữ số, vận dụng vào bài toán thực tế.',
-    semester: 2, textbookLessons: [70, 71, 72], icon: '✖️', color: 'from-red-400 to-rose-500', backgroundColor: 'bg-red-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [70, 71, 72], icon: '✖️', color: 'from-red-400 to-rose-500', backgroundColor: 'bg-red-50', developmentStatus: 'ready',
     skills: [
       { id: 'multiply-five-by-one', title: 'Nhân số có năm chữ số', description: 'Nhân số có năm chữ số với số có một chữ số.', icon: '✖️', questionTypes: ['multiply-5-digit-by-1-digit'], defaultWeight: 40 },
       { id: 'divide-five-by-one', title: 'Chia số có năm chữ số', description: 'Chia số có năm chữ số cho số có một chữ số.', icon: '➗', questionTypes: ['divide-5-digit-by-1-digit'], defaultWeight: 40 },
@@ -188,7 +188,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-statistics-probability', grade: 3, number: 15,
     title: 'Thống kê và xác suất đơn giản', shortTitle: 'Thống kê và xác suất', slug: 'thong-ke-va-xac-suat-don-gian',
     description: 'Thu thập, phân loại, ghi chép số liệu bằng bảng và nhận biết khả năng xảy ra của sự kiện.',
-    semester: 2, textbookLessons: [73, 74, 75], icon: '📊', color: 'from-cyan-400 to-teal-500', backgroundColor: 'bg-cyan-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [73, 74, 75], icon: '📊', color: 'from-cyan-400 to-teal-500', backgroundColor: 'bg-cyan-50', developmentStatus: 'ready',
     skills: [
       { id: 'collect-record-data-grade-3', title: 'Thu thập và ghi chép số liệu', description: 'Phân loại, kiểm đếm và lập bảng số liệu.', icon: '📋', questionTypes: ['collect-classify-table-data'], defaultWeight: 50 },
       { id: 'event-likelihood-grade-3', title: 'Khả năng xảy ra', description: 'Mô tả và so sánh khả năng của một sự kiện.', icon: '🎲', questionTypes: ['event-likelihood-grade-3'], defaultWeight: 30 },
@@ -199,7 +199,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-final-review', grade: 3, number: 16,
     title: 'Ôn tập cuối năm', shortTitle: 'Ôn tập cuối năm', slug: 'on-tap-cuoi-nam',
     description: 'Ôn tổng hợp số và phép tính đến 100 000, hình học, đo lường, bảng số liệu và xác suất.',
-    semester: 2, textbookLessons: [76, 77, 78, 79, 80, 81], icon: '🏆', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [76, 77, 78, 79, 80, 81], icon: '🏆', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'ready',
     skills: [
       { id: 'final-numbers-100000', title: 'Số đến 100 000', description: 'Ôn đọc, viết, so sánh và làm tròn số.', icon: '🔢', questionTypes: ['final-numbers-grade-3'], defaultWeight: 20 },
       { id: 'final-add-subtract-grade-3', title: 'Cộng và trừ', description: 'Ôn cộng, trừ và giải bài toán.', icon: '➕', questionTypes: ['final-add-subtract-grade-3'], defaultWeight: 20 },

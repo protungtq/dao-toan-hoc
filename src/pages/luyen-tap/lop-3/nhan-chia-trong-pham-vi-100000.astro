@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade3Stage6Game from '../../../components/Grade3Stage6Game';
+---
+
+<PracticeLayout
+  title="Nhân, chia trong phạm vi 100 000 – Toán lớp 3 – Trạng Toán"
+  description="Luyện nhân, chia số có năm chữ số với số có một chữ số và giải bài toán thực tế trong phạm vi 100 000."
+  canonical="/luyen-tap/lop-3/nhan-chia-trong-pham-vi-100000"
+  bodyClass="bg-gradient-to-br from-rose-100 via-white to-red-100 text-slate-800"
+>
+  <Grade3Stage6Game module="multiplyDivide100000" client:load />
+</PracticeLayout>

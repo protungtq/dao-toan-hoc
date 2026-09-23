@@ -12,12 +12,13 @@ const {
   title,
   description = 'Trạng Toán – Nền tảng luyện Toán tiểu học trực quan, sinh động và bám sát nội dung học trên lớp.',
   canonical = Astro.url.pathname,
-  image = '/icon/android-chrome-512x512.png',
+  image = '/icon/trangtoan.jpg',
 } = Astro.props;
 
 const slogan = 'Luyện mỗi ngày · Giỏi từng bước';
 const canonicalUrl = Astro.site ? new URL(canonical, Astro.site) : canonical;
 const imageUrl = Astro.site ? new URL(image, Astro.site) : image;
+const imageType = image.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
 const pathParts = Astro.url.pathname.split('/').filter(Boolean);
 const gradeMatch = Astro.url.pathname.match(/lop-(\d)/);
 const grade = gradeMatch?.[1];
@@ -76,13 +77,14 @@ if (Astro.url.pathname.startsWith('/luyen-tap/')) {
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:image" content={imageUrl} />
-<meta property="og:image:width" content="512" />
-<meta property="og:image:height" content="512" />
-<meta property="og:image:alt" content="Biểu tượng Trạng Toán" />
+<meta property="og:image:secure_url" content={imageUrl} />
+<meta property="og:image:type" content={imageType} />
+<meta property="og:image:alt" content="Trạng Toán – Luyện Toán tiểu học lớp 1–5" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content="Trạng Toán – Luyện Toán tiểu học lớp 1–5" />
 <meta name="trang-toan:slogan" content={slogan} />
 <title>{title}</title>
 {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
