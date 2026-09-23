@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { calculateStreak, clearLearningProfile, getSkillProgress, readLearningActivity, type LearningSession, type SkillProgress } from '../lib/learningProfile';
 import { trackEvent } from '../lib/analytics';
-import { canvasToPngBlob, drawSiteQrCode, isMobileShareDevice, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
+import { canvasFont, canvasToPngBlob, drawSiteQrCode, ensureShareFontLoaded, isMobileShareDevice, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
 import DesktopShareDialog from './DesktopShareDialog';
 
 const SKILL_NAMES: Record<string, string> = {
@@ -37,6 +37,7 @@ function fitText(ctx: CanvasRenderingContext2D, value: string, maxWidth: number)
 }
 
 async function createAchievementImage(data: AchievementImageData) {
+  await ensureShareFontLoaded();
   const canvas = document.createElement('canvas');
   canvas.width = 1080;
   canvas.height = 1080;
@@ -59,9 +60,9 @@ async function createAchievementImage(data: AchievementImageData) {
   ctx.fillStyle = '#ffffff';
   roundedRect(ctx, 65, 55, 950, 970, 56);
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#6d28d9'; ctx.font = '900 40px Arial'; ctx.fillText('TRẠNG TOÁN', 540, 135);
-  ctx.fillStyle = '#0f172a'; ctx.font = '900 50px Arial'; ctx.fillText('THÀNH TÍCH HỌC TẬP', 540, 205);
-  ctx.fillStyle = '#64748b'; ctx.font = '700 24px Arial'; ctx.fillText('Luyện mỗi ngày · Giỏi từng bước', 540, 245);
+  ctx.fillStyle = '#6d28d9'; ctx.font = canvasFont(900, 40); ctx.fillText('TRẠNG TOÁN', 540, 135);
+  ctx.fillStyle = '#0f172a'; ctx.font = canvasFont(900, 50); ctx.fillText('THÀNH TÍCH HỌC TẬP', 540, 205);
+  ctx.fillStyle = '#64748b'; ctx.font = canvasFont(700, 24); ctx.fillText('Luyện mỗi ngày · Giỏi từng bước', 540, 245);
 
   const metrics = [
     { value: String(data.sessions), label: 'Lượt luyện', color: '#6d28d9', bg: '#f5f3ff' },
@@ -74,34 +75,34 @@ async function createAchievementImage(data: AchievementImageData) {
     const y = index < 2 ? 290 : 445;
     ctx.fillStyle = metric.bg; roundedRect(ctx, x, y, 400, 125, 28);
     ctx.textAlign = 'left';
-    ctx.fillStyle = metric.color; ctx.font = '900 49px Arial'; ctx.fillText(metric.value, x + 30, y + 58);
-    ctx.fillStyle = '#475569'; ctx.font = '800 24px Arial'; ctx.fillText(metric.label, x + 30, y + 96);
+    ctx.fillStyle = metric.color; ctx.font = canvasFont(900, 49); ctx.fillText(metric.value, x + 30, y + 58);
+    ctx.fillStyle = '#475569'; ctx.font = canvasFont(800, 24); ctx.fillText(metric.label, x + 30, y + 96);
   });
 
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#0f172a'; ctx.font = '900 27px Arial'; ctx.fillText('7 ngày gần nhất', 120, 625);
+  ctx.fillStyle = '#0f172a'; ctx.font = canvasFont(900, 27); ctx.fillText('7 ngày gần nhất', 120, 625);
   data.activeDays.forEach((active, index) => {
     const x = 150 + index * 126;
     ctx.fillStyle = active ? '#f97316' : '#e2e8f0';
     ctx.beginPath(); ctx.arc(x, 680, 34, 0, Math.PI * 2); ctx.fill();
-    ctx.textAlign = 'center'; ctx.fillStyle = active ? '#ffffff' : '#94a3b8'; ctx.font = '900 25px Arial';
+    ctx.textAlign = 'center'; ctx.fillStyle = active ? '#ffffff' : '#94a3b8'; ctx.font = canvasFont(900, 25);
     ctx.fillText(active ? '✓' : '·', x, 689);
   });
 
   if (data.latest) {
     ctx.fillStyle = '#f8fafc'; roundedRect(ctx, 120, 742, 840, 105, 25);
-    ctx.textAlign = 'left'; ctx.fillStyle = '#64748b'; ctx.font = '800 19px Arial'; ctx.fillText('BÀI GẦN NHẤT', 150, 780);
-    ctx.fillStyle = '#0f172a'; ctx.font = '900 25px Arial';
+    ctx.textAlign = 'left'; ctx.fillStyle = '#64748b'; ctx.font = canvasFont(800, 19); ctx.fillText('BÀI GẦN NHẤT', 150, 780);
+    ctx.fillStyle = '#0f172a'; ctx.font = canvasFont(900, 25);
     ctx.fillText(fitText(ctx, data.latest.title, 590), 150, 820);
-    ctx.textAlign = 'right'; ctx.fillStyle = data.latest.score >= 70 ? '#047857' : '#c2410c'; ctx.font = '900 34px Arial';
+    ctx.textAlign = 'right'; ctx.fillStyle = data.latest.score >= 70 ? '#047857' : '#c2410c'; ctx.font = canvasFont(900, 34);
     ctx.fillText(`${data.latest.score}%`, 920, 813);
   }
 
   ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(120, 878); ctx.lineTo(960, 878); ctx.stroke();
-  ctx.textAlign = 'center'; ctx.fillStyle = '#475569'; ctx.font = '700 24px Arial'; ctx.fillText('Cùng luyện Toán miễn phí tại', 425, 935);
-  ctx.fillStyle = '#6d28d9'; ctx.font = '900 29px Arial'; ctx.fillText('trangtoan.so1.asia', 425, 976);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#475569'; ctx.font = canvasFont(700, 24); ctx.fillText('Cùng luyện Toán miễn phí tại', 425, 935);
+  ctx.fillStyle = '#6d28d9'; ctx.font = canvasFont(900, 29); ctx.fillText('trangtoan.so1.asia', 425, 976);
   await drawSiteQrCode(ctx, 802, 892, 112);
-  ctx.fillStyle = '#64748b'; ctx.font = '700 15px Arial'; ctx.fillText('Quét để học', 858, 1019);
+  ctx.fillStyle = '#64748b'; ctx.font = canvasFont(700, 15); ctx.fillText('Quét để học', 858, 1019);
 
   return canvasToPngBlob(canvas);
 }

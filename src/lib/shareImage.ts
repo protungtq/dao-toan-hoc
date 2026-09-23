@@ -1,6 +1,26 @@
 import QRCode from 'qrcode';
 
 export const SITE_URL = 'https://trangtoan.so1.asia/';
+export const SHARE_FONT_FAMILY = '"Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
+
+export function canvasFont(weight: number, size: number) {
+  return `${weight} ${size}px ${SHARE_FONT_FAMILY}`;
+}
+
+export async function ensureShareFontLoaded() {
+  if (typeof document === 'undefined' || !document.fonts) return;
+  try {
+    await Promise.all([
+      document.fonts.load('400 24px "Be Vietnam Pro"'),
+      document.fonts.load('700 24px "Be Vietnam Pro"'),
+      document.fonts.load('800 24px "Be Vietnam Pro"'),
+      document.fonts.load('900 24px "Be Vietnam Pro"'),
+    ]);
+    await document.fonts.ready;
+  } catch {
+    // Canvas vẫn còn Segoe UI và Arial làm font dự phòng nếu mạng đang ngoại tuyến.
+  }
+}
 
 export function isMobileShareDevice() {
   if (typeof navigator === 'undefined') return false;

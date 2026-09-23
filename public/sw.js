@@ -1,4 +1,4 @@
-const VERSION = 'trang-toan-v1';
+const VERSION = 'trang-toan-v2';
 const SHELL_CACHE = `${VERSION}-shell`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const ASSET_CACHE = `${VERSION}-assets`;
