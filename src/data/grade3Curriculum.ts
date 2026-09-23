@@ -25,7 +25,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-review-and-extend', grade: 3, number: 1,
     title: 'Ôn tập và bổ sung', shortTitle: 'Ôn tập đầu năm', slug: 'on-tap-va-bo-sung',
     description: 'Ôn số và phép tính đến 1 000, các bảng nhân chia đã học, hình học và đo lường.',
-    semester: 1, textbookLessons: [1, 2, 3, 4, 5, 6, 7, 8], icon: '🔄', color: 'from-emerald-400 to-teal-500', backgroundColor: 'bg-emerald-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [1, 2, 3, 4, 5, 6, 7, 8], icon: '🔄', color: 'from-emerald-400 to-teal-500', backgroundColor: 'bg-emerald-50', developmentStatus: 'ready',
     skills: [
       { id: 'review-numbers-1000', title: 'Số và phép tính đến 1 000', description: 'Ôn đọc, viết, so sánh, cộng và trừ.', icon: '🔢', questionTypes: ['review-numbers-1000', 'review-add-subtract-1000'], defaultWeight: 35 },
       { id: 'operation-components-grade-3', title: 'Thành phần phép tính', description: 'Tìm số hạng, số bị trừ, số trừ chưa biết.', icon: '🧩', questionTypes: ['unknown-operation-component'], defaultWeight: 20 },
@@ -37,7 +37,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-multiplication-division-tables', grade: 3, number: 2,
     title: 'Bảng nhân, bảng chia', shortTitle: 'Bảng nhân chia', slug: 'bang-nhan-bang-chia',
     description: 'Luyện bảng nhân, bảng chia 6, 7, 8, 9; thành phần phép tính và một phần mấy.',
-    semester: 1, textbookLessons: [9, 10, 11, 12, 13, 14, 15], icon: '✖️', color: 'from-violet-500 to-purple-600', backgroundColor: 'bg-violet-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [9, 10, 11, 12, 13, 14, 15], icon: '✖️', color: 'from-violet-500 to-purple-600', backgroundColor: 'bg-violet-50', developmentStatus: 'ready',
     skills: [
       { id: 'tables-6-to-9', title: 'Bảng nhân chia 6–9', description: 'Tính nhẩm và vận dụng các bảng nhân chia.', icon: '🧮', questionTypes: ['times-tables-6-9', 'division-tables-6-9'], defaultWeight: 50 },
       { id: 'multiply-divide-components', title: 'Thành phần nhân chia', description: 'Tìm thừa số, số bị chia và số chia chưa biết.', icon: '🧩', questionTypes: ['unknown-multiply-divide-component'], defaultWeight: 25 },
