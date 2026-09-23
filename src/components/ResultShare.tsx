@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { recordLearningSession, recordSkillResult } from '../lib/learningProfile';
+import { trackEvent } from '../lib/analytics';
 
 type SkillAttempt = { questionId?: string; skillId: string; correctFirstTry: boolean };
 type Props = { score: number; correct: number; total: number; stars: number; attempts?: SkillAttempt[] };
@@ -65,6 +66,12 @@ export default function ResultShare(props: Props) {
       total: props.total,
       stars: props.stars,
     });
+    trackEvent('lesson_complete', {
+      score: props.score,
+      correct_answers: props.correct,
+      total_questions: props.total,
+      stars: props.stars,
+    });
     sessionStorage.setItem(marker, '1');
   }, [props.attempts]);
 
@@ -77,11 +84,13 @@ export default function ResultShare(props: Props) {
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share(data);
         setMessage('Đã mở bảng chia sẻ.');
+        trackEvent('result_share', { method: 'native_share', score: props.score });
       } else {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob); link.download = file.name; link.click();
         setTimeout(() => URL.revokeObjectURL(link.href), 1000);
         setMessage('Đã lưu ảnh kết quả về máy.');
+        trackEvent('result_share', { method: 'image_download', score: props.score });
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;

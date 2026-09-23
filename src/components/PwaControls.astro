@@ -19,6 +19,8 @@
 </dialog>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   type InstallPromptEvent = Event & {
     prompt: () => Promise<{ outcome: 'accepted' | 'dismissed' }>;
   };
@@ -54,7 +56,10 @@
     } else if (isiOS) iosGuide?.showModal();
   });
   iosClose?.addEventListener('click', () => iosGuide?.close());
-  window.addEventListener('appinstalled', () => { if (installButton) installButton.hidden = true; });
+  window.addEventListener('appinstalled', () => {
+    if (installButton) installButton.hidden = true;
+    trackEvent('pwa_install');
+  });
 
   function showUpdate(worker: ServiceWorker) {
     waitingWorker = worker;

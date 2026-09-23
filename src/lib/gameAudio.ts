@@ -1,6 +1,7 @@
 import correctSoundUrl from './audio/win.mp3?url';
 import wrongSoundUrl from './audio/fail.wav?url';
 import finalSoundUrl from './audio/final.mp3?url';
+import { trackEvent } from './analytics';
 
 type SoundName = 'correct' | 'wrong' | 'final';
 
@@ -64,10 +65,12 @@ function playSound(name: SoundName) {
 }
 
 export function playCorrectSound() {
+  trackEvent('answer_correct');
   playSound('correct');
 }
 
 export function playWrongSound() {
+  trackEvent('answer_wrong');
   playSound('wrong');
 }
 

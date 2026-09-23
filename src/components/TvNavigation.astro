@@ -3,6 +3,8 @@
 </div>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   const FOCUSABLE_SELECTOR = [
     'a[href]',
     'button:not([disabled])',
@@ -15,6 +17,7 @@
   const help = document.querySelector<HTMLElement>('#tv-help');
   let helpTimer = 0;
   let refreshFrame = 0;
+  let tvEventTracked = false;
 
   function isVisible(element: HTMLElement) {
     const style = getComputedStyle(element);
@@ -28,6 +31,10 @@
 
   function revealTvHelp() {
     document.documentElement.classList.add('tv-navigation-active');
+    if (!tvEventTracked) {
+      tvEventTracked = true;
+      trackEvent('tv_navigation');
+    }
     if (!help) return;
     help.hidden = false;
     window.clearTimeout(helpTimer);

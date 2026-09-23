@@ -1,0 +1,27 @@
+---
+const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'G-VE3DFHWS0N';
+---
+
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
+<script is:inline define:vars={{ measurementId }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', measurementId, {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+
+  document.addEventListener('click', function (event) {
+    var target = event.target instanceof Element ? event.target.closest('button, a') : null;
+    if (!target) return;
+    var label = (target.textContent || '').replace(/\s+/g, ' ').trim();
+    if (label.indexOf('Bắt đầu') === 0) {
+      gtag('event', 'lesson_start', {
+        lesson_path: location.pathname,
+        lesson_title: document.title.split(' – ')[0]
+      });
+    }
+  });
+</script>

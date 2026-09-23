@@ -1,4 +1,6 @@
 ---
+import GoogleAnalytics from './GoogleAnalytics.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -84,3 +86,4 @@ if (Astro.url.pathname.startsWith('/luyen-tap/')) {
 <meta name="trang-toan:slogan" content={slogan} />
 <title>{title}</title>
 {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+<GoogleAnalytics />
