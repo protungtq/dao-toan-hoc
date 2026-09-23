@@ -3,6 +3,8 @@ import '../../../styles/global.css';
 import CarryTo100Game from '../../../components/CarryTo100Game';
 import SoundToggle from '../../../components/SoundToggle';
 import SiteHead from '../../../components/SiteHead.astro';
+import TvNavigation from '../../../components/TvNavigation.astro';
+import PwaControls from '../../../components/PwaControls.astro';
 ---
 
 <!doctype html>
@@ -11,5 +13,7 @@ import SiteHead from '../../../components/SiteHead.astro';
   <body class="min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 text-slate-800">
     <CarryTo100Game client:load />
     <SoundToggle client:load />
+    <TvNavigation />
+    <PwaControls />
   </body>
 </html>

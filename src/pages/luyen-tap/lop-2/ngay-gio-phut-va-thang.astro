@@ -3,5 +3,9 @@ import '../../../styles/global.css';
 import Grade2TimeGame from '../../../components/Grade2TimeGame';
 import SoundToggle from '../../../components/SoundToggle';
 import SiteHead from '../../../components/SiteHead.astro';
+import TvNavigation from '../../../components/TvNavigation.astro';
+import PwaControls from '../../../components/PwaControls.astro';
 ---
-<!doctype html><html lang="vi"><head><SiteHead title="Ngày, giờ, phút và tháng – Toán lớp 2 – Trạng Toán" description="Luyện đọc đồng hồ, xem lịch và quan hệ giữa ngày, giờ, phút, tháng dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/ngay-gio-phut-va-thang" /></head><body class="min-h-screen bg-gradient-to-br from-yellow-100 via-white to-sky-100 text-slate-800"><Grade2TimeGame client:load/><SoundToggle client:load/></body></html>
+<!doctype html><html lang="vi"><head><SiteHead title="Ngày, giờ, phút và tháng – Toán lớp 2 – Trạng Toán" description="Luyện đọc đồng hồ, xem lịch và quan hệ giữa ngày, giờ, phút, tháng dành cho học sinh lớp 2." canonical="/luyen-tap/lop-2/ngay-gio-phut-va-thang" /></head><body class="min-h-screen bg-gradient-to-br from-yellow-100 via-white to-sky-100 text-slate-800"><Grade2TimeGame client:load/><SoundToggle client:load/>    <TvNavigation />
+    <PwaControls />
+  </body></html>

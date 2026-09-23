@@ -3,6 +3,8 @@ import '../../../styles/global.css';
 import ShapesGame from '../../../components/ShapesGame';
 import SoundToggle from '../../../components/SoundToggle';
 import SiteHead from '../../../components/SiteHead.astro';
+import TvNavigation from '../../../components/TvNavigation.astro';
+import PwaControls from '../../../components/PwaControls.astro';
 ---
 
 <!doctype html>
@@ -14,5 +16,7 @@ import SiteHead from '../../../components/SiteHead.astro';
   >
     <ShapesGame client:load />
     <SoundToggle client:load />
+    <TvNavigation />
+    <PwaControls />
   </body>
 </html>

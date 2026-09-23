@@ -128,25 +128,53 @@
     refreshFrame = requestAnimationFrame(refreshNumberedAnswers);
   }
 
-  document.addEventListener('keydown', (event) => {
+  function directionFromEvent(event: KeyboardEvent): 'up' | 'down' | 'left' | 'right' | undefined {
+    const byKey: Record<string, 'up' | 'down' | 'left' | 'right'> = {
+      ArrowUp: 'up', Up: 'up',
+      ArrowDown: 'down', Down: 'down',
+      ArrowLeft: 'left', Left: 'left',
+      ArrowRight: 'right', Right: 'right',
+    };
+    const byCode: Record<number, 'up' | 'down' | 'left' | 'right'> = {
+      19: 'up', 38: 'up',
+      20: 'down', 40: 'down',
+      21: 'left', 37: 'left',
+      22: 'right', 39: 'right',
+    };
+    return byKey[event.key] ?? byCode[event.keyCode];
+  }
+
+  function digitFromEvent(event: KeyboardEvent) {
+    const fromCode = event.code.match(/^(?:Digit|Numpad)([1-9])$/)?.[1];
+    const fromKey = event.key.match(/^[1-9]$/)?.[0];
+    const legacy = event.keyCode >= 49 && event.keyCode <= 57
+      ? String(event.keyCode - 48)
+      : event.keyCode >= 97 && event.keyCode <= 105
+        ? String(event.keyCode - 96)
+        : undefined;
+    return fromCode ?? fromKey ?? legacy;
+  }
+
+  function handleRemoteKey(event: KeyboardEvent) {
     const target = event.target;
     const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || (target instanceof HTMLElement && target.isContentEditable);
     if (typing) return;
 
-    const directionKeys = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' } as const;
-    const direction = directionKeys[event.key as keyof typeof directionKeys];
+    const direction = directionFromEvent(event);
     if (direction) {
       event.preventDefault();
+      event.stopPropagation();
       revealTvHelp();
       moveFocus(direction);
       return;
     }
 
-    const digit = event.code.match(/^(?:Digit|Numpad)([1-9])$/)?.[1] ?? event.key.match(/^[1-9]$/)?.[0];
+    const digit = digitFromEvent(event);
     if (digit) {
       const answer = document.querySelector<HTMLButtonElement>(`button[data-tv-number="${digit}"]:not([disabled])`);
       if (answer) {
         event.preventDefault();
+        event.stopPropagation();
         revealTvHelp();
         focusElement(answer);
         answer.click();
@@ -154,11 +182,22 @@
       return;
     }
 
-    if (event.key === 'Select') {
+    const remoteSelect = event.key === 'Enter' || event.key === 'Select' || event.code === 'Enter' || event.code === 'NumpadEnter' || event.keyCode === 13 || event.keyCode === 23 || event.keyCode === 66 || event.keyCode === 65376;
+    if (remoteSelect) {
       const active = document.activeElement;
       if (active instanceof HTMLElement && active.matches(FOCUSABLE_SELECTOR)) {
         event.preventDefault();
+        event.stopPropagation();
+        revealTvHelp();
         active.click();
+      } else {
+        const first = firstFocusable();
+        if (first) {
+          event.preventDefault();
+          event.stopPropagation();
+          revealTvHelp();
+          focusElement(first);
+        }
       }
       return;
     }
@@ -168,15 +207,19 @@
       const openDialog = document.querySelector<HTMLDialogElement>('dialog[open]');
       if (openDialog) {
         event.preventDefault();
+        event.stopPropagation();
         openDialog.close();
         return;
       }
       if (event.key !== 'Escape' || document.documentElement.classList.contains('tv-navigation-active')) {
         event.preventDefault();
+        event.stopPropagation();
         history.length > 1 ? history.back() : location.assign('/');
       }
     }
-  });
+  }
+
+  document.addEventListener('keydown', handleRemoteKey, { capture: true });
 
   document.addEventListener('pointerdown', () => document.documentElement.classList.remove('tv-navigation-active'));
   new MutationObserver(scheduleNumberRefresh).observe(document.body, { childList: true, subtree: true });
