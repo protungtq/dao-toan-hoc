@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade3Stage2Game from '../../../components/Grade3Stage2Game';
+---
+
+<PracticeLayout
+  title="Phép nhân, phép chia trong phạm vi 100 – Toán lớp 3 – Trạng Toán"
+  description="Luyện nhân chia số có hai chữ số, phép chia có dư, gấp giảm một số lần và giải bài toán hai bước trong phạm vi 100."
+  canonical="/luyen-tap/lop-3/nhan-chia-trong-pham-vi-100"
+  bodyClass="bg-gradient-to-br from-blue-100 via-white to-indigo-100 text-slate-800"
+>
+  <Grade3Stage2Game module="multiply100" client:load />
+</PracticeLayout>

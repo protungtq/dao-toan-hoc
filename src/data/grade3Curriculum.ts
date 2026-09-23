@@ -48,7 +48,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-plane-and-solid-geometry', grade: 3, number: 3,
     title: 'Hình phẳng và hình khối', shortTitle: 'Hình học', slug: 'hinh-phang-va-hinh-khoi',
     description: 'Nhận biết trung điểm, hình tròn, góc, hình chữ nhật, hình vuông và các khối quen thuộc.',
-    semester: 1, textbookLessons: [16, 17, 18, 19, 20, 21, 22], icon: '📐', color: 'from-orange-400 to-amber-500', backgroundColor: 'bg-orange-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [16, 17, 18, 19, 20, 21, 22], icon: '📐', color: 'from-orange-400 to-amber-500', backgroundColor: 'bg-orange-50', developmentStatus: 'ready',
     skills: [
       { id: 'midpoint', title: 'Điểm ở giữa và trung điểm', description: 'Nhận biết điểm ở giữa và trung điểm đoạn thẳng.', icon: '📍', questionTypes: ['identify-midpoint'], defaultWeight: 20 },
       { id: 'circle-parts', title: 'Hình tròn', description: 'Nhận biết tâm, bán kính và đường kính.', icon: '⭕', questionTypes: ['circle-center-radius-diameter'], defaultWeight: 20 },
@@ -61,7 +61,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-multiply-divide-to-100', grade: 3, number: 4,
     title: 'Phép nhân, phép chia trong phạm vi 100', shortTitle: 'Nhân chia đến 100', slug: 'nhan-chia-trong-pham-vi-100',
     description: 'Nhân, chia số có hai chữ số; gấp, giảm một số; chia hết, chia có dư và bài toán hai bước.',
-    semester: 1, textbookLessons: [23, 24, 25, 26, 27, 28, 29], icon: '➗', color: 'from-cyan-500 to-blue-600', backgroundColor: 'bg-cyan-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [23, 24, 25, 26, 27, 28, 29], icon: '➗', color: 'from-cyan-500 to-blue-600', backgroundColor: 'bg-cyan-50', developmentStatus: 'ready',
     skills: [
       { id: 'multiply-two-by-one', title: 'Nhân số có hai chữ số', description: 'Nhân số có hai chữ số với số có một chữ số.', icon: '✖️', questionTypes: ['multiply-2-digit-by-1-digit'], defaultWeight: 20 },
       { id: 'division-remainder', title: 'Chia hết và chia có dư', description: 'Nhận biết số dư và kiểm tra phép chia.', icon: '➗', questionTypes: ['division-with-remainder'], defaultWeight: 25 },
@@ -74,7 +74,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-measurement-units', grade: 3, number: 5,
     title: 'Độ dài, khối lượng, dung tích và nhiệt độ', shortTitle: 'Đại lượng đo', slug: 'do-luong-va-nhiet-do',
     description: 'Làm quen mi-li-mét, gam, mi-li-lít, độ C và vận dụng trong tình huống thực tế.',
-    semester: 1, textbookLessons: [30, 31, 32, 33, 34, 35], icon: '🌡️', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [30, 31, 32, 33, 34, 35], icon: '🌡️', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'ready',
     skills: [
       { id: 'millimeter', title: 'Mi-li-mét', description: 'Đọc, đo và đổi đơn vị độ dài đơn giản.', icon: '📏', questionTypes: ['millimeter-measurement'], defaultWeight: 25 },
       { id: 'gram', title: 'Gam', description: 'Đọc cân và giải bài toán khối lượng.', icon: '⚖️', questionTypes: ['gram-mass'], defaultWeight: 25 },
@@ -86,7 +86,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-multiply-divide-to-1000', grade: 3, number: 6,
     title: 'Phép nhân, phép chia trong phạm vi 1 000', shortTitle: 'Nhân chia đến 1 000', slug: 'nhan-chia-trong-pham-vi-1000',
     description: 'Nhân, chia số có ba chữ số; tính giá trị biểu thức và so sánh số lớn gấp mấy lần số bé.',
-    semester: 1, textbookLessons: [36, 37, 38, 39, 40], icon: '🧮', color: 'from-indigo-500 to-blue-600', backgroundColor: 'bg-indigo-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [36, 37, 38, 39, 40], icon: '🧮', color: 'from-indigo-500 to-blue-600', backgroundColor: 'bg-indigo-50', developmentStatus: 'ready',
     skills: [
       { id: 'multiply-three-by-one', title: 'Nhân số có ba chữ số', description: 'Nhân số có ba chữ số với số có một chữ số.', icon: '✖️', questionTypes: ['multiply-3-digit-by-1-digit'], defaultWeight: 30 },
       { id: 'divide-three-by-one', title: 'Chia số có ba chữ số', description: 'Chia số có ba chữ số cho số có một chữ số.', icon: '➗', questionTypes: ['divide-3-digit-by-1-digit'], defaultWeight: 30 },
@@ -98,7 +98,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-semester-1-review', grade: 3, number: 7,
     title: 'Ôn tập học kỳ I', shortTitle: 'Ôn tập học kỳ I', slug: 'on-tap-hoc-ky-1',
     description: 'Ôn nhân chia đến 1 000, biểu thức số, hình học, đo lường và bài toán tổng hợp.',
-    semester: 1, textbookLessons: [41, 42, 43, 44], icon: '📚', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [41, 42, 43, 44], icon: '📚', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'ready',
     skills: [
       { id: 'semester-1-multiply-divide', title: 'Ôn nhân và chia', description: 'Ôn phép nhân, phép chia trong phạm vi 100 và 1 000.', icon: '✖️', questionTypes: ['review-multiply-divide-1000'], defaultWeight: 35 },
       { id: 'semester-1-expressions', title: 'Ôn biểu thức số', description: 'Tính giá trị và tìm thành phần chưa biết.', icon: '🧩', questionTypes: ['review-expressions'], defaultWeight: 25 },

@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade3Stage3Game from '../../../components/Grade3Stage3Game';
+---
+
+<PracticeLayout
+  title="Ôn tập học kỳ I – Toán lớp 3 – Trạng Toán"
+  description="Ôn tổng hợp phép nhân chia trong phạm vi 100 và 1 000, biểu thức số, hình học, đo lường và bài toán lớp 3."
+  canonical="/luyen-tap/lop-3/on-tap-hoc-ky-1"
+  bodyClass="bg-gradient-to-br from-fuchsia-100 via-white to-purple-100 text-slate-800"
+>
+  <Grade3Stage3Game module="semester1" client:load />
+</PracticeLayout>
