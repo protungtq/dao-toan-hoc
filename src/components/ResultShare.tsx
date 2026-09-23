@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { recordLearningSession, recordSkillResult } from '../lib/learningProfile';
 import { trackEvent } from '../lib/analytics';
-import { canvasToPngBlob, drawSiteQrCode, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
+import { canvasToPngBlob, drawSiteQrCode, isMobileShareDevice, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
+import DesktopShareDialog from './DesktopShareDialog';
 
 type SkillAttempt = { questionId?: string; skillId: string; correctFirstTry: boolean };
 type Props = { score: number; correct: number; total: number; stars: number; attempts?: SkillAttempt[] };
@@ -47,6 +48,7 @@ async function createResultImage({ score, correct, total, stars }: Props): Promi
 export default function ResultShare(props: Props) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [desktopShare, setDesktopShare] = useState<null | { blob: Blob; filename: string; title: string; text: string }>(null);
 
   useEffect(() => {
     if (!props.attempts?.length) return;
@@ -74,12 +76,18 @@ export default function ResultShare(props: Props) {
     setBusy(true); setMessage('');
     try {
       const blob = await createResultImage(props);
-      const method = await shareOrDownloadImage({
+      const shareData = {
         blob,
         filename: `trang-toan-${props.score}-diem.png`,
         title: 'Thành tích Trạng Toán',
         text: `Mình vừa đạt ${props.score}% tại Trạng Toán!`,
-      });
+      };
+      if (!isMobileShareDevice()) {
+        setDesktopShare(shareData);
+        trackEvent('result_share', { method: 'desktop_dialog', score: props.score });
+        return;
+      }
+      const method = await shareOrDownloadImage(shareData);
       setMessage(method === 'native_share' ? 'Đã mở bảng chia sẻ.' : 'Đã lưu ảnh kết quả về máy.');
       trackEvent('result_share', { method, score: props.score });
     } catch (error) {
@@ -94,5 +102,6 @@ export default function ResultShare(props: Props) {
       <button type="button" onClick={share} disabled={busy} className="w-full rounded-2xl bg-violet-600 px-6 py-4 font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:opacity-60 sm:w-auto">{busy ? 'Đang tạo ảnh…' : '📤 Chia sẻ kết quả'}</button>
     </div>
     {message && <p className="mt-3 text-sm font-bold text-emerald-700">{message}</p>}
+    {desktopShare && <DesktopShareDialog {...desktopShare} onClose={() => setDesktopShare(null)} onAction={(method) => trackEvent('result_share', { method, score: props.score })} />}
   </div>;
 }

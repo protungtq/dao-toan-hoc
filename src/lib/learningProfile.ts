@@ -25,6 +25,33 @@ export type LearningActivity = {
   sessions: LearningSession[];
 };
 
+function finiteNumber(value: unknown, fallback = 0) {
+  const number = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function normalizeSession(value: unknown): LearningSession | null {
+  if (!value || typeof value !== 'object') return null;
+  const item = value as Partial<LearningSession>;
+  const total = Math.max(0, Math.round(finiteNumber(item.total)));
+  const correct = Math.min(total, Math.max(0, Math.round(finiteNumber(item.correct))));
+  const calculatedScore = total > 0 ? Math.round(correct / total * 100) : 0;
+  const score = Math.min(100, Math.max(0, Math.round(finiteNumber(item.score, calculatedScore))));
+  const completedAt = finiteNumber(item.completedAt, Date.now());
+
+  return {
+    id: typeof item.id === 'string' && item.id ? item.id : `${completedAt}-legacy`,
+    path: typeof item.path === 'string' && item.path ? item.path : '/',
+    title: typeof item.title === 'string' && item.title ? item.title : 'Bài luyện tập',
+    score,
+    correct,
+    total,
+    stars: Math.min(3, Math.max(0, Math.round(finiteNumber(item.stars)))),
+    completedAt,
+    day: typeof item.day === 'string' && item.day ? item.day : localDay(completedAt),
+  };
+}
+
 function readProfile(): LearningProfile {
   if (typeof window === 'undefined') return {};
   try {
@@ -96,7 +123,10 @@ export function readLearningActivity(): LearningActivity {
   if (typeof window === 'undefined') return { sessions: [] };
   try {
     const parsed = JSON.parse(localStorage.getItem(ACTIVITY_KEY) ?? '{"sessions":[]}') as LearningActivity;
-    return { sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [] };
+    const sessions = Array.isArray(parsed.sessions)
+      ? parsed.sessions.map(normalizeSession).filter((session): session is LearningSession => session !== null)
+      : [];
+    return { sessions };
   } catch {
     return { sessions: [] };
   }
@@ -106,8 +136,15 @@ export function recordLearningSession(input: Omit<LearningSession, 'id' | 'compl
   if (typeof window === 'undefined') return;
   const activity = readLearningActivity();
   const completedAt = Date.now();
+  const total = Math.max(0, Math.round(finiteNumber(input.total)));
+  const correct = Math.min(total, Math.max(0, Math.round(finiteNumber(input.correct))));
+  const calculatedScore = total > 0 ? Math.round(correct / total * 100) : 0;
   const session: LearningSession = {
     ...input,
+    total,
+    correct,
+    score: Math.min(100, Math.max(0, Math.round(finiteNumber(input.score, calculatedScore)))),
+    stars: Math.min(3, Math.max(0, Math.round(finiteNumber(input.stars)))),
     id: `${completedAt}-${Math.random().toString(36).slice(2, 8)}`,
     completedAt,
     day: localDay(completedAt),

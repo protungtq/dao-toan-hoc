@@ -2,6 +2,12 @@ import QRCode from 'qrcode';
 
 export const SITE_URL = 'https://trangtoan.so1.asia/';
 
+export function isMobileShareDevice() {
+  if (typeof navigator === 'undefined') return false;
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
 export function roundedRect(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -60,7 +66,7 @@ export async function shareOrDownloadImage({ blob, filename, title, text }: Shar
   const file = new File([blob], filename, { type: 'image/png' });
   const shareData = { title, text, url: SITE_URL, files: [file] };
 
-  if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+  if (isMobileShareDevice() && navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
     await navigator.share(shareData);
     return 'native_share' as const;
   }

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { calculateStreak, clearLearningProfile, getSkillProgress, readLearningActivity, type LearningSession, type SkillProgress } from '../lib/learningProfile';
 import { trackEvent } from '../lib/analytics';
-import { canvasToPngBlob, drawSiteQrCode, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
+import { canvasToPngBlob, drawSiteQrCode, isMobileShareDevice, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
+import DesktopShareDialog from './DesktopShareDialog';
 
 const SKILL_NAMES: Record<string, string> = {
   'addition-to-10': 'Phép cộng trong phạm vi 10', 'subtraction-to-10': 'Phép trừ trong phạm vi 10',
@@ -110,12 +111,15 @@ export default function LearningDashboard() {
   const [skills, setSkills] = useState<Record<string, SkillProgress>>({});
   const [sharing, setSharing] = useState(false);
   const [shareMessage, setShareMessage] = useState('');
+  const [desktopShare, setDesktopShare] = useState<null | { blob: Blob; filename: string; title: string; text: string }>(null);
   const load = () => { setSessions(readLearningActivity().sessions); setSkills(getSkillProgress()); };
   useEffect(load, []);
   const summary = useMemo(() => {
-    const questions = sessions.reduce((sum, item) => sum + item.total, 0);
-    const correct = sessions.reduce((sum, item) => sum + item.correct, 0);
-    return { questions, correct, accuracy: questions ? Math.round(correct / questions * 100) : 0, streak: calculateStreak(sessions) };
+    const questions = sessions.reduce((sum, item) => sum + (Number.isFinite(item.total) ? item.total : 0), 0);
+    const correct = sessions.reduce((sum, item) => sum + (Number.isFinite(item.correct) ? item.correct : 0), 0);
+    const rawAccuracy = questions > 0 ? Math.round(correct / questions * 100) : 0;
+    const accuracy = Number.isFinite(rawAccuracy) ? Math.min(100, Math.max(0, rawAccuracy)) : 0;
+    return { questions, correct, accuracy, streak: calculateStreak(sessions) };
   }, [sessions]);
   const weakSkills = Object.entries(skills).filter(([, value]) => value.attempts >= 2 && value.mistakes > 0).sort((a, b) => b[1].mistakes / b[1].attempts - a[1].mistakes / a[1].attempts).slice(0, 5);
   const lastSevenDays = Array.from({ length: 7 }, (_, index) => { const date = new Date(); date.setDate(date.getDate() - (6 - index)); const day = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; return { day, label: new Intl.DateTimeFormat('vi-VN', { weekday: 'short' }).format(date), active: sessions.some((item) => item.day === day) }; });
@@ -131,12 +135,18 @@ export default function LearningDashboard() {
         activeDays: lastSevenDays.map((item) => item.active),
         latest: sessions[0],
       });
-      const method = await shareOrDownloadImage({
+      const shareData = {
         blob,
         filename: 'thanh-tich-trang-toan.png',
         title: 'Thành tích học tập trên Trạng Toán',
         text: `Mình đã hoàn thành ${sessions.length} lượt luyện với tỷ lệ đúng ${summary.accuracy}%!`,
-      });
+      };
+      if (!isMobileShareDevice()) {
+        setDesktopShare(shareData);
+        trackEvent('achievement_share', { method: 'desktop_dialog', sessions: sessions.length, accuracy: summary.accuracy });
+        return;
+      }
+      const method = await shareOrDownloadImage(shareData);
       setShareMessage(method === 'native_share' ? 'Đã mở bảng chia sẻ.' : 'Đã lưu ảnh thành tích về máy.');
       trackEvent('achievement_share', { method, sessions: sessions.length, accuracy: summary.accuracy });
     } catch (error) {
@@ -154,5 +164,6 @@ export default function LearningDashboard() {
     <div className="grid gap-7 lg:grid-cols-2"><section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm"><div className="border-b bg-slate-50 px-6 py-5"><h2 className="text-xl font-black">Lịch sử gần đây</h2></div><div className="divide-y">{sessions.slice(0,8).map((item)=><a key={item.id} href={item.path} className="flex items-center justify-between gap-4 px-6 py-4 transition hover:bg-violet-50"><div className="min-w-0"><p className="truncate font-black text-slate-800">{item.title}</p><p className="mt-1 text-xs font-semibold text-slate-500">{formatDate(item.completedAt)} · {item.correct}/{item.total} câu</p></div><span className={`rounded-xl px-3 py-2 font-black ${item.score>=70?'bg-emerald-100 text-emerald-700':'bg-orange-100 text-orange-700'}`}>{item.score}%</span></a>)}</div></section>
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-black">Kỹ năng nên luyện thêm</h2><p className="mt-2 text-sm font-medium text-slate-500">Trạng Toán tự ưu tiên những kỹ năng này ở lượt sau.</p><div className="mt-5 space-y-3">{weakSkills.length?weakSkills.map(([key,value])=>{const percent=Math.round((value.attempts-value.mistakes)/value.attempts*100);return <div key={key} className="rounded-2xl bg-slate-50 p-4"><div className="flex justify-between gap-3"><b>{skillName(key)}</b><b className={percent>=70?'text-emerald-600':'text-orange-600'}>{percent}%</b></div><div className="mt-3 h-2 rounded-full bg-slate-200"><div className={percent>=70?'h-full rounded-full bg-emerald-400':'h-full rounded-full bg-orange-400'} style={{width:`${percent}%`}}/></div></div>}):<p className="rounded-2xl bg-emerald-50 p-5 font-bold text-emerald-700">Chưa có kỹ năng yếu rõ ràng. Bé hãy tiếp tục luyện nhé!</p>}</div></section></div>
     <div className="text-center"><button type="button" onClick={clearData} className="rounded-xl px-4 py-3 text-sm font-bold text-slate-400 transition hover:bg-red-50 hover:text-red-600">Xóa dữ liệu học trên thiết bị</button></div>
+    {desktopShare && <DesktopShareDialog {...desktopShare} onClose={() => setDesktopShare(null)} onAction={(method) => trackEvent('achievement_share', { method, sessions: sessions.length, accuracy: summary.accuracy })} />}
   </div>;
 }
