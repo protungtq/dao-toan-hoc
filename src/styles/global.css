@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 4px solid #f59e0b;
+  outline-offset: 5px;
+  box-shadow: 0 0 0 9px rgb(255 255 255 / 88%), 0 0 0 13px rgb(124 58 237 / 70%);
+  position: relative;
+  z-index: 20;
+}
+
+button[data-tv-number] {
+  position: relative;
+}
+
+.tv-navigation-active button[data-tv-number]::before {
+  content: attr(data-tv-number);
+  position: absolute;
+  top: 0.45rem;
+  left: 0.55rem;
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 2px solid rgb(255 255 255 / 90%);
+  border-radius: 9999px;
+  background: #0f172a;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 28%);
+  pointer-events: none;
+}
+
+@media (min-width: 1280px) and (min-height: 700px) {
+  :where(a, button) {
+    scroll-margin: 18vh 10vw;
+  }
+
+  .tv-navigation-active :where(button, a) {
+    transition: transform 150ms ease, box-shadow 150ms ease, outline-color 150ms ease;
+  }
+
+  .tv-navigation-active :where(a, button):focus-visible {
+    transform: scale(1.045);
+  }
+}

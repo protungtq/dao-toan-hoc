@@ -1,0 +1,178 @@
+<div id="tv-help" hidden class="pointer-events-none fixed inset-x-4 bottom-5 z-[65] mx-auto max-w-2xl rounded-2xl border border-white/20 bg-slate-950/95 px-5 py-4 text-center text-sm font-black text-white shadow-2xl" role="status">
+  <span class="hidden sm:inline">Điều khiển: </span>↑ ↓ ← → di chuyển · OK/Enter để chọn · Phím 1–9 chọn nhanh
+</div>
+
+<script>
+  const FOCUSABLE_SELECTOR = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
+
+  const help = document.querySelector<HTMLElement>('#tv-help');
+  let helpTimer = 0;
+  let refreshFrame = 0;
+
+  function isVisible(element: HTMLElement) {
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0 && rect.width > 0 && rect.height > 0;
+  }
+
+  function focusableElements() {
+    return Array.from(document.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isVisible);
+  }
+
+  function revealTvHelp() {
+    document.documentElement.classList.add('tv-navigation-active');
+    if (!help) return;
+    help.hidden = false;
+    window.clearTimeout(helpTimer);
+    helpTimer = window.setTimeout(() => { help.hidden = true; }, 4500);
+  }
+
+  function focusElement(element: HTMLElement) {
+    element.focus({ preventScroll: true });
+    element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  }
+
+  function firstFocusable() {
+    const elements = focusableElements();
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    return elements.sort((left, right) => {
+      const a = left.getBoundingClientRect();
+      const b = right.getBoundingClientRect();
+      const aVisible = a.bottom > 0 && a.top < innerHeight ? 0 : 1;
+      const bVisible = b.bottom > 0 && b.top < innerHeight ? 0 : 1;
+      const aDistance = Math.abs(a.left + a.width / 2 - centerX) + Math.abs(a.top + a.height / 2 - centerY);
+      const bDistance = Math.abs(b.left + b.width / 2 - centerX) + Math.abs(b.top + b.height / 2 - centerY);
+      return aVisible - bVisible || aDistance - bDistance;
+    })[0];
+  }
+
+  function moveFocus(direction: 'up' | 'down' | 'left' | 'right') {
+    const elements = focusableElements();
+    if (!elements.length) return;
+    const active = document.activeElement instanceof HTMLElement && elements.includes(document.activeElement)
+      ? document.activeElement
+      : null;
+    if (!active) {
+      const first = firstFocusable();
+      if (first) focusElement(first);
+      return;
+    }
+
+    const current = active.getBoundingClientRect();
+    const currentX = current.left + current.width / 2;
+    const currentY = current.top + current.height / 2;
+    const vertical = direction === 'up' || direction === 'down';
+    const sign = direction === 'up' || direction === 'left' ? -1 : 1;
+
+    const candidates = elements
+      .filter((element) => element !== active)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const primary = (vertical ? y - currentY : x - currentX) * sign;
+        const secondary = Math.abs(vertical ? x - currentX : y - currentY);
+        const overlap = vertical
+          ? Math.max(0, Math.min(current.right, rect.right) - Math.max(current.left, rect.left))
+          : Math.max(0, Math.min(current.bottom, rect.bottom) - Math.max(current.top, rect.top));
+        return { element, primary, score: primary + secondary * (overlap > 0 ? 0.35 : 1.8) };
+      })
+      .filter((item) => item.primary > 6)
+      .sort((left, right) => left.score - right.score);
+
+    if (candidates[0]) focusElement(candidates[0].element);
+  }
+
+  function answerGroups() {
+    return Array.from(document.querySelectorAll<HTMLElement>('main div')).map((group) => {
+      const buttons = Array.from(group.children).filter(
+        (child): child is HTMLButtonElement => child instanceof HTMLButtonElement && !child.disabled && isVisible(child),
+      );
+      return { group, buttons };
+    }).filter(({ buttons }) => buttons.length >= 2 && buttons.length <= 9);
+  }
+
+  function refreshNumberedAnswers() {
+    document.querySelectorAll<HTMLElement>('[data-tv-number]').forEach((element) => element.removeAttribute('data-tv-number'));
+    const groups = answerGroups();
+    if (!groups.length) return;
+    const viewportX = window.innerWidth / 2;
+    const viewportY = window.innerHeight / 2;
+    const best = groups.sort((left, right) => {
+      const a = left.group.getBoundingClientRect();
+      const b = right.group.getBoundingClientRect();
+      const aDistance = Math.abs(a.left + a.width / 2 - viewportX) + Math.abs(a.top + a.height / 2 - viewportY);
+      const bDistance = Math.abs(b.left + b.width / 2 - viewportX) + Math.abs(b.top + b.height / 2 - viewportY);
+      return aDistance - bDistance;
+    })[0];
+    best.buttons.forEach((button, index) => button.dataset.tvNumber = String(index + 1));
+  }
+
+  function scheduleNumberRefresh() {
+    cancelAnimationFrame(refreshFrame);
+    refreshFrame = requestAnimationFrame(refreshNumberedAnswers);
+  }
+
+  document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || (target instanceof HTMLElement && target.isContentEditable);
+    if (typing) return;
+
+    const directionKeys = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' } as const;
+    const direction = directionKeys[event.key as keyof typeof directionKeys];
+    if (direction) {
+      event.preventDefault();
+      revealTvHelp();
+      moveFocus(direction);
+      return;
+    }
+
+    const digit = event.code.match(/^(?:Digit|Numpad)([1-9])$/)?.[1] ?? event.key.match(/^[1-9]$/)?.[0];
+    if (digit) {
+      const answer = document.querySelector<HTMLButtonElement>(`button[data-tv-number="${digit}"]:not([disabled])`);
+      if (answer) {
+        event.preventDefault();
+        revealTvHelp();
+        focusElement(answer);
+        answer.click();
+      }
+      return;
+    }
+
+    if (event.key === 'Select') {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && active.matches(FOCUSABLE_SELECTOR)) {
+        event.preventDefault();
+        active.click();
+      }
+      return;
+    }
+
+    const remoteBack = event.key === 'BrowserBack' || event.key === 'GoBack' || event.key === 'Backspace' || event.keyCode === 4 || event.keyCode === 461 || event.keyCode === 10009;
+    if (remoteBack || event.key === 'Escape') {
+      const openDialog = document.querySelector<HTMLDialogElement>('dialog[open]');
+      if (openDialog) {
+        event.preventDefault();
+        openDialog.close();
+        return;
+      }
+      if (event.key !== 'Escape' || document.documentElement.classList.contains('tv-navigation-active')) {
+        event.preventDefault();
+        history.length > 1 ? history.back() : location.assign('/');
+      }
+    }
+  });
+
+  document.addEventListener('pointerdown', () => document.documentElement.classList.remove('tv-navigation-active'));
+  new MutationObserver(scheduleNumberRefresh).observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('resize', scheduleNumberRefresh);
+  scheduleNumberRefresh();
+</script>

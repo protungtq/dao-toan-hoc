@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteHead from '../components/SiteHead.astro';
 import PwaControls from '../components/PwaControls.astro';
+import TvNavigation from '../components/TvNavigation.astro';
 
 interface Props {
   title: string;
@@ -24,6 +25,7 @@ const {
 
   <body class="min-h-screen bg-[#f6f7fb] text-slate-900 antialiased">
     <slot />
+    <TvNavigation />
     <PwaControls />
   </body>
 </html>
