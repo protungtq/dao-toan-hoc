@@ -34,6 +34,10 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
     <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Mục {practiceModule.number} · Bài {firstLesson}–{lastLesson}</p>
     <h3 class="mt-2 text-xl font-black text-slate-800">{practiceModule.title}</h3>
     <p class="mt-3 flex-1 font-medium leading-7 text-slate-500">{practiceModule.description}</p>
+    <div class="mt-5 flex flex-wrap gap-2">
+      {practiceModule.skills.slice(0, 3).map((skill) => <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">{skill.icon} {skill.title}</span>)}
+      {practiceModule.skills.length > 3 && <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500">+{practiceModule.skills.length - 3}</span>}
+    </div>
     <div class="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-center font-black text-slate-400">Đang chuẩn bị nội dung</div>
   </article>
 )}

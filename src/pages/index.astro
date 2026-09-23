@@ -5,11 +5,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import ContinueLearning from '../components/ContinueLearning';
 import { grade1PracticeModules } from '../data/grade1Curriculum';
 import { grade2PracticeModules } from '../data/grade2Curriculum';
+import { grade3PracticeModules } from '../data/grade3Curriculum';
 
 const grades = [
   { grade: 1, mascot: '🐿️', title: 'Toán lớp 1', description: 'Số đến 100, cộng trừ, hình học, độ dài và thời gian.', count: grade1PracticeModules.length, status: 'Đã có bài luyện', gradient: 'from-violet-500 to-indigo-600', pale: 'from-violet-50 to-indigo-50', border: 'border-violet-200', text: 'text-violet-700' },
   { grade: 2, mascot: '🐻', title: 'Toán lớp 2', description: 'Cộng trừ có nhớ, nhân chia, số đến 1 000 và dữ liệu.', count: grade2PracticeModules.length, status: 'Đã có bài luyện', gradient: 'from-cyan-400 to-blue-600', pale: 'from-cyan-50 to-blue-50', border: 'border-cyan-200', text: 'text-sky-700' },
-  { grade: 3, mascot: '🐿️', title: 'Toán lớp 3', description: 'Nhân chia, số đến 100 000, hình học và đo lường.', count: 0, status: 'Đang cập nhật', gradient: 'from-emerald-400 to-teal-600', pale: 'from-emerald-50 to-teal-50', border: 'border-emerald-200', text: 'text-emerald-700' },
+  { grade: 3, mascot: '🐿️', title: 'Toán lớp 3', description: 'Nhân chia, số đến 100 000, hình học và đo lường.', count: grade3PracticeModules.length, status: 'Đã có chương trình', gradient: 'from-emerald-400 to-teal-600', pale: 'from-emerald-50 to-teal-50', border: 'border-emerald-200', text: 'text-emerald-700' },
   { grade: 4, mascot: '🐻', title: 'Toán lớp 4', description: 'Số lớn, phân số, trung bình cộng và hình học.', count: 0, status: 'Đang cập nhật', gradient: 'from-orange-400 to-amber-600', pale: 'from-orange-50 to-amber-50', border: 'border-orange-200', text: 'text-orange-700' },
   { grade: 5, mascot: '🦊', title: 'Toán lớp 5', description: 'Số thập phân, tỉ số, phần trăm, diện tích và thể tích.', count: 0, status: 'Đang cập nhật', gradient: 'from-pink-400 to-rose-600', pale: 'from-pink-50 to-rose-50', border: 'border-rose-200', text: 'text-rose-700' },
 ];
