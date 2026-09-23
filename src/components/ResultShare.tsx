@@ -1,24 +1,17 @@
 import { useEffect, useState } from 'react';
 import { recordLearningSession, recordSkillResult } from '../lib/learningProfile';
 import { trackEvent } from '../lib/analytics';
+import { canvasToPngBlob, drawSiteQrCode, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
 
 type SkillAttempt = { questionId?: string; skillId: string; correctFirstTry: boolean };
 type Props = { score: number; correct: number; total: number; stars: number; attempts?: SkillAttempt[] };
-const SITE_URL = 'https://trangtoan.so1.asia';
 
-function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
-  ctx.beginPath();
-  ctx.roundRect(x, y, width, height, radius);
-  ctx.fill();
-}
-
-function createResultImage({ score, correct, total, stars }: Props): Promise<Blob> {
-  return new Promise((resolve, reject) => {
+async function createResultImage({ score, correct, total, stars }: Props): Promise<Blob> {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
     canvas.height = 1080;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return reject(new Error('Không thể tạo ảnh kết quả'));
+    if (!ctx) throw new Error('Không thể tạo ảnh kết quả');
 
     const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
     gradient.addColorStop(0, '#6d28d9'); gradient.addColorStop(0.55, '#7c3aed'); gradient.addColorStop(1, '#0284c7');
@@ -41,12 +34,14 @@ function createResultImage({ score, correct, total, stars }: Props): Promise<Blo
     ctx.fillStyle = '#0f172a'; ctx.font = '900 34px Arial'; ctx.fillText(`Đúng ${correct}/${total} câu ngay lần đầu`, 540, 775);
     ctx.fillStyle = score >= 90 ? '#047857' : score >= 70 ? '#0369a1' : '#c2410c'; ctx.font = '800 32px Arial';
     ctx.fillText(score >= 90 ? 'Thành tích xuất sắc!' : score >= 70 ? 'Hoàn thành tốt!' : 'Mỗi lần luyện là một bước tiến!', 540, 835);
-    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(180, 885); ctx.lineTo(900, 885); ctx.stroke();
-    ctx.fillStyle = '#475569'; ctx.font = '700 27px Arial'; ctx.fillText('Cùng luyện Toán miễn phí tại', 540, 930);
-    ctx.fillStyle = '#6d28d9'; ctx.font = '900 31px Arial'; ctx.fillText('trangtoan.so1.asia', 540, 970);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(180, 870); ctx.lineTo(900, 870); ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#475569'; ctx.font = '700 25px Arial'; ctx.fillText('Cùng luyện Toán miễn phí tại', 450, 925);
+    ctx.fillStyle = '#6d28d9'; ctx.font = '900 30px Arial'; ctx.fillText('trangtoan.so1.asia', 450, 966);
+    await drawSiteQrCode(ctx, 790, 875, 112);
+    ctx.fillStyle = '#64748b'; ctx.font = '700 16px Arial'; ctx.fillText('Quét để học', 846, 1002);
 
-    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Không thể xuất ảnh')), 'image/png', 0.95);
-  });
+    return canvasToPngBlob(canvas);
 }
 
 export default function ResultShare(props: Props) {
@@ -79,19 +74,14 @@ export default function ResultShare(props: Props) {
     setBusy(true); setMessage('');
     try {
       const blob = await createResultImage(props);
-      const file = new File([blob], `trang-toan-${props.score}-diem.png`, { type: 'image/png' });
-      const data = { title: 'Thành tích Trạng Toán', text: `Mình vừa đạt ${props.score}% tại Trạng Toán!`, url: SITE_URL, files: [file] };
-      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-        await navigator.share(data);
-        setMessage('Đã mở bảng chia sẻ.');
-        trackEvent('result_share', { method: 'native_share', score: props.score });
-      } else {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob); link.download = file.name; link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-        setMessage('Đã lưu ảnh kết quả về máy.');
-        trackEvent('result_share', { method: 'image_download', score: props.score });
-      }
+      const method = await shareOrDownloadImage({
+        blob,
+        filename: `trang-toan-${props.score}-diem.png`,
+        title: 'Thành tích Trạng Toán',
+        text: `Mình vừa đạt ${props.score}% tại Trạng Toán!`,
+      });
+      setMessage(method === 'native_share' ? 'Đã mở bảng chia sẻ.' : 'Đã lưu ảnh kết quả về máy.');
+      trackEvent('result_share', { method, score: props.score });
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;
       setMessage('Chưa thể chia sẻ. Bé có thể thử lại.');
