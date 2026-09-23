@@ -110,7 +110,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-numbers-to-10000', grade: 3, number: 8,
     title: 'Các số đến 10 000', shortTitle: 'Số đến 10 000', slug: 'cac-so-den-10000',
     description: 'Đọc, viết, cấu tạo và so sánh số có bốn chữ số; số La Mã và làm tròn số.',
-    semester: 2, textbookLessons: [45, 46, 47, 48, 49], icon: '🔟', color: 'from-sky-500 to-cyan-600', backgroundColor: 'bg-sky-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [45, 46, 47, 48, 49], icon: '🔟', color: 'from-sky-500 to-cyan-600', backgroundColor: 'bg-sky-50', developmentStatus: 'ready',
     skills: [
       { id: 'four-digit-numbers', title: 'Số có bốn chữ số', description: 'Đọc, viết và phân tích cấu tạo số.', icon: '🔢', questionTypes: ['read-write-10000', 'place-value-10000'], defaultWeight: 35 },
       { id: 'compare-to-10000', title: 'So sánh số', description: 'So sánh và sắp xếp số trong phạm vi 10 000.', icon: '⚖️', questionTypes: ['compare-order-10000'], defaultWeight: 25 },
@@ -122,7 +122,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-perimeter-area', grade: 3, number: 9,
     title: 'Chu vi, diện tích một số hình phẳng', shortTitle: 'Chu vi và diện tích', slug: 'chu-vi-va-dien-tich',
     description: 'Tính chu vi hình quen thuộc, nhận biết diện tích và tính diện tích hình chữ nhật, hình vuông.',
-    semester: 2, textbookLessons: [50, 51, 52, 53], icon: '📏', color: 'from-lime-500 to-green-600', backgroundColor: 'bg-lime-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [50, 51, 52, 53], icon: '📏', color: 'from-lime-500 to-green-600', backgroundColor: 'bg-lime-50', developmentStatus: 'ready',
     skills: [
       { id: 'perimeter-plane-shapes', title: 'Chu vi hình phẳng', description: 'Tính chu vi tam giác, tứ giác, chữ nhật và vuông.', icon: '🔲', questionTypes: ['perimeter-plane-shapes'], defaultWeight: 35 },
       { id: 'area-concept', title: 'Diện tích và xăng-ti-mét vuông', description: 'So sánh diện tích và đếm ô vuông.', icon: '🟩', questionTypes: ['area-concept-square-centimeter'], defaultWeight: 25 },
@@ -133,7 +133,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-arithmetic-to-10000', grade: 3, number: 10,
     title: 'Cộng, trừ, nhân, chia trong phạm vi 10 000', shortTitle: 'Bốn phép tính đến 10 000', slug: 'bon-phep-tinh-den-10000',
     description: 'Luyện cộng, trừ đến 10 000 và nhân, chia số có bốn chữ số với số có một chữ số.',
-    semester: 2, textbookLessons: [54, 55, 56, 57, 58], icon: '➕', color: 'from-blue-500 to-indigo-600', backgroundColor: 'bg-blue-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [54, 55, 56, 57, 58], icon: '➕', color: 'from-blue-500 to-indigo-600', backgroundColor: 'bg-blue-50', developmentStatus: 'ready',
     skills: [
       { id: 'add-subtract-10000', title: 'Cộng và trừ đến 10 000', description: 'Đặt tính, tính và kiểm tra kết quả.', icon: '➕', questionTypes: ['add-10000', 'subtract-10000'], defaultWeight: 45 },
       { id: 'multiply-four-by-one', title: 'Nhân số có bốn chữ số', description: 'Nhân với số có một chữ số.', icon: '✖️', questionTypes: ['multiply-4-digit-by-1-digit'], defaultWeight: 25 },
@@ -144,7 +144,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-numbers-to-100000', grade: 3, number: 11,
     title: 'Các số đến 100 000', shortTitle: 'Số đến 100 000', slug: 'cac-so-den-100000',
     description: 'Đọc, viết, phân tích và so sánh số có năm chữ số; làm tròn đến hàng nghìn, chục nghìn.',
-    semester: 2, textbookLessons: [59, 60, 61, 62], icon: '💯', color: 'from-teal-500 to-emerald-600', backgroundColor: 'bg-teal-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [59, 60, 61, 62], icon: '💯', color: 'from-teal-500 to-emerald-600', backgroundColor: 'bg-teal-50', developmentStatus: 'ready',
     skills: [
       { id: 'five-digit-numbers', title: 'Số có năm chữ số', description: 'Đọc, viết và phân tích cấu tạo số.', icon: '🔢', questionTypes: ['read-write-100000', 'place-value-100000'], defaultWeight: 40 },
       { id: 'compare-to-100000', title: 'So sánh số', description: 'So sánh và sắp xếp số trong phạm vi 100 000.', icon: '⚖️', questionTypes: ['compare-order-100000'], defaultWeight: 30 },
@@ -155,7 +155,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-add-subtract-to-100000', grade: 3, number: 12,
     title: 'Phép cộng, phép trừ trong phạm vi 100 000', shortTitle: 'Cộng trừ đến 100 000', slug: 'cong-tru-trong-pham-vi-100000',
     description: 'Luyện đặt tính, tính nhẩm, tính viết và giải bài toán cộng trừ trong phạm vi 100 000.',
-    semester: 2, textbookLessons: [63, 64, 65], icon: '🧮', color: 'from-purple-500 to-indigo-600', backgroundColor: 'bg-purple-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [63, 64, 65], icon: '🧮', color: 'from-purple-500 to-indigo-600', backgroundColor: 'bg-purple-50', developmentStatus: 'ready',
     skills: [
       { id: 'addition-100000', title: 'Phép cộng đến 100 000', description: 'Đặt tính và cộng các số có đến năm chữ số.', icon: '➕', questionTypes: ['addition-100000'], defaultWeight: 40 },
       { id: 'subtraction-100000', title: 'Phép trừ đến 100 000', description: 'Đặt tính và trừ các số có đến năm chữ số.', icon: '➖', questionTypes: ['subtraction-100000'], defaultWeight: 40 },
@@ -166,7 +166,7 @@ export const grade3PracticeModules: Grade3Module[] = [
     id: 'grade-3-time-calendar-money', grade: 3, number: 13,
     title: 'Đồng hồ, tháng – năm và tiền Việt Nam', shortTitle: 'Thời gian và tiền', slug: 'dong-ho-thang-nam-va-tien-viet-nam',
     description: 'Xem giờ chính xác đến phút, đọc lịch tháng – năm và giải tình huống với tiền Việt Nam.',
-    semester: 2, textbookLessons: [66, 67, 68, 69], icon: '🕰️', color: 'from-amber-400 to-orange-500', backgroundColor: 'bg-amber-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [66, 67, 68, 69], icon: '🕰️', color: 'from-amber-400 to-orange-500', backgroundColor: 'bg-amber-50', developmentStatus: 'ready',
     skills: [
       { id: 'clock-to-minute', title: 'Xem đồng hồ', description: 'Đọc giờ đến phút và tính khoảng thời gian.', icon: '🕰️', questionTypes: ['read-clock-to-minute', 'elapsed-time-simple'], defaultWeight: 35 },
       { id: 'months-years-calendar', title: 'Tháng, năm và lịch', description: 'Đọc lịch, xác định ngày tháng và số ngày.', icon: '📅', questionTypes: ['calendar-month-year'], defaultWeight: 30 },

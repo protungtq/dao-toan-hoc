@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade3Stage5Game from '../../../components/Grade3Stage5Game';
+---
+
+<PracticeLayout
+  title="Đồng hồ, tháng – năm và tiền Việt Nam – Toán lớp 3 – Trạng Toán"
+  description="Luyện xem đồng hồ đến phút, tính khoảng thời gian, đọc lịch và giải các tình huống với tiền Việt Nam."
+  canonical="/luyen-tap/lop-3/dong-ho-thang-nam-va-tien-viet-nam"
+  bodyClass="bg-gradient-to-br from-amber-100 via-white to-orange-100 text-slate-800"
+>
+  <Grade3Stage5Game module="timeMoney" client:load />
+</PracticeLayout>

@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade3Stage5Game from '../../../components/Grade3Stage5Game';
+---
+
+<PracticeLayout
+  title="Phép cộng, phép trừ trong phạm vi 100 000 – Toán lớp 3 – Trạng Toán"
+  description="Luyện đặt tính, cộng, trừ và giải bài toán thực tế với các số trong phạm vi 100 000."
+  canonical="/luyen-tap/lop-3/cong-tru-trong-pham-vi-100000"
+  bodyClass="bg-gradient-to-br from-purple-100 via-white to-indigo-100 text-slate-800"
+>
+  <Grade3Stage5Game module="addSubtract100000" client:load />
+</PracticeLayout>
