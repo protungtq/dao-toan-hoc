@@ -129,6 +129,15 @@ function shapeSvg(shape: string) {
   return `<span class="data-pill">${escapeHtml(shape)}</span>`;
 }
 
+function polygonSvg(sides: number) {
+  const count = Math.max(3, Math.min(10, Math.round(sides || 4)));
+  const points = Array.from({ length: count }, (_, index) => {
+    const angle = -Math.PI / 2 + index * Math.PI * 2 / count;
+    return `${60 + Math.cos(angle) * 38},${45 + Math.sin(angle) * 34}`;
+  }).join(' ');
+  return `<svg viewBox="0 0 120 90"><polygon points="${points}" fill="none" stroke="#172033" stroke-width="5" stroke-linejoin="round"/></svg>`;
+}
+
 function clockSvg(hour: number, minute = 0) {
   const hourAngle = ((hour % 12) + minute / 60) * 30;
   const minuteAngle = minute * 6;
@@ -146,20 +155,96 @@ function calendarHtml(question: PrintableQuestion) {
   return `<div class="calendar"><b>Tháng ${month}</b><div class="calendar-grid">${labels.map((label) => `<strong>${label}</strong>`).join('')}${blanks.join('')}${dates.join('')}</div></div>`;
 }
 
-function visualHtml(question: PrintableQuestion) {
+function operationSymbol(operation: unknown) {
+  const symbols: Record<string, string> = {
+    addition: '+', add: '+', subtraction: '−', subtract: '−',
+    multiply: '×', multiplication: '×', divide: ':', division: ':',
+  };
+  return symbols[String(operation)] ?? String(operation ?? '');
+}
+
+function equationFromQuestion(q: Record<string, unknown>) {
+  if (q.equationText) return String(q.equationText).replaceAll('?', '□');
+  if (q.equation) return (q.equation as unknown[]).map((item) => item === null || item === '?' ? '□' : displayValue(item)).join(' ');
+  const symbol = operationSymbol(q.operation);
+  if (q.left !== undefined && q.right !== undefined) {
+    const result = q.result !== undefined ? displayValue(q.result) : '?';
+    if (q.missing === 'left' || q.target === 'left') return `□ ${symbol} ${displayValue(q.right)} = ${result}`;
+    if (q.missing === 'right' || q.target === 'right') return `${displayValue(q.left)} ${symbol} □ = ${result}`;
+    if (q.missing === 'result' || q.target === 'result') return `${displayValue(q.left)} ${symbol} ${displayValue(q.right)} = □`;
+    return `${displayValue(q.left)} ${symbol} ${displayValue(q.right)} = □`;
+  }
+  return '';
+}
+
+export function visualHtml(question: PrintableQuestion) {
   const type = String(question.type ?? '');
   const q = question as Record<string, unknown>;
   if (type === 'clock') return clockSvg(Number(q.hour ?? 0), Number(q.minute ?? 0));
   if (type === 'calendar') return calendarHtml(question);
+  if (q.story) return `<div class="story"><span>${escapeHtml(q.icon ?? q.object ?? '')}</span><p>${escapeHtml(q.story)}</p></div>`;
+  if (q.equationText || q.equation) return `<div class="big-expression">${escapeHtml(equationFromQuestion(q))}</div>`;
   if (type === 'thermometer') {
     const temperature = Number(q.temperature ?? 0);
     const height = Math.max(0, Math.min(100, temperature * 2));
     return `<div class="thermometer"><div class="thermo-tube"><i style="height:${height}%"></i></div><div class="thermo-scale">${[50,40,30,20,10,0].map((v) => `<span>${v}°</span>`).join('')}</div></div>`;
   }
+  if (type === 'addition') {
+    if (q.visual && q.object) return `<div class="two-groups"><div>${String(q.object).repeat(Number(q.left ?? 0))}</div><b>+</b><div>${String(q.object).repeat(Number(q.right ?? 0))}</div></div>`;
+    return `<div class="big-expression">${escapeHtml(displayValue(q.left))} + ${escapeHtml(displayValue(q.right))} = □</div>`;
+  }
+  if (type === 'subtraction') {
+    if (q.visual && q.object) return `<div class="objects subtraction-objects">${Array.from({ length: Number(q.whole ?? 0) }, (_, index) => `<span class="${index >= Number(q.whole ?? 0) - Number(q.removed ?? 0) ? 'removed' : ''}">${escapeHtml(q.object)}</span>`).join('')}</div>`;
+    return `<div class="big-expression">${escapeHtml(displayValue(q.whole))} − ${escapeHtml(displayValue(q.removed))} = □</div>`;
+  }
+  if (type === 'missing' || type === 'missing-arithmetic' || type === 'component') {
+    const equation = equationFromQuestion(q);
+    if (equation) return `<div class="big-expression">${escapeHtml(equation)}</div>`;
+  }
+  if (type === 'missing-number' && Array.isArray(q.sequence)) return `<div class="sequence">${(q.sequence as unknown[]).map((value) => `<span>${value === null || value === '?' ? '□' : escapeHtml(displayValue(value))}</span>`).join('<b>→</b>')}</div>`;
+  if (type === 'fact-family') return `<div class="number-bond"><b>${escapeHtml(q.whole)}</b><span>↙</span><span>↘</span><b>${escapeHtml(q.firstPart)}</b><b>${escapeHtml(q.secondPart)}</b></div>`;
+  if ((type === 'calculation' || type === 'arithmetic') && q.left !== undefined && q.right !== undefined) return `<div class="big-expression">${escapeHtml(equationFromQuestion(q))}</div>`;
+  if (type === 'arithmetic' && q.first !== undefined && q.second !== undefined) {
+    const symbol = operationSymbol(q.operation);
+    if (q.visual && q.object) return `<div class="two-groups"><div>${String(q.object).repeat(Number(q.first))}</div><b>${escapeHtml(symbol)}</b><div>${String(q.object).repeat(Number(q.second))}</div></div>`;
+    return `<div class="big-expression">${escapeHtml(displayValue(q.first))} ${escapeHtml(symbol)} ${escapeHtml(displayValue(q.second))} = □</div>`;
+  }
+  if (!type && q.left !== undefined && q.right !== undefined && q.operation) return `<div class="big-expression">${escapeHtml(equationFromQuestion(q))}</div>`;
+  if (!type && q.top !== undefined && q.bottom !== undefined && q.operation) return `<div class="vertical-calculation"><span>${escapeHtml(displayValue(q.top))}</span><span>${escapeHtml(operationSymbol(q.operation))} ${escapeHtml(displayValue(q.bottom))}</span><i></i></div>`;
+  if (type === 'word' || type === 'word-problem') {
+    const equation = q.first !== undefined && q.change !== undefined ? `${displayValue(q.first)} ${operationSymbol(q.operation)} ${displayValue(q.change)} = □` : '';
+    return `<div class="context"><b>${escapeHtml(q.icon ?? q.object ?? '📖')}</b>${q.visualText ? `<span>${escapeHtml(q.visualText)}</span>` : ''}${equation ? `<span class="mini-expression">${escapeHtml(equation)}</span>` : ''}</div>`;
+  }
   if (type === 'count') return `<div class="objects">${String(q.object ?? '●').repeat(Number(q.count ?? 0))}</div>`;
   if (type === 'compare-groups') return `<div class="two-groups"><div>${String(q.object ?? '●').repeat(Number(q.leftCount ?? 0))}</div><b>?</b><div>${String(q.object ?? '●').repeat(Number(q.rightCount ?? 0))}</div></div>`;
+  if (type === 'difference') return `<div class="difference-visual"><div><span>${escapeHtml(q.firstIcon ?? '●')}</span><b>${escapeHtml(q.first)}</b></div><i>?</i><div><span>${escapeHtml(q.secondIcon ?? '●')}</span><b>${escapeHtml(q.second)}</b></div></div>`;
   if (type === 'number-bond') return `<div class="number-bond"><b>${escapeHtml(q.whole)}</b><span>↙</span><span>↘</span><b>${escapeHtml(q.knownPart)}</b><b>□</b></div>`;
+  if (type === 'groups' && q.groups !== undefined) return `<div class="groups">${Array.from({ length: Number(q.groups) }, () => `<span>${String(q.icon ?? '●').repeat(Number(q.perGroup ?? 0))}</span>`).join('')}</div>`;
+  if (type === 'groups' && q.groupCount !== undefined) return `<div class="groups">${Array.from({ length: Number(q.groupCount) }, () => `<span>${String(q.icon ?? '●').repeat(Number(q.perGroup ?? 0))}</span>`).join('')}</div>`;
+  if (type === 'multiply') return `<div class="big-expression">${escapeHtml(q.missing === 'factor' ? `${q.factor} × □ = ${q.correctAnswer}` : `${q.factor} × ${q.times} = □`)}</div>`;
+  if (type === 'divide') return `<div class="big-expression">${escapeHtml(q.missing === 'divisor' ? `${q.total} : □ = ${q.quotient}` : `${q.total} : ${q.divisor} = □`)}</div>`;
+  if (type === 'share') return `<div class="context"><b>${escapeHtml(q.icon ?? '●')} ${escapeHtml(q.total)}</b><span>Chia đều thành ${escapeHtml(q.groups)} nhóm</span></div>`;
+  if (type === 'recognize-solid') return `<div class="shape-row">${shapeSvg(String(q.solid))}</div>`;
+  if (type === 'choose-solid') return `<div class="shape-row">${(q.options as unknown[] ?? []).map((solid, index) => `<div><b>${String.fromCharCode(65 + index)}</b>${shapeSvg(String(solid))}</div>`).join('')}</div>`;
+  if (type === 'object-solid') return `<div class="object-icon">${escapeHtml(q.objectIcon)}<small>${escapeHtml(q.objectName)}</small></div>`;
+  if (type === 'count-solid') return `<div class="shape-row">${(q.solids as Record<string, unknown>[] ?? []).map((item) => shapeSvg(String(item.solid))).join('')}</div>`;
+  if (type === 'sort') return `<div class="sort-objects">${(q.objects as Record<string, unknown>[] ?? []).map((item, index) => `<span><b>${String.fromCharCode(65 + index)}</b>${escapeHtml(item.icon ?? item.objectIcon ?? '●')}</span>`).join('')}</div>`;
+  if (type === 'property') return `<div class="shape-row">${shapeSvg(String(q.solid ?? q.shape ?? ''))}</div>`;
+  if (type === 'position') {
+    const vertical = String(q.relation).includes('trên') || String(q.relation).includes('dưới');
+    const reverse = String(q.relation).includes('phải') || String(q.relation).includes('dưới');
+    return `<div class="position-visual ${vertical ? 'vertical' : ''} ${reverse ? 'reverse' : ''}"><span>${escapeHtml(q.firstIcon)}<small>${escapeHtml(q.firstName)}</small></span><i></i><span>${escapeHtml(q.secondIcon)}<small>${escapeHtml(q.secondName)}</small></span></div>`;
+  }
+  if (type === 'direction') {
+    const arrows: Record<string, string> = { up: '↑', down: '↓', left: '←', right: '→' };
+    return `<div class="direction-visual"><span>${escapeHtml(q.mascot)}</span><b>${arrows[String(q.direction)] ?? '→'}</b></div>`;
+  }
+  if (type === 'comparison' && Array.isArray(q.values)) return `<div class="sequence">${q.values.map((value) => `<span>${escapeHtml(displayValue(value))}</span>`).join(q.mode === 'symbol' ? '<b>□</b>' : '')}</div>`;
   if (type === 'compare' || type === 'compare-number' || type === 'comparison') return `<div class="big-expression">${escapeHtml(displayValue(q.left))} &nbsp; □ &nbsp; ${escapeHtml(displayValue(q.right))}</div>`;
+  if (type === 'before-after' || type === 'weekday') return `<div class="big-expression">${escapeHtml(q.referenceNumber ?? q.number ?? q.focusDay)}</div>`;
+  if (type === 'build-number') return `<div class="place-value"><span><b>${escapeHtml(q.tens)}</b> chục</span><span><b>${escapeHtml(q.ones)}</b> đơn vị</span></div>`;
+  if (type === 'choose-larger-smaller' || type === 'order') return `<div class="sequence">${(q.numbers as unknown[] ?? q.values as unknown[] ?? []).map((value) => `<span>${escapeHtml(displayValue(value))}</span>`).join('')}</div>`;
+  if (type === 'number-chart') return `<div class="number-chart">${(q.cells as unknown[] ?? []).map((value) => `<span>${value === null ? '□' : escapeHtml(displayValue(value))}</span>`).join('')}</div>`;
   if (q.expression) return `<div class="big-expression">${escapeHtml(q.expression)}</div>${q.caption ? `<small>${escapeHtml(q.caption)}</small>` : ''}`;
   if (type === 'angle') {
     const degrees = Number(q.degrees ?? 90);
@@ -171,10 +256,33 @@ function visualHtml(question: PrintableQuestion) {
     const value = Number(q.value ?? 0), max = Number(q.max ?? 100), width = Math.max(5, Math.min(100, value / max * 100));
     return `<div class="ruler"><div class="ruler-line" style="width:${width}%"></div><div class="ticks">${Array.from({length:11},(_,i)=>`<i><span>${i * max / 10}</span></i>`).join('')}</div></div>`;
   }
+  if (type === 'measurement' && q.mode === 'clock') return clockSvg(Number(q.value ?? q.hour ?? 0), Number(q.minute ?? 0));
+  if (type === 'measurement' && q.mode === 'weekday') return `<div class="weekday-card">📅 <b>${escapeHtml(q.focusDay ?? q.value)}</b></div>`;
+  if (type === 'measurement' && q.mode === 'length') {
+    const value = Number(q.value ?? q.length ?? 1), max = Math.max(10, Math.ceil(value / 10) * 10);
+    return `<div class="ruler"><div class="ruler-line" style="width:${Math.max(5, value / max * 100)}%"></div><div class="ticks">${Array.from({length:11},(_,i)=>`<i><span>${i * max / 10}</span></i>`).join('')}</div></div>`;
+  }
   if (type === 'measurement' && (q.measure === 'jug' || q.measure === 'scale')) {
     const value = Number(q.value ?? 0), max = Number(q.max ?? 1000), height = Math.max(4, Math.min(100, value / max * 100));
     return `<div class="meter"><div class="meter-fill" style="height:${height}%"></div><div class="meter-scale">${[max, max*.75, max*.5, max*.25, 0].map(v=>`<span>${displayValue(v)}</span>`).join('')}</div></div>`;
   }
+  if (type === 'measure-length' || type === 'ruler') {
+    const value = Number(q.length ?? q.value ?? 1), max = Math.max(10, Math.ceil(value / 10) * 10);
+    return `<div class="ruler"><div class="ruler-line" style="width:${Math.max(5, value / max * 100)}%"></div><div class="ticks">${Array.from({length:11},(_,i)=>`<i><span>${i * max / 10}</span></i>`).join('')}</div></div>`;
+  }
+  if (type === 'compare-length') return `<div class="length-bars"><span style="width:${Math.max(15, Number(q.firstLength) * 4)}px"></span><span style="width:${Math.max(15, Number(q.secondLength) * 4)}px"></span></div>`;
+  if (type === 'order-length') return `<div class="length-list">${(q.items as Record<string, unknown>[] ?? []).map((item) => `<div><b>${escapeHtml(item.label)}</b><span style="width:${Math.max(15, Number(item.length) * 4)}px"></span></div>`).join('')}</div>`;
+  if (type === 'length-unit' || type === 'unit' || type === 'estimate' || type === 'estimate-length') return `<div class="object-icon">${escapeHtml(q.objectIcon ?? q.icon ?? '📏')}<small>${escapeHtml(q.objectName ?? q.object ?? '')}</small></div>`;
+  if (type === 'convert' || type === 'conversion') return `<div class="big-expression">${escapeHtml(q.from ?? q.amount)} ${escapeHtml(q.fromUnit ?? (q.mode === 'hour-to-minute' ? 'giờ' : 'phút'))} = □ ${escapeHtml(q.toUnit ?? (q.mode === 'hour-to-minute' ? 'phút' : 'giờ'))}</div>`;
+  if (type === 'month') return `<div class="big-expression">Tháng ${escapeHtml(q.month)}</div>`;
+  if (type === 'money') {
+    const notes = (q.notes as unknown[] ?? q.bills as unknown[] ?? []);
+    return `<div class="money-list">${notes.map((note) => `<span>${escapeHtml(displayValue(note))} đồng</span>`).join('')}${q.price ? `<b>Giá: ${escapeHtml(displayValue(q.price))} đồng</b>` : ''}</div>`;
+  }
+  if (type === 'balance') return `<div class="balance"><span>${escapeHtml(q.leftIcon)}<b>${escapeHtml(q.leftMass)} kg</b></span><i>⚖️</i><span>${escapeHtml(q.rightIcon)}<b>${escapeHtml(q.rightMass)} kg</b></span></div>`;
+  if (type === 'capacity') return `<div class="balance"><span>${escapeHtml(q.firstIcon)}<b>${escapeHtml(q.first)} l</b></span><i>↔</i><span>${escapeHtml(q.secondIcon)}<b>${escapeHtml(q.second)} l</b></span></div>`;
+  if (type === 'count-data') return `<div class="objects">${(q.items as unknown[] ?? []).map((item) => escapeHtml(item)).join(' ')}</div>`;
+  if (type === 'probability') return `<div class="balls">${(q.balls as unknown[] ?? []).map((ball) => `<span class="${escapeHtml(ball)}"></span>`).join('')}</div>`;
   if (type === 'identify-shape') return `<div class="shape-row">${shapeSvg(String(q.shape ?? ''))}</div>`;
   if (type === 'choose-shape') return `<div class="shape-row">${(q.shapeOptions as unknown[] ?? []).map((shape, index) => `<div><b>${String.fromCharCode(65 + index)}</b>${shapeSvg(String(shape))}</div>`).join('')}</div>`;
   if (type === 'odd-shape') return `<div class="shape-row">${(q.shapes as unknown[] ?? []).map((shape, index) => `<div><b>${index + 1}</b>${shapeSvg(String(shape))}</div>`).join('')}</div>`;
@@ -192,10 +300,50 @@ function visualHtml(question: PrintableQuestion) {
     return `<div class="data-table">${labels.map((label, i) => `<div><b>${escapeHtml(label)}</b><span>${escapeHtml(displayValue(values[i]))}</span></div>`).join('')}</div>`;
   }
   if (type === 'shape' || type === 'solid' || type === 'polygon') return `<div class="shape-row">${shapeSvg(String(q.shape ?? q.solid ?? q.polygon ?? ''))}</div>${q.caption ? `<small>${escapeHtml(q.caption)}</small>` : ''}`;
-  if (q.visualTitle || q.visualLines || q.icon) return `<div class="context"><b>${escapeHtml(q.icon ?? '')} ${escapeHtml(q.visualTitle ?? '')}</b>${(q.visualLines as unknown[] ?? []).map((line) => `<span>${escapeHtml(line)}</span>`).join('')}</div>`;
+  if (type === 'flat-shape') return `<div class="shape-row">${shapeSvg(String(q.shape))}</div>`;
+  if (type === 'geometry') {
+    if (q.mode === 'position') {
+      const vertical = String(q.relation).toLowerCase().includes('trên') || String(q.relation).toLowerCase().includes('dưới');
+      const reverse = String(q.relation).toLowerCase().includes('phải') || String(q.relation).toLowerCase().includes('dưới');
+      return `<div class="position-visual ${vertical ? 'vertical' : ''} ${reverse ? 'reverse' : ''}"><span>${escapeHtml(q.firstIcon ?? '●')}</span><i></i><span>${escapeHtml(q.secondIcon ?? '●')}</span></div>`;
+    }
+    if (q.mode === 'polygon' || q.sides) return `<div class="shape-row">${polygonSvg(Number(q.sides ?? 4))}</div>`;
+    if (q.mode === 'solid' || q.solid) return `<div class="shape-row">${shapeSvg(String(q.solid))}</div>`;
+    if (q.mode === 'flat' || q.shape) return `<div class="shape-row">${shapeSvg(String(q.shape ?? 'rectangle'))}</div>${q.width ? `<small>${escapeHtml(q.width)} × ${escapeHtml(q.height)} ${escapeHtml(q.unit ?? '')}</small>` : ''}`;
+    if (q.mode === 'broken' || q.lengths) return `<div class="broken-line">${(q.lengths as unknown[] ?? []).map((length) => `<span>${escapeHtml(length)} cm</span>`).join('<b>—</b>')}</div>`;
+  }
+  if (type === 'circle') {
+    const focus = String(q.focus ?? 'center');
+    const segment = focus === 'diameter'
+      ? '<line x1="24" y1="45" x2="96" y2="45"/><text x="17" y="50">A</text><text x="100" y="50">B</text>'
+      : focus === 'radius' ? '<line x1="60" y1="45" x2="96" y2="45"/><text x="100" y="50">A</text>' : '';
+    return `<svg class="circle-diagram" viewBox="0 0 120 90"><circle cx="60" cy="45" r="36"/><g>${segment}</g><circle class="center-dot" cx="60" cy="45" r="3"/><text x="64" y="41">O</text></svg>`;
+  }
+  if (type === 'segment') {
+    const labels = q.labels as unknown[] ?? ['A', 'M', 'B'];
+    return `<svg class="segment-diagram" viewBox="0 0 180 72"><line x1="25" y1="34" x2="155" y2="34"/>${labels.slice(0, 3).map((label, index) => { const x = 25 + index * 65; return `<circle cx="${x}" cy="34" r="4"/><text x="${x}" y="55" text-anchor="middle">${escapeHtml(label)}</text>`; }).join('')}${q.leftLength ? `<text x="58" y="25" text-anchor="middle">${escapeHtml(q.leftLength)} cm</text>` : ''}${q.rightLength ? `<text x="123" y="25" text-anchor="middle">${escapeHtml(q.rightLength)} cm</text>` : ''}</svg>`;
+  }
+  if (type === 'line') return `<div class="line-visual ${String(q.lineKind).includes('cong') ? 'curved' : ''}"><span>${(q.labels as unknown[] ?? []).map((label) => escapeHtml(label)).join(' · ')}</span></div>`;
+  if (type === 'points') return `<div class="points">${(q.labels as unknown[] ?? Array.from({length:Number(q.pointCount ?? 3)},(_,i)=>String.fromCharCode(65+i))).map((label) => `<span>•<small>${escapeHtml(label)}</small></span>`).join('')}</div>`;
+  if (type === 'broken') return `<div class="broken-line">${(q.lengths as unknown[] ?? []).map((length) => `<span>${escapeHtml(length)} cm</span>`).join('<b>—</b>')}</div>`;
+  if (type === 'area-grid') return `<div class="area-grid" style="grid-template-columns:repeat(${Number(q.columns ?? 1)},12px)">${Array.from({length:Number(q.rows ?? 1)*Number(q.columns ?? 1)},()=>'<i></i>').join('')}</div>`;
+  if (type === 'roman') return `<div class="big-expression">${escapeHtml(q.askFor === 'roman' ? q.arabic : q.roman)}</div>`;
+  if (type === 'number-card') return `<div class="big-expression">${escapeHtml(displayValue(q.value))}</div>${q.expanded ? `<small>${escapeHtml(q.expanded)}</small>` : ''}`;
+  if (type === 'diagram') return `<div class="diagram-label">${escapeHtml(displayValue(q.diagram))}</div>`;
+  if (type === 'time') return `${clockSvg(Number(q.hour ?? 0), Number(q.minute ?? 0))}${q.duration ? `<small>Thêm ${escapeHtml(q.duration)} phút</small>` : ''}`;
+  if (type === 'multiply-divide') return `<div class="big-expression">${escapeHtml(q.left)} ${escapeHtml(q.operation)} ${escapeHtml(q.right)} = □</div>`;
+  if (type === 'data') return `<div class="data-table">${(q.labels as unknown[] ?? []).map((label, i) => `<div><b>${escapeHtml(label)}</b><span>${escapeHtml((q.icons as unknown[] ?? [])[i] ?? '')} × ${escapeHtml((q.counts as unknown[] ?? [])[i] ?? '')}</span></div>`).join('')}</div>`;
+  if (type === 'number') {
+    if (q.sequence) return `<div class="sequence">${(q.sequence as unknown[]).map((value) => `<span>${value === null ? '□' : escapeHtml(displayValue(value))}</span>`).join('<b>→</b>')}</div>`;
+    if (q.left !== undefined && q.right !== undefined) return `<div class="big-expression">${escapeHtml(q.left)} □ ${escapeHtml(q.right)}</div>`;
+    return `<div class="big-expression">${escapeHtml(displayValue(q.number ?? q.value))}</div>`;
+  }
+  if (q.visualTitle || q.visualLines || q.visualText || q.icon) return `<div class="context"><b>${escapeHtml(q.icon ?? '')} ${escapeHtml(q.visualTitle ?? '')}</b>${q.visualText ? `<span>${escapeHtml(q.visualText)}</span>` : ''}${(q.visualLines as unknown[] ?? []).map((line) => `<span>${escapeHtml(line)}</span>`).join('')}</div>`;
   if (q.number !== undefined) return `<div class="big-expression">${escapeHtml(displayValue(q.number))}</div>${q.caption ? `<small>${escapeHtml(q.caption)}</small>` : ''}`;
   if (q.objectIcon || q.icon) return `<div class="object-icon">${escapeHtml(q.objectIcon ?? q.icon)}</div>`;
-  return '<div class="answer-space">Trình bày hoặc chọn đáp án ở bên dưới</div>';
+  const fallbackFields = [q.display, q.label, q.caption, q.sceneTitle, q.sceneText, q.kind, q.value, q.visualText].filter((value) => value !== undefined && value !== '');
+  if (fallbackFields.length) return `<div class="context">${fallbackFields.map((value) => `<span>${escapeHtml(displayValue(value))}</span>`).join('')}</div>`;
+  return `<div class="answer-space">${escapeHtml(question.instruction)}</div>`;
 }
 
 function answersHtml(question: PrintableQuestion) {
@@ -216,7 +364,8 @@ function buildWorksheetHtml(options: { title: string; grade: string; size: Works
   const questionMarkup = questions.map((question, index) => `<article class="question"><h2>Câu ${index + 1}. ${escapeHtml(question.instruction)}</h2><div class="visual">${visualHtml(question)}</div><div class="answers">${answersHtml(question)}</div></article>`).join('');
   const answerMarkup = includeAnswers ? `<section class="answer-key"><h1>Đáp án</h1><div class="answer-grid">${questions.map((question, index) => `<div><b>Câu ${index + 1}</b><span>${escapeHtml(correctAnswerHtml(question))}</span>${question.explanation ? `<small>${escapeHtml(question.explanation)}</small>` : ''}</div>`).join('')}</div></section>` : '';
   return `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Phiếu bài tập - ${escapeHtml(title)}</title><style>
-  @font-face{font-family:"Be Vietnam Pro";font-weight:400;src:url("/fonts/be-vietnam-pro-vietnamese-400.woff2") format("woff2");font-display:swap}@font-face{font-family:"Be Vietnam Pro";font-weight:700;src:url("/fonts/be-vietnam-pro-vietnamese-700.woff2") format("woff2");font-display:swap}@font-face{font-family:"Be Vietnam Pro";font-weight:900;src:url("/fonts/be-vietnam-pro-vietnamese-900.woff2") format("woff2");font-display:swap}@page{size:A4;margin:12mm}*{box-sizing:border-box}body{margin:0;color:#172033;background:#eef2f7;font-family:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;line-height:1.42}.toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:12px;padding:12px;background:#172033;color:white}.toolbar button{border:0;border-radius:12px;padding:11px 18px;font:800 15px inherit;cursor:pointer}.toolbar .primary{background:#7c3aed;color:white}.sheet{width:210mm;min-height:297mm;margin:18px auto;padding:12mm;background:white;box-shadow:0 16px 45px #0f172a22}.sheet-header{display:grid;grid-template-columns:1fr 28mm;gap:8mm;align-items:center;border-bottom:3px solid #172033;padding-bottom:6mm}.brand{font-size:14px;font-weight:900;color:#6d28d9;letter-spacing:.08em;text-transform:uppercase}.sheet-header h1{margin:2mm 0 1mm;font-size:23px;line-height:1.2}.meta{font-size:12px;font-weight:700;color:#475569}.qr{text-align:center;font-size:8px;font-weight:700}.qr img{display:block;width:24mm;height:24mm;margin:auto}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6mm;margin:6mm 0 4mm;font-size:12px;font-weight:700}.line{display:inline-block;min-width:35mm;border-bottom:1px dotted #172033}.question{break-inside:avoid;border:1.4px solid #cbd5e1;border-radius:4mm;margin:0 0 4mm;padding:4mm}.question h2{margin:0 0 3mm;font-size:14px}.visual{min-height:18mm;display:grid;place-items:center;border-radius:3mm;background:#f8fafc;padding:3mm;text-align:center}.visual svg{width:38mm;height:27mm}.visual small{display:block;margin-top:2mm;font-weight:700;color:#475569}.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:2mm 5mm;margin-top:3mm;font-size:12px;font-weight:700}.answers span{padding:2mm 3mm;border:1px solid #cbd5e1;border-radius:2mm}.big-expression{font-size:24px;font-weight:900}.objects{max-width:150mm;font-size:24px;letter-spacing:3px}.two-groups{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8mm;font-size:22px}.number-bond{display:grid;grid-template-columns:repeat(2,35mm);justify-content:center;font-size:20px}.number-bond b:first-child{grid-column:1/3}.shape-row{display:flex;justify-content:center;align-items:center;gap:4mm}.shape-row>div{display:grid;place-items:center}.shape-row>div>b{font-size:10px}.shape-row svg{width:25mm;height:20mm}.clock{width:35mm!important;height:35mm!important}.fraction{display:inline-flex;flex-direction:column;font-size:22px;font-weight:900}.fraction span:first-child{border-bottom:2px solid;padding:0 8px}.sequence{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:3mm}.sequence span{border:1px solid #94a3b8;border-radius:2mm;padding:2mm 4mm;font-weight:800}.context{display:flex;flex-direction:column;gap:1mm;font-size:13px}.context b{font-size:18px}.object-icon{display:flex;flex-direction:column;font-size:38px}.object-icon small{font-size:11px}.data-table{display:flex;gap:1mm;border:1px solid #94a3b8}.data-table div{display:flex;flex-direction:column;padding:2mm 4mm;border-right:1px solid #94a3b8}.calendar{width:72mm}.calendar>b{font-size:16px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);margin-top:2mm;border:1px solid #94a3b8}.calendar-grid>*{padding:1.2mm;border:.5px solid #cbd5e1;font-size:9px}.target-date{outline:2px solid #172033;font-weight:900}.thermometer{display:flex;gap:4mm;height:40mm}.thermo-tube{position:relative;width:8mm;height:38mm;border:2px solid #64748b;border-radius:5mm;overflow:hidden;background:white}.thermo-tube i{position:absolute;bottom:0;left:1.5mm;right:1.5mm;background:#ef4444;border-radius:4mm}.thermo-scale{display:flex;flex-direction:column;justify-content:space-between;font-size:8px}.ruler{position:relative;width:145mm;padding-top:8mm}.ruler-line{position:absolute;top:1mm;left:0;height:3mm;background:#2563eb}.ticks{display:flex;justify-content:space-between;border-top:2px solid}.ticks i{height:5mm;border-left:1px solid;position:relative}.ticks span{position:absolute;top:4mm;transform:translateX(-50%);font-size:7px}.meter{position:relative;width:24mm;height:38mm;border:2px solid #64748b;border-radius:2mm;overflow:hidden;background:white}.meter-fill{position:absolute;bottom:0;left:0;right:7mm;background:#60a5fa}.meter-scale{position:absolute;inset:1mm 1mm 1mm auto;display:flex;flex-direction:column;justify-content:space-between;font-size:6px}.answer-space{width:100%;border-bottom:1px dotted #64748b;color:#94a3b8;font-size:10px;text-align:left;padding:4mm}.answer-key{break-before:page}.answer-key h1{font-size:23px;border-bottom:3px solid;padding-bottom:4mm}.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3mm}.answer-grid>div{display:grid;grid-template-columns:20mm 1fr;gap:2mm;border:1px solid #cbd5e1;border-radius:3mm;padding:3mm}.answer-grid small{grid-column:1/3;color:#475569}.footer{display:flex;justify-content:space-between;margin-top:6mm;font-size:9px;color:#64748b}
+  @font-face{font-family:"Be Vietnam Pro";font-weight:400;src:url("/fonts/be-vietnam-pro-vietnamese-400.woff2") format("woff2");font-display:swap}@font-face{font-family:"Be Vietnam Pro";font-weight:700;src:url("/fonts/be-vietnam-pro-vietnamese-700.woff2") format("woff2");font-display:swap}@font-face{font-family:"Be Vietnam Pro";font-weight:900;src:url("/fonts/be-vietnam-pro-vietnamese-900.woff2") format("woff2");font-display:swap}@page{size:A4;margin:12mm}*{box-sizing:border-box}body{margin:0;color:#172033;background:#eef2f7;font-family:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;line-height:1.42}.toolbar{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:12px;padding:12px;background:#172033;color:white}.toolbar button{border:0;border-radius:12px;padding:11px 18px;font:800 15px inherit;cursor:pointer}.toolbar .primary{background:#7c3aed;color:white}.sheet{width:210mm;min-height:297mm;margin:18px auto;padding:12mm;background:white;box-shadow:0 16px 45px #0f172a22}.sheet-header{display:grid;grid-template-columns:1fr 28mm;gap:8mm;align-items:center;border-bottom:3px solid #172033;padding-bottom:6mm}.brand{font-size:14px;font-weight:900;color:#6d28d9;letter-spacing:.08em;text-transform:uppercase}.sheet-header h1{margin:2mm 0 1mm;font-size:23px;line-height:1.2}.meta{font-size:12px;font-weight:700;color:#475569}.qr{text-align:center;font-size:8px;font-weight:700}.qr img{display:block;width:24mm;height:24mm;margin:auto}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6mm;margin:6mm 0 4mm;font-size:12px;font-weight:700}.line{display:inline-block;min-width:35mm;border-bottom:1px dotted #172033}.question{break-inside:avoid;border:1.4px solid #cbd5e1;border-radius:4mm;margin:0 0 4mm;padding:4mm}.question h2{margin:0 0 3mm;font-size:14px}.visual{min-height:18mm;display:grid;place-items:center;border-radius:3mm;background:#f8fafc;padding:3mm;text-align:center}.visual svg{width:38mm;height:27mm}.visual small{display:block;margin-top:2mm;font-weight:700;color:#475569}.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:2mm 5mm;margin-top:3mm;font-size:12px;font-weight:700}.answers span{padding:2mm 3mm;border:1px solid #cbd5e1;border-radius:2mm}.big-expression{font-size:24px;font-weight:900}.objects{max-width:150mm;font-size:24px;letter-spacing:3px}.subtraction-objects{display:flex;flex-wrap:wrap;justify-content:center}.subtraction-objects .removed{text-decoration:line-through;text-decoration-thickness:3px;opacity:.48}.two-groups{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8mm;font-size:22px}.number-bond{display:grid;grid-template-columns:repeat(2,35mm);justify-content:center;font-size:20px}.number-bond b:first-child{grid-column:1/3}.groups{display:flex;flex-wrap:wrap;justify-content:center;gap:4mm}.groups span{border:1px solid #94a3b8;border-radius:3mm;padding:3mm;font-size:20px}.story{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:4mm;max-width:155mm;text-align:left}.story>span{font-size:34px}.story p{margin:0;font-size:13px;font-weight:700}.mini-expression{font-size:18px;font-weight:900}.shape-row{display:flex;justify-content:center;align-items:center;gap:4mm}.shape-row>div{display:grid;place-items:center}.shape-row>div>b{font-size:10px}.shape-row svg{width:25mm;height:20mm}.clock{width:35mm!important;height:35mm!important}.fraction{display:inline-flex;flex-direction:column;font-size:22px;font-weight:900}.fraction span:first-child{border-bottom:2px solid;padding:0 8px}.sequence{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:3mm}.sequence span{border:1px solid #94a3b8;border-radius:2mm;padding:2mm 4mm;font-weight:800}.context{display:flex;flex-direction:column;gap:1mm;font-size:13px}.context b{font-size:18px}.object-icon{display:flex;flex-direction:column;font-size:38px}.object-icon small{font-size:11px}.data-table{display:flex;gap:1mm;border:1px solid #94a3b8}.data-table div{display:flex;flex-direction:column;padding:2mm 4mm;border-right:1px solid #94a3b8}.calendar{width:72mm}.calendar>b{font-size:16px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);margin-top:2mm;border:1px solid #94a3b8}.calendar-grid>*{padding:1.2mm;border:.5px solid #cbd5e1;font-size:9px}.target-date{outline:2px solid #172033;font-weight:900}.thermometer{display:flex;gap:4mm;height:40mm}.thermo-tube{position:relative;width:8mm;height:38mm;border:2px solid #64748b;border-radius:5mm;overflow:hidden;background:white}.thermo-tube i{position:absolute;bottom:0;left:1.5mm;right:1.5mm;background:#ef4444;border-radius:4mm}.thermo-scale{display:flex;flex-direction:column;justify-content:space-between;font-size:8px}.ruler{position:relative;width:145mm;padding-top:8mm}.ruler-line{position:absolute;top:1mm;left:0;height:3mm;background:#2563eb}.ticks{display:flex;justify-content:space-between;border-top:2px solid}.ticks i{height:5mm;border-left:1px solid;position:relative}.ticks span{position:absolute;top:4mm;transform:translateX(-50%);font-size:7px}.meter{position:relative;width:24mm;height:38mm;border:2px solid #64748b;border-radius:2mm;overflow:hidden;background:white}.meter-fill{position:absolute;bottom:0;left:0;right:7mm;background:#60a5fa}.meter-scale{position:absolute;inset:1mm 1mm 1mm auto;display:flex;flex-direction:column;justify-content:space-between;font-size:6px}.place-value{display:flex;gap:6mm}.place-value span{border:1px solid #94a3b8;border-radius:3mm;padding:3mm 6mm}.number-chart{display:grid;grid-template-columns:repeat(5,1fr);gap:1mm}.number-chart span{border:1px solid #94a3b8;padding:2mm 3mm;font-weight:800}.length-bars,.length-list{display:grid;gap:3mm;justify-items:start}.length-bars span,.length-list span{display:block;height:4mm;background:#2563eb;border-radius:9px}.length-list div{display:grid;grid-template-columns:24mm 1fr;align-items:center;gap:3mm}.money-list{display:flex;flex-wrap:wrap;justify-content:center;gap:3mm}.money-list span{border:2px solid #64748b;border-radius:3mm;padding:3mm 5mm;font-weight:900}.balance{display:flex;align-items:center;justify-content:center;gap:8mm}.balance span{display:flex;flex-direction:column;font-size:30px}.balance b{font-size:10px}.balance i{font-size:28px}.balls{display:flex;flex-wrap:wrap;justify-content:center;gap:3mm}.balls span{width:9mm;height:9mm;border:2px solid #64748b;border-radius:50%;background:#cbd5e1}.balls .bg-red-500{background:#ef4444}.balls .bg-blue-500{background:#3b82f6}.balls .bg-yellow-400{background:#facc15}.position-visual{display:flex;align-items:center;gap:7mm}.position-visual.vertical{flex-direction:column}.position-visual.reverse{flex-direction:row-reverse}.position-visual.vertical.reverse{flex-direction:column-reverse}.position-visual span{display:flex;flex-direction:column;font-size:32px}.position-visual small{font-size:9px}.position-visual i{width:20mm;border-top:1px dashed #94a3b8}.direction-visual{display:flex;align-items:center;gap:8mm;font-size:34px}.direction-visual b{font-size:42px}.line-visual{width:90mm;border-top:4px solid #172033}.line-visual.curved{height:14mm;border:0;border-radius:50%;border-top:4px solid #172033}.points{display:flex;gap:14mm;font-size:28px}.points span{display:flex;flex-direction:column}.points small{font-size:9px}.broken-line{display:flex;align-items:center;gap:2mm}.area-grid{display:grid}.area-grid i{width:12px;height:12px;border:1px solid #64748b}.diagram-label{border:2px dashed #64748b;border-radius:3mm;padding:4mm 8mm;font-weight:900}.answer-space{width:100%;border-bottom:1px dotted #64748b;color:#64748b;font-size:11px;text-align:left;padding:4mm}.answer-key{break-before:page}.answer-key h1{font-size:23px;border-bottom:3px solid;padding-bottom:4mm}.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3mm}.answer-grid>div{display:grid;grid-template-columns:20mm 1fr;gap:2mm;border:1px solid #cbd5e1;border-radius:3mm;padding:3mm}.answer-grid small{grid-column:1/3;color:#475569}.footer{display:flex;justify-content:space-between;margin-top:6mm;font-size:9px;color:#64748b}
+  .vertical-calculation{display:grid;justify-items:end;min-width:30mm;font-size:20px;font-weight:900}.vertical-calculation i{width:100%;border-top:2px solid #172033}.difference-visual{display:flex;align-items:center;gap:8mm}.difference-visual div{display:flex;align-items:center;gap:2mm;border:1px solid #94a3b8;border-radius:3mm;padding:3mm 6mm}.difference-visual div span{font-size:28px}.difference-visual i{font-size:22px;font-weight:900}.sort-objects{display:flex;flex-wrap:wrap;justify-content:center;gap:5mm}.sort-objects span{display:grid;grid-template-columns:auto auto;align-items:center;gap:2mm;border:1px solid #94a3b8;border-radius:3mm;padding:3mm 5mm;font-size:28px}.sort-objects b{font-size:10px}.weekday-card{font-size:24px}.circle-diagram circle,.circle-diagram line,.segment-diagram line,.segment-diagram circle{fill:none;stroke:#172033;stroke-width:4}.circle-diagram .center-dot,.segment-diagram circle{fill:#172033}.circle-diagram text,.segment-diagram text{font-size:12px;font-weight:800;fill:#172033}
   @media print{body{background:white}.toolbar{display:none}.sheet{width:auto;min-height:auto;margin:0;padding:0;box-shadow:none}.question{break-inside:avoid}.answer-key{break-before:page}}
   @media(max-width:800px){.sheet{width:100%;margin:0;padding:18px}.student{grid-template-columns:1fr}.answers{grid-template-columns:1fr}.toolbar{position:fixed;right:0;bottom:0;left:0;top:auto}.sheet{padding-bottom:82px}}
   </style></head><body><div class="toolbar"><button onclick="window.close()">Đóng</button><button class="primary" onclick="window.print()">🖨️ In hoặc lưu PDF</button></div><main class="sheet"><header class="sheet-header"><div><div class="brand">Trạng Toán · Phiếu luyện tập</div><h1>${escapeHtml(title)}</h1><div class="meta">Toán lớp ${escapeHtml(grade)} · ${size} câu · Mã đề ${escapeHtml(code)}</div></div><div class="qr"><img src="${qr}" alt="QR Trạng Toán">Quét để luyện trực tuyến</div></header><div class="student"><div>Họ và tên: <span class="line"></span></div><div>Lớp: <span class="line"></span></div><div>Ngày: <span class="line"></span></div></div>${questionMarkup}${answerMarkup}<footer class="footer"><span>trangtoan.so1.asia</span><span>Mã đề ${escapeHtml(code)}</span></footer></main></body></html>`;
