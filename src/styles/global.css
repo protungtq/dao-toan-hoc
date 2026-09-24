@@ -128,6 +128,7 @@ dialog {
 }
 
 html.dark .bg-white,
+html.dark .bg-white\/80,
 html.dark .bg-white\/90,
 html.dark .bg-white\/95 {
   background-color: var(--surface) !important;
@@ -164,18 +165,59 @@ html.dark :is(.border-emerald-200, .border-teal-200) { border-color: rgb(52 211 
 html.dark :is(.border-amber-200, .border-orange-200) { border-color: rgb(251 191 36 / 25%) !important; }
 html.dark :is(.border-pink-200, .border-rose-200) { border-color: rgb(244 114 182 / 25%) !important; }
 
-html.dark :is(.text-violet-700, .text-indigo-700) { color: #c4b5fd !important; }
-html.dark :is(.text-sky-700, .text-cyan-700, .text-blue-700) { color: #7dd3fc !important; }
-html.dark :is(.text-emerald-700, .text-teal-700) { color: #6ee7b7 !important; }
-html.dark :is(.text-amber-700, .text-amber-800, .text-orange-700) { color: #fcd34d !important; }
-html.dark :is(.text-pink-700, .text-rose-700) { color: #f9a8d4 !important; }
+html.dark :is(.text-violet-700, .text-violet-800, .text-violet-900, .text-indigo-700, .text-indigo-800, .text-indigo-900) { color: #ddd6fe !important; }
+html.dark :is(.text-sky-700, .text-sky-800, .text-sky-900, .text-cyan-700, .text-cyan-800, .text-cyan-900, .text-blue-700, .text-blue-800, .text-blue-900) { color: #bae6fd !important; }
+html.dark :is(.text-emerald-700, .text-emerald-800, .text-emerald-900, .text-teal-700, .text-teal-800, .text-teal-900) { color: #a7f3d0 !important; }
+html.dark :is(.text-amber-700, .text-amber-800, .text-amber-900, .text-orange-700, .text-orange-800, .text-orange-900) { color: #fde68a !important; }
+html.dark :is(.text-pink-700, .text-pink-800, .text-pink-900, .text-rose-700, .text-rose-800, .text-rose-900) { color: #fbcfe8 !important; }
+html.dark :is(.text-purple-700, .text-purple-800, .text-purple-900, .text-fuchsia-700, .text-fuchsia-800, .text-fuchsia-900) { color: #e9d5ff !important; }
+html.dark :is(.text-green-700, .text-green-800, .text-green-900, .text-lime-700, .text-lime-800, .text-lime-900) { color: #bbf7d0 !important; }
+html.dark :is(.text-red-700, .text-red-800, .text-red-900) { color: #fecaca !important; }
 
-html.dark :is(.bg-violet-50, .bg-violet-100) { background-color: rgb(139 92 246 / 12%) !important; }
+html.dark :is(.bg-violet-50, .bg-violet-100, .bg-indigo-50, .bg-indigo-100, .bg-purple-50, .bg-purple-100, .bg-fuchsia-50, .bg-fuchsia-100) { background-color: rgb(139 92 246 / 12%) !important; }
 html.dark :is(.bg-sky-50, .bg-sky-100, .bg-cyan-50, .bg-cyan-100, .bg-blue-50, .bg-blue-100) { background-color: rgb(56 189 248 / 11%) !important; }
-html.dark :is(.bg-emerald-50, .bg-emerald-100, .bg-teal-50, .bg-teal-100) { background-color: rgb(52 211 153 / 11%) !important; }
-html.dark :is(.bg-amber-50, .bg-amber-100, .bg-orange-50, .bg-orange-100) { background-color: rgb(251 191 36 / 11%) !important; }
+html.dark :is(.bg-emerald-50, .bg-emerald-100, .bg-teal-50, .bg-teal-100, .bg-green-50, .bg-green-100, .bg-lime-50, .bg-lime-100) { background-color: rgb(52 211 153 / 11%) !important; }
+html.dark :is(.bg-amber-50, .bg-amber-100, .bg-orange-50, .bg-orange-100, .bg-yellow-50, .bg-yellow-100) { background-color: rgb(251 191 36 / 11%) !important; }
 html.dark :is(.bg-pink-50, .bg-pink-100, .bg-rose-50, .bg-rose-100) { background-color: rgb(244 114 182 / 11%) !important; }
 html.dark :is(.bg-red-50, .bg-red-100) { background-color: rgb(248 113 113 / 11%) !important; }
+
+html.dark :is(.text-violet-950, .text-indigo-950, .text-purple-950, .text-fuchsia-950) { color: #ede9fe !important; }
+html.dark :is(.text-sky-950, .text-cyan-950, .text-blue-950) { color: #e0f2fe !important; }
+html.dark :is(.text-emerald-950, .text-teal-950, .text-green-950, .text-lime-950) { color: #d1fae5 !important; }
+html.dark :is(.text-amber-950, .text-orange-950, .text-yellow-950) { color: #fef3c7 !important; }
+html.dark :is(.text-pink-950, .text-rose-950) { color: #fce7f3 !important; }
+html.dark .text-red-950 { color: #fee2e2 !important; }
+
+/* Vùng câu hỏi và lời giải cần độ tương phản cao hơn nền trang. */
+html.dark .question-visual-violet {
+  background-color: #24213f !important;
+  color: #f8fafc !important;
+}
+
+html.dark .question-visual-emerald {
+  background-color: #12332f !important;
+  color: #f8fafc !important;
+}
+
+html.dark .solution-explanation-card {
+  border-color: rgb(52 211 153 / 32%) !important;
+  background-color: #111c2b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .solution-explanation-title {
+  color: #6ee7b7 !important;
+}
+
+html.dark .solution-explanation-step,
+html.dark .solution-explanation-conclusion {
+  color: #f1f5f9 !important;
+}
+
+html.dark .solution-explanation-index {
+  background-color: rgb(52 211 153 / 18%) !important;
+  color: #a7f3d0 !important;
+}
 
 html.dark [class*="from-violet-50"],
 html.dark [class*="from-cyan-50"],

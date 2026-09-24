@@ -42,7 +42,9 @@ function starsFor(score: number) {
 }
 
 function QuestionVisual({ question, accent }: { question: Grade3Stage1Question; accent: 'emerald' | 'violet' }) {
-  const tone = accent === 'emerald' ? 'bg-emerald-50 text-emerald-800' : 'bg-violet-50 text-violet-800';
+  const tone = accent === 'emerald'
+    ? 'question-visual question-visual-emerald bg-emerald-50 text-emerald-800'
+    : 'question-visual question-visual-violet bg-violet-50 text-violet-800';
 
   if (question.type === 'expression') return (
     <div className={`grid min-h-64 place-items-center rounded-3xl p-6 ${tone}`}>
