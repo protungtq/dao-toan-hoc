@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade4Stage1Game from '../../../components/Grade4Stage1Game';
+---
+
+<PracticeLayout
+  title="Ôn tập và bổ sung – Toán lớp 4 – Trạng Toán"
+  description="Ôn số và phép tính đến 100 000, số chẵn – số lẻ, biểu thức chứa chữ và bài toán ba bước dành cho học sinh lớp 4."
+  canonical="/luyen-tap/lop-4/on-tap-va-bo-sung"
+  bodyClass="bg-gradient-to-br from-orange-100 via-white to-amber-100 text-slate-800"
+>
+  <Grade4Stage1Game module="review" client:load />
+</PracticeLayout>
