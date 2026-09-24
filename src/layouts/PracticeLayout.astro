@@ -5,6 +5,7 @@ import SoundToggle from '../components/SoundToggle';
 import TvNavigation from '../components/TvNavigation.astro';
 import PwaControls from '../components/PwaControls.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import WorksheetPrintLauncher from '../components/WorksheetPrintLauncher';
 
 interface Props {
   title: string;
@@ -36,6 +37,7 @@ const lessonSlug = canonical.split('/').filter(Boolean).at(-1);
     data-lesson-slug={lessonSlug}
   >
     <slot />
+    <WorksheetPrintLauncher client:load />
     <SoundToggle client:load />
     <ThemeToggle floating />
     <TvNavigation />

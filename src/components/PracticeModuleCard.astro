@@ -5,7 +5,7 @@ interface Module {
   color: string; developmentStatus: string; textbookLessons: number[]; skills: Skill[];
 }
 interface Props { practiceModule: Module; grade: number; accent?: string; surface?: string }
-const { practiceModule, grade, accent = 'group-hover:bg-violet-600', surface = 'bg-white' } = Astro.props;
+const { practiceModule, grade, surface = 'bg-white' } = Astro.props;
 const ready = practiceModule.developmentStatus === 'ready';
 const href = `/luyen-tap/lop-${grade}/${practiceModule.slug}`;
 const firstLesson = practiceModule.textbookLessons[0];
@@ -17,7 +17,7 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
     <div class={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${practiceModule.color}`}></div>
     <div class="flex items-start justify-between gap-4">
       <span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white shadow-lg transition group-hover:rotate-3 group-hover:scale-105 ${practiceModule.color}`}>{practiceModule.icon}</span>
-      <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">Có thể luyện</span>
+      <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">Sẵn sàng</span>
     </div>
     <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Mục {practiceModule.number} · Bài {firstLesson}–{lastLesson}</p>
     <h3 class="mt-2 text-xl font-black leading-snug text-slate-950 transition group-hover:text-violet-700 dark:text-slate-50 dark:group-hover:text-violet-300">{practiceModule.title}</h3>
@@ -26,7 +26,7 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
       {practiceModule.skills.slice(0, 3).map((skill) => <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{skill.icon} {skill.title}</span>)}
       {practiceModule.skills.length > 3 && <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">+{practiceModule.skills.length - 3}</span>}
     </div>
-    <span class={`mt-6 flex items-center justify-between rounded-xl bg-slate-950 px-5 py-3.5 font-black text-white transition dark:bg-slate-800 ${accent}`}><span>Bắt đầu luyện</span><span class="transition group-hover:translate-x-1">→</span></span>
+    <span class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 font-black text-slate-700 transition group-hover:text-violet-700 dark:border-slate-800 dark:text-slate-200 dark:group-hover:text-violet-300"><span>Luyện chủ đề này</span><span class="text-xl transition group-hover:translate-x-1">→</span></span>
   </a>
 ) : (
   <article class={`flex h-full flex-col rounded-[1.5rem] border border-slate-200 p-6 opacity-80 dark:border-slate-800 dark:bg-slate-900 ${surface}`}>

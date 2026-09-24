@@ -242,6 +242,107 @@ html.dark [class*="shadow-pink-200"] {
   --tw-shadow-color: rgb(0 0 0 / 35%) !important;
 }
 
+/* Trên điện thoại dọc, phản hồi hiển thành bottom sheet để không phải cuộn trang. */
+@keyframes mobile-feedback-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 639px) and (orientation: portrait) {
+  body:has(main section > div.rounded-3xl.border-2 h2.text-orange-700),
+  body:has(main section > div.rounded-3xl.border-2 h2.text-emerald-700) {
+    overflow: hidden;
+  }
+
+  body:has(main section > div.rounded-3xl.border-2 h2.text-orange-700)::before,
+  body:has(main section > div.rounded-3xl.border-2 h2.text-emerald-700)::before {
+    content: "";
+    position: fixed;
+    z-index: 89;
+    inset: 0;
+    background: rgb(15 23 42 / 58%);
+    backdrop-filter: blur(2px);
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700),
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) {
+    position: fixed !important;
+    z-index: 90;
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: 0.75rem;
+    width: auto;
+    max-height: min(68dvh, 34rem);
+    margin: 0 !important;
+    padding: 1.1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 1.5rem;
+    box-shadow: 0 24px 70px rgb(15 23 42 / 38%);
+    scrollbar-width: thin;
+    animation: mobile-feedback-enter 180ms ease-out both;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700)::before,
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700)::before {
+    content: "";
+    display: block;
+    width: 2.75rem;
+    height: 0.28rem;
+    margin: -0.25rem auto 0.8rem;
+    border-radius: 9999px;
+    background: rgb(100 116 139 / 36%);
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700) h2,
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) h2 {
+    font-size: 1.08rem;
+    line-height: 1.45;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700) > .flex,
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) > .flex {
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700) > .flex {
+    display: block;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700) > .flex > span {
+    display: none;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) .solution-explanation-card {
+    margin-top: 0.75rem;
+    padding: 1rem;
+  }
+
+  main section > div.rounded-3xl.border-2:has(h2.text-orange-700) button,
+  main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) button {
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    width: 100%;
+    margin-top: 0.85rem;
+    box-shadow: 0 -10px 24px rgb(255 255 255 / 78%);
+  }
+
+  html.dark main section > div.rounded-3xl.border-2:has(h2.text-orange-700) button,
+  html.dark main section > div.rounded-3xl.border-2:has(h2.text-emerald-700) button {
+    box-shadow: 0 -10px 24px rgb(17 24 39 / 82%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
