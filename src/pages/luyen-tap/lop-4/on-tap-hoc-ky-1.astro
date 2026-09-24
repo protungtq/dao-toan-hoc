@@ -1,0 +1,13 @@
+---
+import PracticeLayout from '../../../layouts/PracticeLayout.astro';
+import Grade4Stage1Game from '../../../components/Grade4Stage1Game';
+---
+
+<PracticeLayout
+  title="Ôn tập học kỳ I – Toán lớp 4 – Trạng Toán"
+  description="Ôn tập học kỳ I Toán lớp 4 với số đến lớp triệu, phép cộng trừ, hình học, đo lường và bài toán tổng hợp."
+  canonical="/luyen-tap/lop-4/on-tap-hoc-ky-1"
+  bodyClass="bg-gradient-to-br from-fuchsia-100 via-white to-purple-100 text-slate-800"
+>
+  <Grade4Stage1Game module="semester-1-review" client:load />
+</PracticeLayout>

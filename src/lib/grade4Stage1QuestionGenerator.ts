@@ -1,4 +1,4 @@
-export type Grade4Stage1Module = 'review' | 'angles' | 'large-numbers' | 'measurement' | 'add-subtract' | 'lines-shapes';
+export type Grade4Stage1Module = 'review' | 'angles' | 'large-numbers' | 'measurement' | 'add-subtract' | 'lines-shapes' | 'semester-1-review' | 'multiply-divide' | 'statistics' | 'fractions' | 'fraction-add-subtract' | 'fraction-multiply-divide' | 'final-review';
 export type Grade4Stage1SkillId =
   | 'review-numbers-100000'
   | 'review-operations-100000'
@@ -19,7 +19,31 @@ export type Grade4Stage1SkillId =
   | 'sum-difference-problems'
   | 'perpendicular-lines'
   | 'parallel-lines'
-  | 'parallelogram-rhombus';
+  | 'parallelogram-rhombus'
+  | 'semester-1-large-numbers'
+  | 'semester-1-add-subtract'
+  | 'semester-1-geometry-grade-4'
+  | 'semester-1-measurement-grade-4'
+  | 'multiply-divide-natural'
+  | 'multiplication-properties'
+  | 'estimation-calculation'
+  | 'average-unit-rate'
+  | 'data-series'
+  | 'column-chart'
+  | 'event-frequency'
+  | 'fraction-concept'
+  | 'fraction-properties'
+  | 'simplify-common-denominator'
+  | 'compare-fractions'
+  | 'fraction-addition'
+  | 'fraction-subtraction'
+  | 'fraction-multiplication'
+  | 'fraction-division'
+  | 'fraction-of-number'
+  | 'final-natural-numbers'
+  | 'final-fractions'
+  | 'final-geometry-measurement'
+  | 'final-data-probability';
 
 export type Grade4Stage1Answer = number | string;
 
@@ -44,6 +68,30 @@ export const GRADE4_STAGE1_SKILL_LABELS: Record<Grade4Stage1SkillId, string> = {
   'perpendicular-lines': 'Đường thẳng vuông góc',
   'parallel-lines': 'Đường thẳng song song',
   'parallelogram-rhombus': 'Hình bình hành và hình thoi',
+  'semester-1-large-numbers': 'Ôn số đến lớp triệu',
+  'semester-1-add-subtract': 'Ôn phép cộng và phép trừ',
+  'semester-1-geometry-grade-4': 'Ôn hình học',
+  'semester-1-measurement-grade-4': 'Ôn đo lường',
+  'multiply-divide-natural': 'Nhân và chia số tự nhiên',
+  'multiplication-properties': 'Tính chất phép nhân',
+  'estimation-calculation': 'Ước lượng trong tính toán',
+  'average-unit-rate': 'Trung bình cộng và rút về đơn vị',
+  'data-series': 'Dãy số liệu',
+  'column-chart': 'Biểu đồ cột',
+  'event-frequency': 'Số lần xuất hiện',
+  'fraction-concept': 'Khái niệm phân số',
+  'fraction-properties': 'Tính chất cơ bản của phân số',
+  'simplify-common-denominator': 'Rút gọn và quy đồng',
+  'compare-fractions': 'So sánh phân số',
+  'fraction-addition': 'Cộng phân số',
+  'fraction-subtraction': 'Trừ phân số',
+  'fraction-multiplication': 'Nhân phân số',
+  'fraction-division': 'Chia phân số',
+  'fraction-of-number': 'Tìm phân số của một số',
+  'final-natural-numbers': 'Ôn số tự nhiên và phép tính',
+  'final-fractions': 'Ôn phân số',
+  'final-geometry-measurement': 'Ôn hình học và đo lường',
+  'final-data-probability': 'Ôn thống kê và xác suất',
 };
 
 type BaseQuestion = {
@@ -64,6 +112,8 @@ export type AngleQuestion = BaseQuestion & { type: 'angle'; degrees: number; sho
 export type SequenceQuestion = BaseQuestion & { type: 'sequence'; values: Array<number | string> };
 export type ContextQuestion = BaseQuestion & { type: 'context'; icon: string; visualTitle: string; visualLines: string[] };
 export type DiagramQuestion = BaseQuestion & { type: 'diagram'; diagram: 'perpendicular' | 'parallel' | 'parallelogram' | 'rhombus'; labels?: string[] };
+export type BarChartQuestion = BaseQuestion & { type: 'bar-chart'; labels: string[]; values: number[]; chartTitle: string };
+export type FractionQuestion = BaseQuestion & { type: 'fraction'; numerator: number; denominator: number; caption: string };
 
 export type Grade4Stage1Question =
   | ExpressionQuestion
@@ -72,7 +122,9 @@ export type Grade4Stage1Question =
   | AngleQuestion
   | SequenceQuestion
   | ContextQuestion
-  | DiagramQuestion;
+  | DiagramQuestion
+  | BarChartQuestion
+  | FractionQuestion;
 
 const DIGIT_WORDS = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'] as const;
 
@@ -143,6 +195,20 @@ function numericAnswers(correct: number, min: number, max: number, offsets: numb
     if (values.size === 4) break;
   }
   while (values.size < 4) values.add(randomInt(min, max));
+  return shuffle([...values]);
+}
+
+function fractionAnswers(correct: string, candidates: string[]) {
+  const values = new Set<string>([correct]);
+  for (const candidate of candidates) {
+    if (candidate !== correct) values.add(candidate);
+    if (values.size === 4) break;
+  }
+  while (values.size < 4) {
+    const denominator = randomInt(2, 20);
+    const numerator = randomInt(1, denominator);
+    values.add(`${numerator}/${denominator}`);
+  }
   return shuffle([...values]);
 }
 
@@ -511,6 +577,354 @@ function quadrilateralQuestion(): DiagramQuestion {
   };
 }
 
+function semesterOneLargeNumberQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 3);
+  const question = mode === 0 ? largeNumberQuestion() : mode === 1 ? roundLargeNumberQuestion() : mode === 2 ? compareLargeNumberQuestion() : naturalSequenceQuestion();
+  return { ...question, skillId: 'semester-1-large-numbers' };
+}
+
+function semesterOneAddSubtractQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 2);
+  const question = mode === 0 ? largeAddSubtractQuestion() : mode === 1 ? additionPropertyQuestion() : sumDifferenceQuestion();
+  return { ...question, skillId: 'semester-1-add-subtract' };
+}
+
+function semesterOneGeometryQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 3);
+  const question = mode === 0 ? angleQuestion() : mode === 1 ? lineQuestion('perpendicular') : mode === 2 ? lineQuestion('parallel') : quadrilateralQuestion();
+  return { ...question, skillId: 'semester-1-geometry-grade-4' };
+}
+
+function semesterOneMeasurementQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 2);
+  const question = mode === 0 ? massUnitQuestion() : mode === 1 ? areaUnitQuestion() : timeCenturyQuestion();
+  return { ...question, skillId: 'semester-1-measurement-grade-4' };
+}
+
+function multiplyDivideNaturalQuestion(): ExpressionQuestion {
+  if (Math.random() < 0.55) {
+    const left = randomInt(120, 9_999);
+    const right = randomInt(2, 99);
+    const correct = left * right;
+    return expressionQuestion('multiply-divide-natural', `${formatNumber(left)} × ${right} = ?`, correct, `Tính lần lượt từ phải sang trái: ${formatNumber(left)} × ${right} = ${formatNumber(correct)}.`, `multiply-natural-${left}-${right}`, 1_000_000);
+  }
+  const divisor = randomInt(2, 99);
+  const quotient = randomInt(20, 4_000);
+  const dividend = divisor * quotient;
+  return expressionQuestion('multiply-divide-natural', `${formatNumber(dividend)} : ${divisor} = ?`, quotient, `Vì ${formatNumber(quotient)} × ${divisor} = ${formatNumber(dividend)}, nên ${formatNumber(dividend)} : ${divisor} = ${formatNumber(quotient)}.`, `divide-natural-${dividend}-${divisor}`, 10_000);
+}
+
+function multiplicationPropertyQuestion(): ExpressionQuestion {
+  const factor = randomInt(3, 25);
+  const first = randomInt(11, 89);
+  const second = 100 - first;
+  const correct = factor * 100;
+  const expression = Math.random() < 0.5
+    ? `${factor} × ${first} + ${factor} × ${second}`
+    : `${first} × ${factor} + ${second} × ${factor}`;
+  return expressionQuestion('multiplication-properties', `${expression} = ?`, correct, `Dùng tính chất phân phối: ${factor} × (${first} + ${second}) = ${factor} × 100 = ${formatNumber(correct)}.`, `multiply-property-${factor}-${first}`, 10_000, 'Tính bằng cách thuận tiện');
+}
+
+function estimationQuestion(): ExpressionQuestion {
+  const left = randomInt(12, 89) * 1_000 + randomInt(100, 899);
+  const right = randomInt(12, 89) * 1_000 + randomInt(100, 899);
+  const roundedLeft = Math.round(left / 1_000) * 1_000;
+  const roundedRight = Math.round(right / 1_000) * 1_000;
+  const correct = roundedLeft + roundedRight;
+  return expressionQuestion('estimation-calculation', `${formatNumber(left)} + ${formatNumber(right)} ≈ ?`, correct, `Làm tròn: ${formatNumber(left)} ≈ ${formatNumber(roundedLeft)} và ${formatNumber(right)} ≈ ${formatNumber(roundedRight)}; do đó tổng ước lượng là ${formatNumber(correct)}.`, `estimate-sum-${left}-${right}`, 200_000, 'Làm tròn mỗi số đến hàng nghìn');
+}
+
+function averageUnitRateQuestion(): ContextQuestion {
+  if (Math.random() < 0.55) {
+    const average = randomInt(20, 150);
+    const gap = randomInt(3, 25);
+    const values = [average - gap, average, average + gap];
+    const signature = `average-${average}-${gap}`;
+    return {
+      id: questionId(signature), signature, type: 'context', skillId: 'average-unit-rate', icon: '📊',
+      visualTitle: 'Ba ngày thu gom giấy', visualLines: values.map((value, index) => `Ngày ${index + 1}: ${value} kg`),
+      instruction: 'Trung bình mỗi ngày thu gom bao nhiêu ki-lô-gam?',
+      answers: numericAnswers(average, 1, 300, [gap, -gap, 3, -3, 10, -10]), correctAnswer: average,
+      hintSteps: ['Cộng khối lượng của ba ngày.', `${values.join(' + ')} = ${average * 3} kg.`, `${average * 3} : 3 = ${average} kg.`],
+      explanation: `Trung bình cộng = (${values.join(' + ')}) : 3 = ${average} kg.`,
+    };
+  }
+  const boxes = randomInt(3, 12);
+  const perBox = randomInt(6, 30);
+  const total = boxes * perBox;
+  const wantedBoxes = randomInt(2, 9);
+  const correct = perBox * wantedBoxes;
+  const signature = `unit-rate-${boxes}-${perBox}-${wantedBoxes}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'average-unit-rate', icon: '📦',
+    visualTitle: `${boxes} hộp có ${total} quyển vở`, visualLines: [`Mỗi hộp có số vở như nhau`, `Hỏi ${wantedBoxes} hộp`],
+    instruction: `${wantedBoxes} hộp có bao nhiêu quyển vở?`,
+    answers: numericAnswers(correct, 1, 500, [perBox, -perBox, boxes, -boxes, wantedBoxes, -wantedBoxes]), correctAnswer: correct,
+    hintSteps: [`Một hộp có ${total} : ${boxes} = ${perBox} quyển.`, `${wantedBoxes} hộp có ${perBox} × ${wantedBoxes} quyển.`, `Kết quả là ${correct} quyển vở.`],
+    explanation: `Rút về một hộp: ${total} : ${boxes} = ${perBox}; sau đó ${perBox} × ${wantedBoxes} = ${correct} quyển vở.`,
+  };
+}
+
+function dataSeriesQuestion(): SequenceQuestion {
+  const values = Array.from({ length: 6 }, () => randomInt(2, 12));
+  const target = pick(values);
+  const correct = values.filter((value) => value === target).length;
+  const signature = `data-series-${values.join('-')}-${target}`;
+  return {
+    id: questionId(signature), signature, type: 'sequence', skillId: 'data-series', values,
+    instruction: `Số ${target} xuất hiện bao nhiêu lần trong dãy số liệu?`,
+    answers: numericAnswers(correct, 0, 6, [1, -1, 2, -2, 3, -3]), correctAnswer: correct,
+    hintSteps: [`Tìm từng vị trí có số ${target}.`, `Đánh dấu mỗi lần số ${target} xuất hiện.`, `Số ${target} xuất hiện ${correct} lần.`],
+    explanation: `Kiểm đếm dãy ${values.join(', ')}, ta thấy số ${target} xuất hiện ${correct} lần.`,
+  };
+}
+
+function columnChartQuestion(): BarChartQuestion {
+  const labels = ['Tổ 1', 'Tổ 2', 'Tổ 3', 'Tổ 4'];
+  const values = shuffle([randomInt(3, 6), randomInt(7, 10), randomInt(11, 14), randomInt(15, 18)]);
+  const mode = Math.random() < 0.5 ? 'max' : 'difference';
+  const maxValue = Math.max(...values);
+  const minValue = Math.min(...values);
+  const correct = mode === 'max' ? maxValue : maxValue - minValue;
+  const signature = `column-chart-${values.join('-')}-${mode}`;
+  return {
+    id: questionId(signature), signature, type: 'bar-chart', skillId: 'column-chart', labels, values, chartTitle: 'Số cây mỗi tổ trồng được',
+    instruction: mode === 'max' ? 'Tổ trồng nhiều cây nhất được bao nhiêu cây?' : 'Tổ nhiều nhất trồng hơn tổ ít nhất bao nhiêu cây?',
+    answers: numericAnswers(correct, 0, 25, [1, -1, 2, -2, 3, -3]), correctAnswer: correct,
+    hintSteps: ['Đọc số ghi trên đỉnh từng cột.', `Giá trị lớn nhất là ${maxValue}, nhỏ nhất là ${minValue}.`, mode === 'max' ? `Kết quả là ${maxValue} cây.` : `${maxValue} − ${minValue} = ${correct} cây.`],
+    explanation: mode === 'max' ? `Cột cao nhất có giá trị ${maxValue}, nên tổ trồng nhiều nhất được ${maxValue} cây.` : `Lấy giá trị lớn nhất trừ giá trị nhỏ nhất: ${maxValue} − ${minValue} = ${correct} cây.`,
+  };
+}
+
+function eventFrequencyQuestion(): ContextQuestion {
+  const outcomes = Array.from({ length: 10 }, () => Math.random() < 0.5 ? '🔴' : '🔵');
+  const target = Math.random() < 0.5 ? '🔴' : '🔵';
+  const correct = outcomes.filter((value) => value === target).length;
+  const signature = `event-frequency-${outcomes.join('')}-${target}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'event-frequency', icon: '🎲',
+    visualTitle: outcomes.join(' '), visualLines: ['Kết quả 10 lần rút bóng'],
+    instruction: `Bóng ${target === '🔴' ? 'đỏ' : 'xanh'} xuất hiện bao nhiêu lần?`,
+    answers: numericAnswers(correct, 0, 10, [1, -1, 2, -2, 3, -3]), correctAnswer: correct,
+    hintSteps: [`Chỉ đếm các kí hiệu ${target}.`, 'Gạch hoặc chạm theo từng kết quả để không bị sót.', `${target} xuất hiện ${correct} lần.`],
+    explanation: `Trong 10 kết quả, ${target} xuất hiện ${correct} lần.`,
+  };
+}
+
+function fractionConceptQuestion(): FractionQuestion {
+  const denominator = randomInt(3, 10);
+  const numerator = randomInt(1, denominator - 1);
+  const correct = `${numerator}/${denominator}`;
+  const answers = new Set<string>([correct]);
+  for (const candidate of [`${denominator}/${numerator}`, `${numerator + 1}/${denominator}`, `${numerator}/${denominator + 1}`, `${Math.max(1, numerator - 1)}/${denominator}`]) {
+    if (candidate !== correct) answers.add(candidate);
+    if (answers.size === 4) break;
+  }
+  const signature = `fraction-concept-${numerator}-${denominator}`;
+  return {
+    id: questionId(signature), signature, type: 'fraction', skillId: 'fraction-concept', numerator, denominator, caption: 'Phần đã tô màu',
+    instruction: 'Phân số nào chỉ phần đã tô màu?', answers: shuffle([...answers]), correctAnswer: correct,
+    hintSteps: ['Mẫu số cho biết hình được chia thành bao nhiêu phần bằng nhau.', 'Tử số cho biết có bao nhiêu phần đã tô màu.', `Có ${numerator} trong ${denominator} phần được tô, nên phân số là ${correct}.`],
+    explanation: `Hình chia thành ${denominator} phần bằng nhau và tô màu ${numerator} phần, nên phân số là ${correct}.`,
+  };
+}
+
+function equivalentFractionQuestion(): FractionQuestion {
+  const denominator = randomInt(2, 8);
+  const numerator = randomInt(1, denominator - 1);
+  const multiplier = randomInt(2, 5);
+  const correct = `${numerator * multiplier}/${denominator * multiplier}`;
+  const signature = `equivalent-${numerator}-${denominator}-${multiplier}`;
+  return {
+    id: questionId(signature), signature, type: 'fraction', skillId: 'fraction-properties', numerator, denominator, caption: `Tìm phân số bằng ${numerator}/${denominator}`,
+    instruction: `Phân số nào bằng ${numerator}/${denominator}?`,
+    answers: fractionAnswers(correct, [`${numerator + multiplier}/${denominator + multiplier}`, `${numerator * multiplier}/${denominator + multiplier}`, `${numerator + multiplier}/${denominator * multiplier}`, `${numerator}/${denominator * multiplier}`]), correctAnswer: correct,
+    hintSteps: ['Muốn tạo phân số bằng nhau, nhân cả tử và mẫu với cùng một số.', `Nhân cả tử và mẫu với ${multiplier}.`, `${numerator}/${denominator} = ${numerator * multiplier}/${denominator * multiplier}.`],
+    explanation: `Nhân cả tử số và mẫu số với ${multiplier}: ${numerator}/${denominator} = ${correct}.`,
+  };
+}
+
+function greatestCommonDivisor(a: number, b: number): number {
+  return b === 0 ? a : greatestCommonDivisor(b, a % b);
+}
+
+function simplifyFractionQuestion(): ExpressionQuestion {
+  const simpleDenominator = randomInt(3, 10);
+  const simpleNumerator = randomInt(1, simpleDenominator - 1);
+  const common = greatestCommonDivisor(simpleNumerator, simpleDenominator);
+  const baseNumerator = simpleNumerator / common;
+  const baseDenominator = simpleDenominator / common;
+  const multiplier = randomInt(2, 6);
+  const numerator = baseNumerator * multiplier;
+  const denominator = baseDenominator * multiplier;
+  const correct = `${baseNumerator}/${baseDenominator}`;
+  const signature = `simplify-${numerator}-${denominator}`;
+  return {
+    id: questionId(signature), signature, type: 'expression', skillId: 'simplify-common-denominator', expression: `${numerator}/${denominator}`, caption: 'Rút gọn phân số',
+    instruction: 'Phân số tối giản là phân số nào?',
+    answers: fractionAnswers(correct, [`${baseNumerator}/${denominator}`, `${numerator}/${baseDenominator}`, `${baseNumerator + 1}/${baseDenominator}`, `${numerator - 1}/${denominator}`]), correctAnswer: correct,
+    hintSteps: [`Tử và mẫu cùng chia hết cho ${multiplier}.`, `${numerator} : ${multiplier} = ${baseNumerator}; ${denominator} : ${multiplier} = ${baseDenominator}.`, `Phân số tối giản là ${correct}.`],
+    explanation: `Chia cả tử và mẫu cho ${multiplier}: ${numerator}/${denominator} = ${correct}.`,
+  };
+}
+
+function compareFractionQuestion(): ExpressionQuestion {
+  const sameDenominator = Math.random() < 0.5;
+  let leftNumerator: number;
+  let leftDenominator: number;
+  let rightNumerator: number;
+  let rightDenominator: number;
+  if (sameDenominator) {
+    leftDenominator = rightDenominator = randomInt(4, 12);
+    leftNumerator = randomInt(1, leftDenominator - 1);
+    do rightNumerator = randomInt(1, rightDenominator - 1); while (rightNumerator === leftNumerator);
+  } else {
+    leftNumerator = rightNumerator = randomInt(1, 5);
+    leftDenominator = randomInt(leftNumerator + 1, 10);
+    do rightDenominator = randomInt(rightNumerator + 1, 10); while (rightDenominator === leftDenominator);
+  }
+  const leftValue = leftNumerator / leftDenominator;
+  const rightValue = rightNumerator / rightDenominator;
+  const correct = leftValue > rightValue ? '>' : '<';
+  const signature = `compare-fraction-${leftNumerator}-${leftDenominator}-${rightNumerator}-${rightDenominator}`;
+  return {
+    id: questionId(signature), signature, type: 'expression', skillId: 'compare-fractions', expression: `${leftNumerator}/${leftDenominator}  ?  ${rightNumerator}/${rightDenominator}`, caption: 'Chọn dấu thích hợp',
+    instruction: 'Dấu nào thích hợp với dấu hỏi?', answers: shuffle(['>', '<', '=']), correctAnswer: correct,
+    hintSteps: [sameDenominator ? 'Hai phân số cùng mẫu: so sánh hai tử số.' : 'Hai phân số cùng tử: mẫu số bé hơn thì phân số lớn hơn.', sameDenominator ? `So sánh ${leftNumerator} với ${rightNumerator}.` : `So sánh hai mẫu ${leftDenominator} và ${rightDenominator}.`, `${leftNumerator}/${leftDenominator} ${correct} ${rightNumerator}/${rightDenominator}.`],
+    explanation: `${leftNumerator}/${leftDenominator} ${correct} ${rightNumerator}/${rightDenominator}${sameDenominator ? ' vì hai phân số cùng mẫu nên phân số có tử lớn hơn sẽ lớn hơn.' : ' vì hai phân số cùng tử nên phân số có mẫu bé hơn sẽ lớn hơn.'}`,
+  };
+}
+
+function reducedFraction(numerator: number, denominator: number) {
+  const divisor = greatestCommonDivisor(Math.abs(numerator), Math.abs(denominator));
+  return `${numerator / divisor}/${denominator / divisor}`;
+}
+
+function fractionAddSubtractQuestion(operation: 'add' | 'subtract'): ExpressionQuestion {
+  const sameDenominator = Math.random() < 0.5;
+  let leftNumerator: number;
+  let leftDenominator: number;
+  let rightNumerator: number;
+  let rightDenominator: number;
+  if (sameDenominator) {
+    leftDenominator = rightDenominator = randomInt(4, 12);
+    leftNumerator = randomInt(operation === 'subtract' ? 2 : 1, leftDenominator - 1);
+    rightNumerator = operation === 'subtract' ? randomInt(1, leftNumerator - 1) : randomInt(1, rightDenominator - 1);
+  } else {
+    leftDenominator = randomInt(3, 9);
+    rightDenominator = randomInt(2, 8);
+    if (rightDenominator === leftDenominator) rightDenominator += 1;
+    leftNumerator = randomInt(1, leftDenominator - 1);
+    rightNumerator = randomInt(1, rightDenominator - 1);
+    if (operation === 'subtract' && leftNumerator * rightDenominator <= rightNumerator * leftDenominator) {
+      [leftNumerator, rightNumerator] = [rightNumerator, leftNumerator];
+      [leftDenominator, rightDenominator] = [rightDenominator, leftDenominator];
+    }
+  }
+  const commonDenominator = leftDenominator * rightDenominator;
+  const convertedLeft = leftNumerator * rightDenominator;
+  const convertedRight = rightNumerator * leftDenominator;
+  const resultNumerator = operation === 'add' ? convertedLeft + convertedRight : convertedLeft - convertedRight;
+  const correct = reducedFraction(resultNumerator, commonDenominator);
+  const symbol = operation === 'add' ? '+' : '−';
+  const skillId: Grade4Stage1SkillId = operation === 'add' ? 'fraction-addition' : 'fraction-subtraction';
+  const expression = `${leftNumerator}/${leftDenominator} ${symbol} ${rightNumerator}/${rightDenominator} = ?`;
+  const signature = `fraction-${operation}-${leftNumerator}-${leftDenominator}-${rightNumerator}-${rightDenominator}`;
+  const commonStep = sameDenominator
+    ? `Hai phân số cùng mẫu ${leftDenominator}, giữ nguyên mẫu số.`
+    : `Quy đồng: ${leftNumerator}/${leftDenominator} = ${convertedLeft}/${commonDenominator} và ${rightNumerator}/${rightDenominator} = ${convertedRight}/${commonDenominator}.`;
+  const rawNumerator = sameDenominator
+    ? operation === 'add' ? leftNumerator + rightNumerator : leftNumerator - rightNumerator
+    : resultNumerator;
+  const rawDenominator = sameDenominator ? leftDenominator : commonDenominator;
+  return {
+    id: questionId(signature), signature, type: 'expression', skillId, expression, caption: operation === 'add' ? 'Cộng hai phân số' : 'Trừ hai phân số',
+    instruction: 'Chọn kết quả đúng ở dạng tối giản.',
+    answers: fractionAnswers(correct, [`${rawNumerator}/${rawDenominator + 1}`, `${Math.abs(convertedLeft - convertedRight)}/${commonDenominator}`, `${convertedLeft + convertedRight}/${commonDenominator + 1}`, `${rawNumerator + 1}/${rawDenominator}`]), correctAnswer: correct,
+    hintSteps: [commonStep, `${sameDenominator ? leftNumerator : convertedLeft} ${symbol} ${sameDenominator ? rightNumerator : convertedRight} = ${rawNumerator}.`, `Rút gọn kết quả được ${correct}.`],
+    explanation: `${expression.replace(' = ?', '')} = ${rawNumerator}/${rawDenominator}${`${rawNumerator}/${rawDenominator}` === correct ? '' : ` = ${correct}`}.`,
+  };
+}
+
+function fractionMultiplyQuestion(): ExpressionQuestion {
+  const leftNumerator = randomInt(1, 8);
+  const leftDenominator = randomInt(leftNumerator + 1, 12);
+  const rightNumerator = randomInt(1, 8);
+  const rightDenominator = randomInt(rightNumerator + 1, 12);
+  const productNumerator = leftNumerator * rightNumerator;
+  const productDenominator = leftDenominator * rightDenominator;
+  const correct = reducedFraction(productNumerator, productDenominator);
+  const signature = `fraction-multiply-${leftNumerator}-${leftDenominator}-${rightNumerator}-${rightDenominator}`;
+  return {
+    id: questionId(signature), signature, type: 'expression', skillId: 'fraction-multiplication',
+    expression: `${leftNumerator}/${leftDenominator} × ${rightNumerator}/${rightDenominator} = ?`, caption: 'Nhân hai phân số',
+    instruction: 'Kết quả tối giản là phân số nào?',
+    answers: fractionAnswers(correct, [`${leftNumerator + rightNumerator}/${leftDenominator + rightDenominator}`, `${productNumerator}/${leftDenominator + rightDenominator}`, `${leftNumerator + rightNumerator}/${productDenominator}`, `${productNumerator + 1}/${productDenominator}`]), correctAnswer: correct,
+    hintSteps: ['Nhân tử với tử, mẫu với mẫu.', `${leftNumerator} × ${rightNumerator} = ${productNumerator}; ${leftDenominator} × ${rightDenominator} = ${productDenominator}.`, `Rút gọn ${productNumerator}/${productDenominator} được ${correct}.`],
+    explanation: `${leftNumerator}/${leftDenominator} × ${rightNumerator}/${rightDenominator} = ${productNumerator}/${productDenominator}${`${productNumerator}/${productDenominator}` === correct ? '' : ` = ${correct}`}.`,
+  };
+}
+
+function fractionDivideQuestion(): ExpressionQuestion {
+  const leftNumerator = randomInt(1, 8);
+  const leftDenominator = randomInt(leftNumerator + 1, 12);
+  const rightNumerator = randomInt(1, 8);
+  const rightDenominator = randomInt(rightNumerator + 1, 12);
+  const resultNumerator = leftNumerator * rightDenominator;
+  const resultDenominator = leftDenominator * rightNumerator;
+  const correct = reducedFraction(resultNumerator, resultDenominator);
+  const signature = `fraction-divide-${leftNumerator}-${leftDenominator}-${rightNumerator}-${rightDenominator}`;
+  return {
+    id: questionId(signature), signature, type: 'expression', skillId: 'fraction-division',
+    expression: `${leftNumerator}/${leftDenominator} : ${rightNumerator}/${rightDenominator} = ?`, caption: 'Chia hai phân số',
+    instruction: 'Kết quả tối giản là phân số nào?',
+    answers: fractionAnswers(correct, [`${leftNumerator * rightNumerator}/${leftDenominator * rightDenominator}`, `${leftNumerator + rightDenominator}/${leftDenominator + rightNumerator}`, `${resultNumerator}/${resultDenominator + 1}`, `${resultNumerator + 1}/${resultDenominator}`]), correctAnswer: correct,
+    hintSteps: [`Đảo ngược phân số thứ hai: ${rightNumerator}/${rightDenominator} thành ${rightDenominator}/${rightNumerator}.`, `Tính ${leftNumerator}/${leftDenominator} × ${rightDenominator}/${rightNumerator} = ${resultNumerator}/${resultDenominator}.`, `Rút gọn được ${correct}.`],
+    explanation: `${leftNumerator}/${leftDenominator} : ${rightNumerator}/${rightDenominator} = ${leftNumerator}/${leftDenominator} × ${rightDenominator}/${rightNumerator} = ${resultNumerator}/${resultDenominator}${`${resultNumerator}/${resultDenominator}` === correct ? '' : ` = ${correct}`}.`,
+  };
+}
+
+function fractionOfNumberQuestion(): ContextQuestion {
+  const denominator = randomInt(2, 10);
+  const numerator = randomInt(1, denominator - 1);
+  const unit = randomInt(4, 30);
+  const whole = denominator * unit;
+  const correct = numerator * unit;
+  const signature = `fraction-of-number-${numerator}-${denominator}-${whole}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'fraction-of-number', icon: '🍊',
+    visualTitle: `${numerator}/${denominator} của ${whole} quả cam`, visualLines: [`Chia ${whole} quả thành ${denominator} phần bằng nhau`, `Lấy ${numerator} phần`],
+    instruction: `${numerator}/${denominator} của ${whole} bằng bao nhiêu?`,
+    answers: numericAnswers(correct, 1, whole, [unit, -unit, numerator, -numerator, denominator, -denominator]), correctAnswer: correct,
+    hintSteps: [`Một phần là ${whole} : ${denominator} = ${unit}.`, `${numerator} phần là ${unit} × ${numerator}.`, `Kết quả là ${correct}.`],
+    explanation: `Muốn tìm ${numerator}/${denominator} của ${whole}, ta tính ${whole} : ${denominator} × ${numerator} = ${correct}.`,
+  };
+}
+
+function finalNaturalNumberQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 3);
+  const question = mode === 0 ? largeNumberQuestion() : mode === 1 ? largeAddSubtractQuestion() : mode === 2 ? multiplyDivideNaturalQuestion() : averageUnitRateQuestion();
+  return { ...question, skillId: 'final-natural-numbers' };
+}
+
+function finalFractionQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 4);
+  const question = mode === 0 ? compareFractionQuestion() : mode === 1 ? fractionAddSubtractQuestion('add') : mode === 2 ? fractionAddSubtractQuestion('subtract') : mode === 3 ? fractionMultiplyQuestion() : fractionDivideQuestion();
+  return { ...question, skillId: 'final-fractions' };
+}
+
+function finalGeometryMeasurementQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 5);
+  const question = mode === 0 ? angleQuestion() : mode === 1 ? lineQuestion('perpendicular') : mode === 2 ? lineQuestion('parallel') : mode === 3 ? quadrilateralQuestion() : mode === 4 ? massUnitQuestion() : areaUnitQuestion();
+  return { ...question, skillId: 'final-geometry-measurement' };
+}
+
+function finalDataProbabilityQuestion(): Grade4Stage1Question {
+  const mode = randomInt(0, 2);
+  const question = mode === 0 ? dataSeriesQuestion() : mode === 1 ? columnChartQuestion() : eventFrequencyQuestion();
+  return { ...question, skillId: 'final-data-probability' };
+}
+
 type Factory = () => Grade4Stage1Question;
 
 function uniqueQuestions(plan: Factory[], total: 5 | 10 | 15) {
@@ -535,6 +949,13 @@ export function generateGrade4Stage1Questions(module: Grade4Stage1Module, total:
     measurement: [massUnitQuestion, areaUnitQuestion, timeCenturyQuestion, massUnitQuestion, areaUnitQuestion],
     'add-subtract': [largeAddSubtractQuestion, additionPropertyQuestion, sumDifferenceQuestion, largeAddSubtractQuestion, sumDifferenceQuestion],
     'lines-shapes': [() => lineQuestion('perpendicular'), () => lineQuestion('parallel'), quadrilateralQuestion, () => lineQuestion(Math.random() < 0.5 ? 'perpendicular' : 'parallel'), quadrilateralQuestion],
+    'semester-1-review': [semesterOneLargeNumberQuestion, semesterOneAddSubtractQuestion, semesterOneGeometryQuestion, semesterOneMeasurementQuestion, semesterOneAddSubtractQuestion],
+    'multiply-divide': [multiplyDivideNaturalQuestion, multiplicationPropertyQuestion, estimationQuestion, averageUnitRateQuestion, multiplyDivideNaturalQuestion],
+    statistics: [dataSeriesQuestion, columnChartQuestion, eventFrequencyQuestion, columnChartQuestion, dataSeriesQuestion],
+    fractions: [fractionConceptQuestion, equivalentFractionQuestion, simplifyFractionQuestion, compareFractionQuestion, fractionConceptQuestion],
+    'fraction-add-subtract': [() => fractionAddSubtractQuestion('add'), () => fractionAddSubtractQuestion('subtract'), () => fractionAddSubtractQuestion('add'), () => fractionAddSubtractQuestion('subtract')],
+    'fraction-multiply-divide': [fractionMultiplyQuestion, fractionDivideQuestion, fractionOfNumberQuestion, fractionMultiplyQuestion, fractionDivideQuestion],
+    'final-review': [finalNaturalNumberQuestion, finalFractionQuestion, finalGeometryMeasurementQuestion, finalDataProbabilityQuestion, finalNaturalNumberQuestion],
   };
   return uniqueQuestions(plans[module], total);
 }

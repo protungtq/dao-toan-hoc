@@ -107,7 +107,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-semester-1-review', grade: 4, number: 7,
     title: 'Ôn tập học kỳ I', shortTitle: 'Ôn tập học kỳ I', slug: 'on-tap-hoc-ky-1',
     description: 'Ôn số đến lớp triệu, cộng trừ, hình học, đo lường và giải bài toán tổng hợp.',
-    semester: 1, textbookLessons: [33, 34, 35, 36, 37], icon: '📚', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [33, 34, 35, 36, 37], icon: '📚', color: 'from-fuchsia-500 to-purple-600', backgroundColor: 'bg-fuchsia-50', developmentStatus: 'ready',
     skills: [
       { id: 'semester-1-large-numbers', title: 'Ôn số đến lớp triệu', description: 'Đọc, viết, so sánh và làm tròn số.', icon: '🔢', questionTypes: ['review-large-numbers'], defaultWeight: 25 },
       { id: 'semester-1-add-subtract', title: 'Ôn cộng và trừ', description: 'Tính và vận dụng vào bài toán.', icon: '➕', questionTypes: ['review-add-subtract-grade-4'], defaultWeight: 25 },
@@ -119,7 +119,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-multiplication-division', grade: 4, number: 8,
     title: 'Phép nhân và phép chia', shortTitle: 'Nhân và chia', slug: 'phep-nhan-va-phep-chia',
     description: 'Nhân, chia số tự nhiên; vận dụng tính chất, ước lượng, số trung bình cộng và rút về đơn vị.',
-    semester: 2, textbookLessons: [38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48], icon: '✖️', color: 'from-blue-500 to-indigo-600', backgroundColor: 'bg-blue-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48], icon: '✖️', color: 'from-blue-500 to-indigo-600', backgroundColor: 'bg-blue-50', developmentStatus: 'ready',
     skills: [
       { id: 'multiply-divide-natural', title: 'Nhân và chia số tự nhiên', description: 'Nhân, chia với số có một hoặc hai chữ số.', icon: '✖️', questionTypes: ['multiply-divide-natural-grade-4'], defaultWeight: 40 },
       { id: 'multiplication-properties', title: 'Tính chất phép nhân', description: 'Vận dụng giao hoán, kết hợp và phân phối.', icon: '🔁', questionTypes: ['multiplication-properties'], defaultWeight: 20 },
@@ -131,7 +131,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-statistics-probability', grade: 4, number: 9,
     title: 'Thống kê và xác suất', shortTitle: 'Dữ liệu và xác suất', slug: 'thong-ke-va-xac-suat',
     description: 'Đọc dãy số liệu, biểu đồ cột và nhận biết số lần xuất hiện của một sự kiện.',
-    semester: 2, textbookLessons: [49, 50, 51, 52], icon: '📊', color: 'from-teal-500 to-emerald-600', backgroundColor: 'bg-teal-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [49, 50, 51, 52], icon: '📊', color: 'from-teal-500 to-emerald-600', backgroundColor: 'bg-teal-50', developmentStatus: 'ready',
     skills: [
       { id: 'data-series', title: 'Dãy số liệu', description: 'Đọc, phân tích và trả lời câu hỏi từ số liệu.', icon: '🔢', questionTypes: ['data-series-grade-4'], defaultWeight: 35 },
       { id: 'column-chart', title: 'Biểu đồ cột', description: 'Đọc và so sánh dữ liệu trên biểu đồ.', icon: '📊', questionTypes: ['column-chart-grade-4'], defaultWeight: 35 },
@@ -142,7 +142,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-fractions', grade: 4, number: 10,
     title: 'Phân số', shortTitle: 'Phân số', slug: 'phan-so',
     description: 'Hiểu khái niệm, tính chất cơ bản, rút gọn, quy đồng và so sánh phân số.',
-    semester: 2, textbookLessons: [53, 54, 55, 56, 57, 58, 59], icon: '🍕', color: 'from-amber-400 to-orange-500', backgroundColor: 'bg-amber-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [53, 54, 55, 56, 57, 58, 59], icon: '🍕', color: 'from-amber-400 to-orange-500', backgroundColor: 'bg-amber-50', developmentStatus: 'ready',
     skills: [
       { id: 'fraction-concept', title: 'Khái niệm phân số', description: 'Đọc, viết và biểu diễn phân số.', icon: '🍕', questionTypes: ['fraction-concept-grade-4'], defaultWeight: 25 },
       { id: 'fraction-properties', title: 'Tính chất cơ bản', description: 'Nhận biết các phân số bằng nhau.', icon: '🧩', questionTypes: ['equivalent-fractions'], defaultWeight: 25 },
@@ -154,7 +154,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-fraction-add-subtract', grade: 4, number: 11,
     title: 'Phép cộng, phép trừ phân số', shortTitle: 'Cộng trừ phân số', slug: 'cong-tru-phan-so',
     description: 'Cộng, trừ phân số cùng mẫu hoặc khác mẫu và vận dụng trong bài toán.',
-    semester: 2, textbookLessons: [60, 61, 62], icon: '➕', color: 'from-violet-500 to-purple-600', backgroundColor: 'bg-violet-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [60, 61, 62], icon: '➕', color: 'from-violet-500 to-purple-600', backgroundColor: 'bg-violet-50', developmentStatus: 'ready',
     skills: [
       { id: 'fraction-addition', title: 'Cộng phân số', description: 'Quy đồng khi cần rồi cộng tử số.', icon: '➕', questionTypes: ['fraction-addition-grade-4'], defaultWeight: 50 },
       { id: 'fraction-subtraction', title: 'Trừ phân số', description: 'Quy đồng khi cần rồi trừ tử số.', icon: '➖', questionTypes: ['fraction-subtraction-grade-4'], defaultWeight: 50 },
@@ -164,7 +164,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-fraction-multiply-divide', grade: 4, number: 12,
     title: 'Phép nhân, phép chia phân số', shortTitle: 'Nhân chia phân số', slug: 'nhan-chia-phan-so',
     description: 'Nhân, chia phân số và tìm phân số của một số trong tình huống thực tế.',
-    semester: 2, textbookLessons: [63, 64, 65, 66], icon: '➗', color: 'from-pink-500 to-rose-600', backgroundColor: 'bg-pink-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [63, 64, 65, 66], icon: '➗', color: 'from-pink-500 to-rose-600', backgroundColor: 'bg-pink-50', developmentStatus: 'ready',
     skills: [
       { id: 'fraction-multiplication', title: 'Nhân phân số', description: 'Nhân tử với tử, mẫu với mẫu và rút gọn.', icon: '✖️', questionTypes: ['fraction-multiplication-grade-4'], defaultWeight: 35 },
       { id: 'fraction-division', title: 'Chia phân số', description: 'Nhân với phân số đảo ngược.', icon: '➗', questionTypes: ['fraction-division-grade-4'], defaultWeight: 35 },
@@ -175,7 +175,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-final-review', grade: 4, number: 13,
     title: 'Ôn tập cuối năm', shortTitle: 'Ôn tập cuối năm', slug: 'on-tap-cuoi-nam',
     description: 'Ôn số tự nhiên, các phép tính, phân số, hình học, đo lường, thống kê và xác suất.',
-    semester: 2, textbookLessons: [67, 68, 69, 70, 71, 72, 73], icon: '🏆', color: 'from-red-400 to-orange-500', backgroundColor: 'bg-red-50', developmentStatus: 'planned',
+    semester: 2, textbookLessons: [67, 68, 69, 70, 71, 72, 73], icon: '🏆', color: 'from-red-400 to-orange-500', backgroundColor: 'bg-red-50', developmentStatus: 'ready',
     skills: [
       { id: 'final-natural-numbers', title: 'Ôn số tự nhiên', description: 'Số lớn và bốn phép tính.', icon: '🔢', questionTypes: ['final-natural-numbers-grade-4'], defaultWeight: 25 },
       { id: 'final-fractions', title: 'Ôn phân số', description: 'So sánh và tính với phân số.', icon: '🍕', questionTypes: ['final-fractions-grade-4'], defaultWeight: 25 },

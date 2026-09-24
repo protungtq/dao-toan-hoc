@@ -1,5 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import UpcomingGradePage from '../components/UpcomingGradePage.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import PracticeModuleCard from '../components/PracticeModuleCard.astro';
+import { grade5PracticeModes, grade5PracticeModules, getGrade5ModulesBySemester } from '../data/grade5Curriculum';
+
+const sections = [
+  { id: 'hoc-ky-1', eyebrow: 'Học kỳ I', title: 'Số thập phân, đo lường và hình phẳng', description: 'Củng cố nền tảng, làm chủ số thập phân và vận dụng công thức diện tích.', modules: getGrade5ModulesBySemester(1), accent: 'text-rose-700', dot: 'bg-rose-500', background: 'bg-white', hover: 'group-hover:bg-rose-600' },
+  { id: 'hoc-ky-2', eyebrow: 'Học kỳ II', title: 'Tỉ số, thể tích, chuyển động và dữ liệu', description: 'Giải bài toán phần trăm, hình khối, vận tốc và đọc hiểu thống kê.', modules: getGrade5ModulesBySemester(2), accent: 'text-pink-700', dot: 'bg-pink-500', background: 'bg-slate-50', hover: 'group-hover:bg-pink-600' },
+];
 ---
-<BaseLayout title="Toán lớp 5 – Trạng Toán" description="Chương trình luyện tập Toán lớp 5 dành cho học sinh tiểu học."><UpcomingGradePage grade={5} description="Số thập phân, tỉ số, phần trăm, diện tích và thể tích." mascot="🦊" gradient="from-pink-400 to-rose-600" pale="from-pink-50 via-white to-rose-50" text="text-rose-700" border="border-rose-200" /></BaseLayout>
+
+<BaseLayout title="Toán lớp 5 – Trạng Toán" description="Mười hai chủ đề luyện tập Toán lớp 5 từ số thập phân, tỉ số phần trăm đến diện tích, thể tích, chuyển động và thống kê.">
+  <SiteHeader compact />
+  <main>
+    <section class="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-rose-50">
+      <div class="absolute inset-0 opacity-35 [background-image:radial-gradient(#f472b6_1px,transparent_1px)] [background-size:28px_28px]"></div>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:px-8 lg:grid-cols-[1fr_380px] lg:py-20">
+        <div><div class="inline-flex items-center gap-2 rounded-full border border-pink-200 bg-white px-4 py-2 text-sm font-black text-pink-700 shadow-sm">🦊 Chương trình luyện tập lớp 5</div><h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-slate-950 md:text-6xl">Vững kiến thức, <span class="text-pink-600">sẵn sàng chuyển cấp</span></h1><p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">Toàn bộ 75 bài được gom thành 12 chủ đề luyện tập ngắn gọn, trực quan và có lời giải từng bước.</p><div class="mt-7 flex flex-wrap gap-3"><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ {grade5PracticeModules.length}/12 mục đã có bài luyện</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ 75 bài trong sách</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ Hai học kỳ</span></div><a href="#hoc-ky-1" class="mt-8 inline-flex items-center gap-3 rounded-2xl bg-pink-600 px-6 py-4 font-black text-white shadow-xl shadow-pink-200 transition hover:-translate-y-1 hover:bg-pink-700">Bắt đầu luyện <span>↓</span></a></div>
+        <div class="hidden lg:block"><div class="rounded-[2rem] border-4 border-white bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><div><p class="text-sm font-black text-pink-700">Toán lớp 5</p><p class="mt-1 text-xl font-black">Mỗi lượt học vừa sức</p></div><span class="text-5xl">🦊</span></div><div class="mt-5 grid grid-cols-2 gap-3">{grade5PracticeModes.map((mode) => <div class="rounded-2xl bg-slate-50 p-4"><span class="text-2xl">{mode.icon}</span><p class="mt-2 text-sm font-black">{mode.title}</p><p class="mt-1 text-xs font-semibold text-slate-500">{mode.questionCount} câu · {mode.estimatedMinutes} phút</p></div>)}</div></div></div>
+      </div>
+    </section>
+    {sections.map((section) => <section id={section.id} class={`py-14 ${section.background}`}><div class="mx-auto max-w-7xl px-4 md:px-8"><div class="flex items-start gap-4"><span class={`mt-2 h-12 w-1.5 rounded-full ${section.dot}`}></span><div><p class={`text-sm font-extrabold tracking-[0.14em] ${section.accent}`}>{section.eyebrow}</p><h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">{section.title}</h2><p class="mt-2 font-medium text-slate-500">{section.description}</p></div></div><div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{section.modules.map((practiceModule) => <PracticeModuleCard practiceModule={practiceModule} grade={5} accent={section.hover} />)}</div></div></section>)}
+  </main>
+  <SiteFooter />
+</BaseLayout>

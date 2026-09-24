@@ -67,6 +67,62 @@ const CONFIG = {
     guideTitle: 'Quan sát góc và các cặp cạnh',
     tips: [['⊥', 'Vuông góc', 'Hai đường vuông góc cắt nhau và tạo thành góc 90°.'], ['∥', 'Song song', 'Hai đường song song không cắt nhau dù được kéo dài.']],
   },
+  'semester-1-review': {
+    number: 7, lessons: '33–37', title: 'Ôn tập học kỳ I',
+    description: 'Ôn tổng hợp số đến lớp triệu, phép cộng và phép trừ, hình học, đo lường và bài toán thực tế.',
+    accent: 'fuchsia', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['🔢', 'Số đến lớp triệu'], ['➕', 'Cộng và trừ'], ['📐', 'Góc và đường thẳng'], ['⚖️', 'Đo lường'], ['🧩', 'Bài toán tổng hợp']],
+    guideTitle: 'Xác định đúng nhóm kiến thức trước khi giải',
+    tips: [['🔎', 'Đọc kĩ yêu cầu', 'Gạch chân số liệu, đơn vị và nội dung cần tìm.'], ['✅', 'Kiểm tra kết quả', 'Dùng phép tính ngược, ước lượng hoặc đổi về cùng đơn vị để kiểm tra.']],
+  },
+  'multiply-divide': {
+    number: 8, lessons: '38–48', title: 'Phép nhân và phép chia',
+    description: 'Luyện nhân, chia số tự nhiên; tính thuận tiện, ước lượng, trung bình cộng và rút về đơn vị.',
+    accent: 'blue', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['✖️', 'Nhân số tự nhiên'], ['➗', 'Chia số tự nhiên'], ['🔁', 'Tính chất phép nhân'], ['🎯', 'Ước lượng'], ['📊', 'Trung bình cộng']],
+    guideTitle: 'Chọn phép tính và kiểm tra tính hợp lí',
+    tips: [['🧮', 'Nhân và chia', 'Tính từ phải sang trái; dùng phép tính ngược để kiểm tra.'], ['📊', 'Trung bình cộng', 'Lấy tổng các số chia cho số các số hạng.']],
+  },
+  statistics: {
+    number: 9, lessons: '49–52', title: 'Thống kê và xác suất',
+    description: 'Đọc dãy số liệu, biểu đồ cột và kiểm đếm số lần xuất hiện của một sự kiện.',
+    accent: 'teal', mascot: '🐿️', mascotName: 'Sóc Nâu',
+    topics: [['🔢', 'Dãy số liệu'], ['📊', 'Biểu đồ cột'], ['🔎', 'Đọc dữ liệu'], ['⚖️', 'So sánh dữ liệu'], ['🎲', 'Số lần xuất hiện']],
+    guideTitle: 'Đọc tên, giá trị và đơn vị của dữ liệu',
+    tips: [['📊', 'Biểu đồ cột', 'Đọc nhãn dưới cột và số ghi trên đỉnh cột.'], ['🎲', 'Kiểm đếm', 'Đánh dấu từng lần sự kiện xuất hiện để không bị sót.']],
+  },
+  fractions: {
+    number: 10, lessons: '53–59', title: 'Phân số',
+    description: 'Nhận biết phân số, phân số bằng nhau, rút gọn, quy đồng và so sánh phân số.',
+    accent: 'amber', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['🍕', 'Nhận biết phân số'], ['🧩', 'Phân số bằng nhau'], ['✂️', 'Rút gọn'], ['🔄', 'Quy đồng'], ['⚖️', 'So sánh phân số']],
+    guideTitle: 'Quan sát tử số và mẫu số',
+    tips: [['🍕', 'Đọc phân số', 'Mẫu số chỉ tổng số phần bằng nhau; tử số chỉ số phần được lấy.'], ['✂️', 'Rút gọn', 'Chia cả tử và mẫu cho cùng một số lớn hơn 1.']],
+  },
+  'fraction-add-subtract': {
+    number: 11, lessons: '60–62', title: 'Phép cộng, phép trừ phân số',
+    description: 'Cộng, trừ phân số cùng mẫu hoặc khác mẫu; rút gọn kết quả về dạng tối giản.',
+    accent: 'violet', mascot: '🐿️', mascotName: 'Sóc Nâu',
+    topics: [['➕', 'Cộng cùng mẫu'], ['🔄', 'Cộng khác mẫu'], ['➖', 'Trừ cùng mẫu'], ['🧩', 'Trừ khác mẫu'], ['✂️', 'Rút gọn kết quả']],
+    guideTitle: 'Quy đồng mẫu số trước khi cộng hoặc trừ',
+    tips: [['📍', 'Cùng mẫu', 'Giữ nguyên mẫu số, cộng hoặc trừ hai tử số.'], ['🔄', 'Khác mẫu', 'Quy đồng để hai phân số cùng mẫu rồi mới tính.']],
+  },
+  'fraction-multiply-divide': {
+    number: 12, lessons: '63–66', title: 'Phép nhân, phép chia phân số',
+    description: 'Nhân, chia phân số và tìm phân số của một số trong những tình huống gần gũi.',
+    accent: 'pink', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['✖️', 'Nhân phân số'], ['🎯', 'Rút gọn tích'], ['➗', 'Chia phân số'], ['🔁', 'Phân số đảo ngược'], ['🍊', 'Phân số của một số']],
+    guideTitle: 'Nhớ quy tắc nhân và phân số đảo ngược',
+    tips: [['✖️', 'Phép nhân', 'Nhân tử với tử, mẫu với mẫu rồi rút gọn.'], ['➗', 'Phép chia', 'Giữ nguyên phân số thứ nhất và nhân với phân số đảo ngược của phân số thứ hai.']],
+  },
+  'final-review': {
+    number: 13, lessons: '67–73', title: 'Ôn tập cuối năm',
+    description: 'Ôn tổng hợp số tự nhiên, các phép tính, phân số, hình học, đo lường, thống kê và xác suất.',
+    accent: 'red', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['🔢', 'Số tự nhiên'], ['🧮', 'Bốn phép tính'], ['🍕', 'Phân số'], ['📐', 'Hình học và đo lường'], ['📊', 'Dữ liệu và xác suất']],
+    guideTitle: 'Nhận dạng kiến thức, lập kế hoạch rồi kiểm tra',
+    tips: [['🧠', 'Chọn cách giải', 'Đọc kĩ câu hỏi, xác định dạng toán và các dữ kiện cần dùng.'], ['✅', 'Tự kiểm tra', 'Ước lượng, dùng phép tính ngược hoặc thay kết quả vào đề bài.']],
+  },
 } as const;
 
 const ACCENTS = {
@@ -76,6 +132,13 @@ const ACCENTS = {
   rose: { text: 'text-rose-700', button: 'bg-rose-600 hover:bg-rose-700', bar: 'from-rose-400 to-pink-600', shadow: 'shadow-rose-100', selected: 'border-rose-400 bg-rose-50', tone: 'bg-rose-50 text-rose-900' },
   emerald: { text: 'text-emerald-700', button: 'bg-emerald-600 hover:bg-emerald-700', bar: 'from-emerald-400 to-teal-600', shadow: 'shadow-emerald-100', selected: 'border-emerald-400 bg-emerald-50', tone: 'bg-emerald-50 text-emerald-900' },
   sky: { text: 'text-sky-700', button: 'bg-sky-600 hover:bg-sky-700', bar: 'from-sky-400 to-cyan-600', shadow: 'shadow-sky-100', selected: 'border-sky-400 bg-sky-50', tone: 'bg-sky-50 text-sky-900' },
+  fuchsia: { text: 'text-fuchsia-700', button: 'bg-fuchsia-600 hover:bg-fuchsia-700', bar: 'from-fuchsia-500 to-purple-600', shadow: 'shadow-fuchsia-100', selected: 'border-fuchsia-400 bg-fuchsia-50', tone: 'bg-fuchsia-50 text-fuchsia-900' },
+  blue: { text: 'text-blue-700', button: 'bg-blue-600 hover:bg-blue-700', bar: 'from-blue-500 to-indigo-600', shadow: 'shadow-blue-100', selected: 'border-blue-400 bg-blue-50', tone: 'bg-blue-50 text-blue-900' },
+  teal: { text: 'text-teal-700', button: 'bg-teal-600 hover:bg-teal-700', bar: 'from-teal-500 to-emerald-600', shadow: 'shadow-teal-100', selected: 'border-teal-400 bg-teal-50', tone: 'bg-teal-50 text-teal-900' },
+  amber: { text: 'text-amber-700', button: 'bg-amber-600 hover:bg-amber-700', bar: 'from-amber-400 to-orange-500', shadow: 'shadow-amber-100', selected: 'border-amber-400 bg-amber-50', tone: 'bg-amber-50 text-amber-950' },
+  violet: { text: 'text-violet-700', button: 'bg-violet-600 hover:bg-violet-700', bar: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-100', selected: 'border-violet-400 bg-violet-50', tone: 'bg-violet-50 text-violet-950' },
+  pink: { text: 'text-pink-700', button: 'bg-pink-600 hover:bg-pink-700', bar: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-100', selected: 'border-pink-400 bg-pink-50', tone: 'bg-pink-50 text-pink-950' },
+  red: { text: 'text-red-700', button: 'bg-red-600 hover:bg-red-700', bar: 'from-red-500 to-orange-500', shadow: 'shadow-red-100', selected: 'border-red-400 bg-red-50', tone: 'bg-red-50 text-red-950' },
 } as const;
 
 function starsFor(score: number) {
@@ -113,6 +176,13 @@ function QuestionVisual({ question, accent }: { question: Grade4Stage1Question; 
   }
 
   if (question.type === 'sequence') return <div className={`flex min-h-64 flex-wrap content-center justify-center gap-3 rounded-3xl p-6 ${tone}`}>{question.values.map((value, index) => <div key={`${value}-${index}`} className={`grid min-h-20 min-w-28 place-items-center rounded-2xl border-4 px-4 text-2xl font-black shadow-sm ${value === '?' ? 'border-amber-400 bg-amber-100 text-amber-800' : 'border-white bg-white/85'}`}>{typeof value === 'number' ? formatAnswer(value) : value}</div>)}</div>;
+
+  if (question.type === 'bar-chart') {
+    const maxValue = Math.max(...question.values);
+    return <div className={`rounded-3xl p-5 ${tone}`}><p className="text-center text-lg font-black">{question.chartTitle}</p><div className="mx-auto mt-5 flex h-56 max-w-2xl items-end justify-around gap-3 border-b-4 border-l-4 border-current px-4 pt-4">{question.values.map((value, index) => <div key={question.labels[index]} className="flex h-full flex-1 flex-col items-center justify-end"><span className="mb-1 font-black">{value}</span><div className="w-full max-w-20 rounded-t-xl bg-gradient-to-t from-teal-600 to-emerald-400 shadow-md" style={{ height: `${Math.max(18, (value / maxValue) * 78)}%` }}></div><span className="mt-2 whitespace-nowrap text-xs font-black sm:text-sm">{question.labels[index]}</span></div>)}</div></div>;
+  }
+
+  if (question.type === 'fraction') return <div className={`grid min-h-64 place-items-center rounded-3xl p-6 ${tone}`}><div className="w-full max-w-2xl text-center"><p className="mb-5 font-black opacity-70">{question.caption}</p><div className="grid overflow-hidden rounded-2xl border-4 border-current bg-white" style={{ gridTemplateColumns: `repeat(${question.denominator}, minmax(0, 1fr))` }}>{Array.from({ length: question.denominator }, (_, index) => <span key={index} className={`h-24 border-r-2 border-current last:border-r-0 sm:h-32 ${index < question.numerator ? 'bg-amber-400' : 'bg-white'}`}></span>)}</div></div></div>;
 
   if (question.type === 'diagram') {
     const common = { stroke: 'currentColor', strokeWidth: 8, strokeLinecap: 'round' as const };
