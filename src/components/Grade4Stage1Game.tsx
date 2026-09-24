@@ -43,12 +43,39 @@ const CONFIG = {
     guideTitle: 'Tách số thành từng lớp ba chữ số',
     tips: [['🔢', 'Đọc số theo lớp', 'Tách từ phải sang trái thành lớp đơn vị, lớp nghìn và lớp triệu.'], ['🎯', 'Làm tròn', 'Nhìn chữ số ngay bên phải hàng cần làm tròn để quyết định tăng hay giữ nguyên.']],
   },
+  measurement: {
+    number: 4, lessons: '17–21', title: 'Một số đơn vị đo đại lượng',
+    description: 'Luyện yến, tạ, tấn; đơn vị đo diện tích; giây và thế kỉ trong tình huống thực tế.',
+    accent: 'rose', mascot: '🐿️', mascotName: 'Sóc Nâu',
+    topics: [['⚖️', 'Yến, tạ và tấn'], ['🟦', 'Mi-li-mét vuông'], ['🔳', 'Đề-xi-mét vuông'], ['🏡', 'Mét vuông'], ['⏱️', 'Giây và thế kỉ']],
+    guideTitle: 'Đổi về cùng đơn vị trước khi tính',
+    tips: [['⚖️', 'Khối lượng', '1 yến = 10 kg; 1 tạ = 100 kg; 1 tấn = 1 000 kg.'], ['🟦', 'Diện tích', 'Hai đơn vị diện tích liền nhau hơn kém nhau 100 lần.']],
+  },
+  'add-subtract': {
+    number: 5, lessons: '22–26', title: 'Phép cộng và phép trừ',
+    description: 'Cộng, trừ số có nhiều chữ số; tính thuận tiện và tìm hai số khi biết tổng và hiệu.',
+    accent: 'emerald', mascot: '🐻', mascotName: 'Gấu Mật',
+    topics: [['➕', 'Cộng số lớn'], ['➖', 'Trừ số lớn'], ['🔁', 'Giao hoán'], ['🧩', 'Kết hợp'], ['📖', 'Tổng và hiệu']],
+    guideTitle: 'Đặt tính thẳng hàng, chọn cách tính hợp lí',
+    tips: [['🧮', 'Cộng và trừ', 'Viết các chữ số cùng hàng thẳng cột, tính từ phải sang trái.'], ['🧩', 'Tổng và hiệu', 'Số lớn = (tổng + hiệu) : 2; số bé = (tổng − hiệu) : 2.']],
+  },
+  'lines-shapes': {
+    number: 6, lessons: '27–32', title: 'Đường thẳng vuông góc, đường thẳng song song',
+    description: 'Nhận biết đường thẳng vuông góc, song song; khám phá hình bình hành và hình thoi.',
+    accent: 'sky', mascot: '🐿️', mascotName: 'Sóc Nâu',
+    topics: [['⊥', 'Vuông góc'], ['∥', 'Song song'], ['📏', 'Vẽ đường thẳng'], ['▱', 'Hình bình hành'], ['🔷', 'Hình thoi']],
+    guideTitle: 'Quan sát góc và các cặp cạnh',
+    tips: [['⊥', 'Vuông góc', 'Hai đường vuông góc cắt nhau và tạo thành góc 90°.'], ['∥', 'Song song', 'Hai đường song song không cắt nhau dù được kéo dài.']],
+  },
 } as const;
 
 const ACCENTS = {
   orange: { text: 'text-orange-700', button: 'bg-orange-600 hover:bg-orange-700', bar: 'from-orange-400 to-amber-500', shadow: 'shadow-orange-100', selected: 'border-orange-400 bg-orange-50', tone: 'bg-orange-50 text-orange-900' },
   cyan: { text: 'text-cyan-700', button: 'bg-cyan-600 hover:bg-cyan-700', bar: 'from-cyan-400 to-blue-600', shadow: 'shadow-cyan-100', selected: 'border-cyan-400 bg-cyan-50', tone: 'bg-cyan-50 text-cyan-900' },
   indigo: { text: 'text-indigo-700', button: 'bg-indigo-600 hover:bg-indigo-700', bar: 'from-indigo-400 to-violet-600', shadow: 'shadow-indigo-100', selected: 'border-indigo-400 bg-indigo-50', tone: 'bg-indigo-50 text-indigo-900' },
+  rose: { text: 'text-rose-700', button: 'bg-rose-600 hover:bg-rose-700', bar: 'from-rose-400 to-pink-600', shadow: 'shadow-rose-100', selected: 'border-rose-400 bg-rose-50', tone: 'bg-rose-50 text-rose-900' },
+  emerald: { text: 'text-emerald-700', button: 'bg-emerald-600 hover:bg-emerald-700', bar: 'from-emerald-400 to-teal-600', shadow: 'shadow-emerald-100', selected: 'border-emerald-400 bg-emerald-50', tone: 'bg-emerald-50 text-emerald-900' },
+  sky: { text: 'text-sky-700', button: 'bg-sky-600 hover:bg-sky-700', bar: 'from-sky-400 to-cyan-600', shadow: 'shadow-sky-100', selected: 'border-sky-400 bg-sky-50', tone: 'bg-sky-50 text-sky-900' },
 } as const;
 
 function starsFor(score: number) {
@@ -86,6 +113,16 @@ function QuestionVisual({ question, accent }: { question: Grade4Stage1Question; 
   }
 
   if (question.type === 'sequence') return <div className={`flex min-h-64 flex-wrap content-center justify-center gap-3 rounded-3xl p-6 ${tone}`}>{question.values.map((value, index) => <div key={`${value}-${index}`} className={`grid min-h-20 min-w-28 place-items-center rounded-2xl border-4 px-4 text-2xl font-black shadow-sm ${value === '?' ? 'border-amber-400 bg-amber-100 text-amber-800' : 'border-white bg-white/85'}`}>{typeof value === 'number' ? formatAnswer(value) : value}</div>)}</div>;
+
+  if (question.type === 'diagram') {
+    const common = { stroke: 'currentColor', strokeWidth: 8, strokeLinecap: 'round' as const };
+    return <div className={`rounded-3xl p-5 ${tone}`}><svg viewBox="0 0 420 250" className="mx-auto h-64 w-full max-w-2xl" role="img" aria-label="Hình minh họa hình học">
+      {question.diagram === 'perpendicular' && <><line x1="55" y1="130" x2="365" y2="130" {...common} /><line x1="210" y1="35" x2="210" y2="220" {...common} /><path d="M210 130 L210 100 L240 100 L240 130" fill="none" stroke="#f59e0b" strokeWidth="5" /><text x="350" y="115" className="fill-current text-xl font-black">a</text><text x="225" y="48" className="fill-current text-xl font-black">b</text><text x="188" y="155" className="fill-current text-xl font-black">O</text></>}
+      {question.diagram === 'parallel' && <><line x1="55" y1="85" x2="365" y2="85" {...common} /><line x1="55" y1="175" x2="365" y2="175" {...common} /><path d="M190 73 l20 12 l-20 12 M220 73 l20 12 l-20 12" fill="none" stroke="#f59e0b" strokeWidth="5" /><path d="M190 163 l20 12 l-20 12 M220 163 l20 12 l-20 12" fill="none" stroke="#f59e0b" strokeWidth="5" /><text x="350" y="70" className="fill-current text-xl font-black">m</text><text x="350" y="160" className="fill-current text-xl font-black">n</text></>}
+      {question.diagram === 'parallelogram' && <><polygon points="105,190 165,55 330,55 270,190" fill="#38bdf8" fillOpacity="0.3" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" /><text x="82" y="213" className="fill-current text-xl font-black">A</text><text x="150" y="43" className="fill-current text-xl font-black">B</text><text x="332" y="43" className="fill-current text-xl font-black">C</text><text x="276" y="213" className="fill-current text-xl font-black">D</text></>}
+      {question.diagram === 'rhombus' && <><polygon points="210,30 345,125 210,220 75,125" fill="#f59e0b" fillOpacity="0.25" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" /><line x1="142" y1="77" x2="153" y2="92" stroke="#f59e0b" strokeWidth="5" /><line x1="268" y1="92" x2="279" y2="77" stroke="#f59e0b" strokeWidth="5" /><line x1="142" y1="173" x2="153" y2="158" stroke="#f59e0b" strokeWidth="5" /><line x1="268" y1="158" x2="279" y2="173" stroke="#f59e0b" strokeWidth="5" /></>}
+    </svg></div>;
+  }
 
   return <div className={`grid min-h-64 place-items-center rounded-3xl p-6 text-center ${tone}`}><div><div className="text-7xl">{question.icon}</div><p className="mt-4 text-2xl font-black">{question.visualTitle}</p><div className="mt-3 space-y-1">{question.visualLines.map((line) => <p key={line} className="text-lg font-bold opacity-75">{line}</p>)}</div></div></div>;
 }

@@ -74,7 +74,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-measurement-units', grade: 4, number: 4,
     title: 'Một số đơn vị đo đại lượng', shortTitle: 'Đơn vị đo', slug: 'mot-so-don-vi-do-dai-luong',
     description: 'Luyện yến, tạ, tấn; đơn vị đo diện tích; giây và thế kỉ trong các tình huống thực tế.',
-    semester: 1, textbookLessons: [17, 18, 19, 20, 21], icon: '⚖️', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [17, 18, 19, 20, 21], icon: '⚖️', color: 'from-rose-400 to-pink-500', backgroundColor: 'bg-rose-50', developmentStatus: 'ready',
     skills: [
       { id: 'mass-units-grade-4', title: 'Yến, tạ và tấn', description: 'Đổi và so sánh đơn vị khối lượng.', icon: '⚖️', questionTypes: ['convert-yen-ta-ton'], defaultWeight: 35 },
       { id: 'area-units-grade-4', title: 'Đơn vị đo diện tích', description: 'Đổi đề-xi-mét, mét và mi-li-mét vuông.', icon: '🔲', questionTypes: ['convert-square-units'], defaultWeight: 35 },
@@ -85,7 +85,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-addition-subtraction', grade: 4, number: 5,
     title: 'Phép cộng và phép trừ', shortTitle: 'Cộng và trừ', slug: 'phep-cong-va-phep-tru',
     description: 'Cộng, trừ số có nhiều chữ số; vận dụng tính chất và tìm hai số khi biết tổng và hiệu.',
-    semester: 1, textbookLessons: [22, 23, 24, 25, 26], icon: '➕', color: 'from-emerald-500 to-teal-600', backgroundColor: 'bg-emerald-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [22, 23, 24, 25, 26], icon: '➕', color: 'from-emerald-500 to-teal-600', backgroundColor: 'bg-emerald-50', developmentStatus: 'ready',
     skills: [
       { id: 'large-add-subtract', title: 'Cộng và trừ số lớn', description: 'Đặt tính và tính chính xác.', icon: '🧮', questionTypes: ['large-addition', 'large-subtraction'], defaultWeight: 45 },
       { id: 'addition-properties', title: 'Tính chất phép cộng', description: 'Vận dụng giao hoán và kết hợp để tính thuận tiện.', icon: '🔁', questionTypes: ['addition-properties'], defaultWeight: 25 },
@@ -96,7 +96,7 @@ export const grade4PracticeModules: Grade4Module[] = [
     id: 'grade-4-lines-and-quadrilaterals', grade: 4, number: 6,
     title: 'Đường thẳng vuông góc, đường thẳng song song', shortTitle: 'Đường thẳng và tứ giác', slug: 'duong-thang-va-tu-giac',
     description: 'Nhận biết, vẽ đường thẳng vuông góc, song song; làm quen hình bình hành và hình thoi.',
-    semester: 1, textbookLessons: [27, 28, 29, 30, 31, 32], icon: '📏', color: 'from-sky-500 to-cyan-600', backgroundColor: 'bg-sky-50', developmentStatus: 'planned',
+    semester: 1, textbookLessons: [27, 28, 29, 30, 31, 32], icon: '📏', color: 'from-sky-500 to-cyan-600', backgroundColor: 'bg-sky-50', developmentStatus: 'ready',
     skills: [
       { id: 'perpendicular-lines', title: 'Đường thẳng vuông góc', description: 'Nhận biết và xác định cặp đường vuông góc.', icon: '⊥', questionTypes: ['perpendicular-lines'], defaultWeight: 35 },
       { id: 'parallel-lines', title: 'Đường thẳng song song', description: 'Nhận biết và xác định cặp đường song song.', icon: '∥', questionTypes: ['parallel-lines'], defaultWeight: 35 },

@@ -1,4 +1,4 @@
-export type Grade4Stage1Module = 'review' | 'angles' | 'large-numbers';
+export type Grade4Stage1Module = 'review' | 'angles' | 'large-numbers' | 'measurement' | 'add-subtract' | 'lines-shapes';
 export type Grade4Stage1SkillId =
   | 'review-numbers-100000'
   | 'review-operations-100000'
@@ -10,7 +10,16 @@ export type Grade4Stage1SkillId =
   | 'numbers-to-million'
   | 'round-large-numbers'
   | 'compare-large-numbers'
-  | 'natural-number-sequence';
+  | 'natural-number-sequence'
+  | 'mass-units-grade-4'
+  | 'area-units-grade-4'
+  | 'second-century'
+  | 'large-add-subtract'
+  | 'addition-properties'
+  | 'sum-difference-problems'
+  | 'perpendicular-lines'
+  | 'parallel-lines'
+  | 'parallelogram-rhombus';
 
 export type Grade4Stage1Answer = number | string;
 
@@ -26,6 +35,15 @@ export const GRADE4_STAGE1_SKILL_LABELS: Record<Grade4Stage1SkillId, string> = {
   'round-large-numbers': 'Làm tròn số lớn',
   'compare-large-numbers': 'So sánh số lớn',
   'natural-number-sequence': 'Dãy số tự nhiên',
+  'mass-units-grade-4': 'Yến, tạ và tấn',
+  'area-units-grade-4': 'Đơn vị đo diện tích',
+  'second-century': 'Giây và thế kỉ',
+  'large-add-subtract': 'Cộng và trừ số lớn',
+  'addition-properties': 'Tính chất phép cộng',
+  'sum-difference-problems': 'Tìm hai số',
+  'perpendicular-lines': 'Đường thẳng vuông góc',
+  'parallel-lines': 'Đường thẳng song song',
+  'parallelogram-rhombus': 'Hình bình hành và hình thoi',
 };
 
 type BaseQuestion = {
@@ -45,6 +63,7 @@ export type CompareQuestion = BaseQuestion & { type: 'compare'; left: number; ri
 export type AngleQuestion = BaseQuestion & { type: 'angle'; degrees: number; showDegrees: boolean };
 export type SequenceQuestion = BaseQuestion & { type: 'sequence'; values: Array<number | string> };
 export type ContextQuestion = BaseQuestion & { type: 'context'; icon: string; visualTitle: string; visualLines: string[] };
+export type DiagramQuestion = BaseQuestion & { type: 'diagram'; diagram: 'perpendicular' | 'parallel' | 'parallelogram' | 'rhombus'; labels?: string[] };
 
 export type Grade4Stage1Question =
   | ExpressionQuestion
@@ -52,7 +71,8 @@ export type Grade4Stage1Question =
   | CompareQuestion
   | AngleQuestion
   | SequenceQuestion
-  | ContextQuestion;
+  | ContextQuestion
+  | DiagramQuestion;
 
 const DIGIT_WORDS = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'] as const;
 
@@ -338,6 +358,159 @@ function naturalSequenceQuestion(): SequenceQuestion {
   };
 }
 
+function massUnitQuestion(): ContextQuestion {
+  const conversion = pick([
+    { from: 'yến', to: 'kg', factor: 10, fact: '1 yến = 10 kg' },
+    { from: 'tạ', to: 'kg', factor: 100, fact: '1 tạ = 100 kg' },
+    { from: 'tấn', to: 'kg', factor: 1_000, fact: '1 tấn = 1 000 kg' },
+    { from: 'tấn', to: 'tạ', factor: 10, fact: '1 tấn = 10 tạ' },
+  ] as const);
+  const amount = randomInt(2, conversion.factor === 1_000 ? 8 : 15);
+  const correct = amount * conversion.factor;
+  const signature = `mass-${amount}-${conversion.from}-${conversion.to}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'mass-units-grade-4', icon: '⚖️',
+    visualTitle: `${amount} ${conversion.from} = ? ${conversion.to}`,
+    visualLines: [conversion.fact, 'Hãy đổi về cùng một đơn vị'],
+    instruction: `${amount} ${conversion.from} bằng bao nhiêu ${conversion.to}?`,
+    answers: numericAnswers(correct, 1, 20_000, [conversion.factor, -conversion.factor, amount, -amount, conversion.factor * 10, -conversion.factor * 10]),
+    correctAnswer: correct,
+    hintSteps: [`Nhớ rằng ${conversion.fact}.`, `Lấy ${amount} × ${formatNumber(conversion.factor)}.`, `${amount} ${conversion.from} = ${formatNumber(correct)} ${conversion.to}.`],
+    explanation: `Vì ${conversion.fact}, ta có ${amount} × ${formatNumber(conversion.factor)} = ${formatNumber(correct)}. Vậy ${amount} ${conversion.from} = ${formatNumber(correct)} ${conversion.to}.`,
+  };
+}
+
+function areaUnitQuestion(): ContextQuestion {
+  const conversion = pick([
+    { from: 'm²', to: 'dm²', factor: 100, fact: '1 m² = 100 dm²' },
+    { from: 'dm²', to: 'cm²', factor: 100, fact: '1 dm² = 100 cm²' },
+    { from: 'cm²', to: 'mm²', factor: 100, fact: '1 cm² = 100 mm²' },
+    { from: 'm²', to: 'cm²', factor: 10_000, fact: '1 m² = 10 000 cm²' },
+  ] as const);
+  const amount = randomInt(2, conversion.factor === 10_000 ? 5 : 12);
+  const correct = amount * conversion.factor;
+  const signature = `area-${amount}-${conversion.from}-${conversion.to}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'area-units-grade-4', icon: '🟦',
+    visualTitle: `${amount} ${conversion.from} = ? ${conversion.to}`,
+    visualLines: [conversion.fact, 'Mỗi chiều dài đổi theo 10 lần thì diện tích đổi theo 100 lần'],
+    instruction: `Số nào thích hợp với dấu hỏi?`,
+    answers: numericAnswers(correct, 1, 100_000, [conversion.factor, -conversion.factor, amount * 10, -amount * 10, conversion.factor * 10, -conversion.factor * 10]),
+    correctAnswer: correct,
+    hintSteps: [`Dùng quan hệ ${conversion.fact}.`, `Tính ${amount} × ${formatNumber(conversion.factor)}.`, `Kết quả là ${formatNumber(correct)} ${conversion.to}.`],
+    explanation: `${amount} ${conversion.from} = ${amount} × ${formatNumber(conversion.factor)} = ${formatNumber(correct)} ${conversion.to}.`,
+  };
+}
+
+function timeCenturyQuestion(): ContextQuestion {
+  if (Math.random() < 0.55) {
+    const minutes = randomInt(2, 12);
+    const seconds = randomInt(1, 5) * 10;
+    const correct = minutes * 60 + seconds;
+    const signature = `seconds-${minutes}-${seconds}`;
+    return {
+      id: questionId(signature), signature, type: 'context', skillId: 'second-century', icon: '⏱️',
+      visualTitle: `${minutes} phút ${seconds} giây`, visualLines: ['1 phút = 60 giây'],
+      instruction: `Thời gian trên bằng bao nhiêu giây?`,
+      answers: numericAnswers(correct, 1, 1_000, [10, -10, 60, -60, minutes, -minutes]), correctAnswer: correct,
+      hintSteps: ['Đổi số phút ra giây.', `${minutes} × 60 = ${minutes * 60} giây.`, `${minutes * 60} + ${seconds} = ${correct} giây.`],
+      explanation: `${minutes} phút ${seconds} giây = ${minutes} × 60 + ${seconds} = ${correct} giây.`,
+    };
+  }
+  const century = randomInt(15, 21);
+  const year = century === 21 ? randomInt(2001, 2026) : randomInt((century - 1) * 100 + 1, century * 100);
+  const roman = ['XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
+  const correct = `Thế kỉ ${roman[century - 15]}`;
+  const answers = [correct];
+  const nearbyAnswers = shuffle(roman.filter((_, index) => index !== century - 15 && Math.abs(index - (century - 15)) <= 2).map((value) => `Thế kỉ ${value}`));
+  for (const candidate of nearbyAnswers) {
+    if (answers.length < 4) answers.push(candidate);
+  }
+  while (answers.length < 4) {
+    const candidate = `Thế kỉ ${pick(roman)}`;
+    if (!answers.includes(candidate)) answers.push(candidate);
+  }
+  const signature = `century-${year}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'second-century', icon: '📅',
+    visualTitle: `Năm ${year}`, visualLines: ['100 năm = 1 thế kỉ'],
+    instruction: `Năm ${year} thuộc thế kỉ nào?`, answers: shuffle(answers), correctAnswer: correct,
+    hintSteps: ['Mỗi thế kỉ gồm 100 năm.', `Thế kỉ ${century} gồm các năm từ ${(century - 1) * 100 + 1} đến ${century * 100}.`, `Năm ${year} thuộc ${correct.toLowerCase()}.`],
+    explanation: `Vì ${year} nằm trong khoảng ${(century - 1) * 100 + 1}–${century * 100}, nên thuộc ${correct.toLowerCase()}.`,
+  };
+}
+
+function largeAddSubtractQuestion(): ExpressionQuestion {
+  const addition = Math.random() < 0.5;
+  if (addition) {
+    const left = randomInt(100_000, 6_000_000);
+    const right = randomInt(10_000, 9_999_999 - left);
+    const correct = left + right;
+    return expressionQuestion('large-add-subtract', `${formatNumber(left)} + ${formatNumber(right)} = ?`, correct, `Đặt các chữ số cùng hàng thẳng cột, ta tính được ${formatNumber(left)} + ${formatNumber(right)} = ${formatNumber(correct)}.`, `large-add-${left}-${right}`, 10_000_000);
+  }
+  const left = randomInt(200_000, 9_999_999);
+  const right = randomInt(10_000, left - 1);
+  const correct = left - right;
+  return expressionQuestion('large-add-subtract', `${formatNumber(left)} − ${formatNumber(right)} = ?`, correct, `Đặt các chữ số cùng hàng thẳng cột, ta tính được ${formatNumber(left)} − ${formatNumber(right)} = ${formatNumber(correct)}.`, `large-sub-${left}-${right}`, 10_000_000);
+}
+
+function additionPropertyQuestion(): ExpressionQuestion {
+  const first = randomInt(120, 950) * 10;
+  const second = randomInt(11, 89);
+  const third = 100 - second;
+  const correct = first + 100;
+  const expression = Math.random() < 0.5
+    ? `${formatNumber(first)} + ${second} + ${third}`
+    : `${second} + ${formatNumber(first)} + ${third}`;
+  return expressionQuestion('addition-properties', `${expression} = ?`, correct, `Dùng tính chất giao hoán và kết hợp để ghép ${second} + ${third} = 100; sau đó ${formatNumber(first)} + 100 = ${formatNumber(correct)}.`, `addition-property-${first}-${second}`, 20_000, 'Tính bằng cách thuận tiện');
+}
+
+function sumDifferenceQuestion(): ContextQuestion {
+  const small = randomInt(20, 450);
+  const difference = randomInt(5, 160) * 2;
+  const large = small + difference;
+  const sum = small + large;
+  const askLarge = Math.random() < 0.5;
+  const correct = askLarge ? large : small;
+  const signature = `sum-difference-${sum}-${difference}-${askLarge}`;
+  return {
+    id: questionId(signature), signature, type: 'context', skillId: 'sum-difference-problems', icon: '🧩',
+    visualTitle: `Tổng: ${formatNumber(sum)} · Hiệu: ${formatNumber(difference)}`,
+    visualLines: [askLarge ? 'Tìm số lớn' : 'Tìm số bé'],
+    instruction: `${askLarge ? 'Số lớn' : 'Số bé'} là bao nhiêu?`,
+    answers: numericAnswers(correct, 0, 2_000, [difference, -difference, Math.floor(difference / 2), -Math.floor(difference / 2), 10, -10]), correctAnswer: correct,
+    hintSteps: [askLarge ? 'Số lớn = (tổng + hiệu) : 2.' : 'Số bé = (tổng − hiệu) : 2.', `${askLarge ? `${sum} + ${difference}` : `${sum} − ${difference}`} = ${askLarge ? sum + difference : sum - difference}.`, `${askLarge ? sum + difference : sum - difference} : 2 = ${correct}.`],
+    explanation: `${askLarge ? 'Số lớn' : 'Số bé'} = (${sum} ${askLarge ? '+' : '−'} ${difference}) : 2 = ${correct}. Kiểm tra: ${large} + ${small} = ${sum} và ${large} − ${small} = ${difference}.`,
+  };
+}
+
+function lineQuestion(kind: 'perpendicular' | 'parallel'): DiagramQuestion {
+  const correct = kind === 'perpendicular' ? 'Vuông góc' : 'Song song';
+  const signature = `lines-${kind}-${Math.random().toString(36).slice(2, 6)}`;
+  return {
+    id: questionId(signature), signature, type: 'diagram', diagram: kind,
+    skillId: kind === 'perpendicular' ? 'perpendicular-lines' : 'parallel-lines',
+    labels: kind === 'perpendicular' ? ['a', 'b', 'O'] : ['m', 'n'],
+    instruction: `Hai đường thẳng trong hình có quan hệ gì?`,
+    answers: shuffle(['Vuông góc', 'Song song', 'Cắt nhau không vuông góc', 'Trùng nhau']), correctAnswer: correct,
+    hintSteps: [kind === 'perpendicular' ? 'Quan sát góc tạo bởi hai đường thẳng.' : 'Quan sát khoảng cách giữa hai đường thẳng.', kind === 'perpendicular' ? 'Dấu ô vuông cho biết hai đường tạo góc 90°.' : 'Hai đường không cắt nhau dù kéo dài.', `Hai đường thẳng ${correct.toLowerCase()}.`],
+    explanation: kind === 'perpendicular' ? 'Hai đường thẳng cắt nhau và tạo thành góc vuông, nên chúng vuông góc.' : 'Hai đường thẳng luôn cách đều và không cắt nhau khi kéo dài, nên chúng song song.',
+  };
+}
+
+function quadrilateralQuestion(): DiagramQuestion {
+  const diagram = pick(['parallelogram', 'rhombus'] as const);
+  const correct = diagram === 'parallelogram' ? 'Hình bình hành' : 'Hình thoi';
+  const signature = `quadrilateral-${diagram}-${Math.random().toString(36).slice(2, 6)}`;
+  return {
+    id: questionId(signature), signature, type: 'diagram', diagram, skillId: 'parallelogram-rhombus', labels: ['A', 'B', 'C', 'D'],
+    instruction: 'Hình tứ giác trong hình là hình gì?',
+    answers: shuffle(['Hình bình hành', 'Hình thoi', 'Hình chữ nhật', 'Hình thang']), correctAnswer: correct,
+    hintSteps: ['Quan sát các cặp cạnh đối diện.', diagram === 'rhombus' ? 'Hình có bốn cạnh bằng nhau.' : 'Hình có hai cặp cạnh đối diện song song.', `Đây là ${correct.toLowerCase()}.`],
+    explanation: diagram === 'rhombus' ? 'Hình có bốn cạnh bằng nhau và hai cặp cạnh đối diện song song, nên là hình thoi.' : 'Hình có hai cặp cạnh đối diện song song và bằng nhau, nên là hình bình hành.',
+  };
+}
+
 type Factory = () => Grade4Stage1Question;
 
 function uniqueQuestions(plan: Factory[], total: 5 | 10 | 15) {
@@ -359,6 +532,9 @@ export function generateGrade4Stage1Questions(module: Grade4Stage1Module, total:
     review: [reviewNumberQuestion, reviewOperationQuestion, oddEvenQuestion, letterExpressionQuestion, threeStepProblemQuestion],
     angles: [angleQuestion, angleMeasureQuestion, angleQuestion, angleMeasureQuestion, angleQuestion],
     'large-numbers': [largeNumberQuestion, roundLargeNumberQuestion, compareLargeNumberQuestion, naturalSequenceQuestion, largeNumberQuestion],
+    measurement: [massUnitQuestion, areaUnitQuestion, timeCenturyQuestion, massUnitQuestion, areaUnitQuestion],
+    'add-subtract': [largeAddSubtractQuestion, additionPropertyQuestion, sumDifferenceQuestion, largeAddSubtractQuestion, sumDifferenceQuestion],
+    'lines-shapes': [() => lineQuestion('perpendicular'), () => lineQuestion('parallel'), quadrilateralQuestion, () => lineQuestion(Math.random() < 0.5 ? 'perpendicular' : 'parallel'), quadrilateralQuestion],
   };
   return uniqueQuestions(plans[module], total);
 }
