@@ -62,8 +62,19 @@ if (Astro.url.pathname.startsWith('/luyen-tap/')) {
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="mobile-web-app-capable" content="yes" />
-<meta name="theme-color" content="#7c3aed" />
-<meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#f8fafc" />
+<meta name="color-scheme" content="light dark" />
+<script is:inline>
+  (() => {
+    const key = 'trang-toan:theme';
+    let saved = null;
+    try { saved = localStorage.getItem(key); } catch {}
+    const dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', dark);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0f172a' : '#f8fafc');
+  })();
+</script>
 <link rel="icon" href="/icon/favicon.ico" sizes="any" />
 <link rel="icon" href="/icon/favicon-32x32.png" type="image/png" sizes="32x32" />
 <link rel="icon" href="/icon/favicon-16x16.png" type="image/png" sizes="16x16" />

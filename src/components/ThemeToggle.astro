@@ -1,0 +1,71 @@
+---
+interface Props {
+  floating?: boolean;
+  compact?: boolean;
+}
+
+const { floating = false, compact = false } = Astro.props;
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  aria-label="Chuyển sang chế độ tối"
+  title="Đổi chế độ sáng hoặc tối"
+  class:list={[
+    'theme-toggle inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200/80 bg-white/85 font-extrabold text-slate-600 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-violet-300 hover:text-violet-700 dark:border-slate-700 dark:bg-slate-900/85 dark:text-slate-200 dark:hover:border-violet-500 dark:hover:text-violet-300',
+    floating
+      ? 'fixed right-4 top-[4.75rem] z-50 h-12 w-12 shadow-lg md:right-6 md:top-[5.25rem]'
+      : compact
+        ? 'h-10 w-10'
+        : 'h-10 px-3',
+  ]}
+>
+  <svg data-theme-sun class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+  </svg>
+  <svg data-theme-moon class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+  </svg>
+  {!compact && !floating && <span class="hidden lg:inline" data-theme-label>Chế độ tối</span>}
+</button>
+
+<script>
+  const THEME_KEY = 'trang-toan:theme';
+
+  function currentTheme() {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+
+  function updateThemeButtons() {
+    const dark = currentTheme() === 'dark';
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-label', dark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối');
+      button.setAttribute('aria-pressed', String(dark));
+      button.querySelector('[data-theme-sun]')?.classList.toggle('hidden', dark);
+      button.querySelector('[data-theme-moon]')?.classList.toggle('hidden', !dark);
+      const label = button.querySelector('[data-theme-label]');
+      if (label) label.textContent = dark ? 'Chế độ sáng' : 'Chế độ tối';
+    });
+  }
+
+  function bindThemeButtons() {
+    updateThemeButtons();
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      if (button.dataset.themeBound === 'true') return;
+      button.dataset.themeBound = 'true';
+      button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+        document.documentElement.dataset.theme = nextTheme;
+        try { localStorage.setItem(THEME_KEY, nextTheme); } catch {}
+        document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'dark' ? '#0f172a' : '#f8fafc');
+        updateThemeButtons();
+      });
+    });
+  }
+
+  bindThemeButtons();
+  document.addEventListener('astro:page-load', bindThemeButtons);
+</script>

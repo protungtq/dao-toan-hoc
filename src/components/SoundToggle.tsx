@@ -28,7 +28,7 @@ export default function SoundToggle() {
       aria-label={label}
       title={label}
       aria-pressed={!enabled}
-      className="fixed right-4 top-4 z-50 grid h-12 w-12 place-items-center rounded-2xl border-2 border-white/80 bg-white/95 text-2xl shadow-lg shadow-slate-300/40 backdrop-blur transition hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-sky-300 md:right-6 md:top-6"
+      className="fixed right-4 top-4 z-50 grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/80 bg-white/90 text-2xl shadow-lg shadow-slate-300/40 backdrop-blur transition hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:border-slate-700 dark:bg-slate-900/90 dark:shadow-black/30 md:right-6 md:top-6"
     >
       <span aria-hidden="true">{enabled ? '🔊' : '🔇'}</span>
     </button>
