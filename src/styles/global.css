@@ -219,13 +219,13 @@ html.dark .solution-explanation-index {
   color: #a7f3d0 !important;
 }
 
-html.dark [class*="from-violet-50"],
-html.dark [class*="from-cyan-50"],
-html.dark [class*="from-emerald-50"],
-html.dark [class*="from-orange-50"],
-html.dark [class*="from-pink-50"],
-html.dark [class*="from-[#fffaf0]"],
-html.dark [class*="from-[#fbfcfe]"] {
+html.dark .from-violet-50,
+html.dark .from-cyan-50,
+html.dark .from-emerald-50,
+html.dark .from-orange-50,
+html.dark .from-pink-50,
+html.dark .from-\[\#fffaf0\],
+html.dark .from-\[\#fbfcfe\] {
   background-image: linear-gradient(135deg, #111827, #0f172a 52%, #111827) !important;
 }
 
