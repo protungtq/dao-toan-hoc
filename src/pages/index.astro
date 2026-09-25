@@ -24,67 +24,183 @@ const grades = [
 ];
 
 const quickLessons = [
-  { ...grade1ReadyModules[0], grade: 1, gradeColor: 'bg-violet-100 text-violet-700' },
-  { ...grade2ReadyModules[0], grade: 2, gradeColor: 'bg-sky-100 text-sky-700' },
-  { ...grade3ReadyModules[0], grade: 3, gradeColor: 'bg-emerald-100 text-emerald-700' },
-  { ...grade4ReadyModules[0], grade: 4, gradeColor: 'bg-orange-100 text-orange-700' },
-  { ...grade5ReadyModules[0], grade: 5, gradeColor: 'bg-pink-100 text-pink-700' },
+  { ...grade1ReadyModules[0], grade: 1, gradeColor: 'bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300' },
+  { ...grade2ReadyModules[0], grade: 2, gradeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300' },
+  { ...grade3ReadyModules[0], grade: 3, gradeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300' },
+  { ...grade4ReadyModules[0], grade: 4, gradeColor: 'bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300' },
+  { ...grade5ReadyModules[0], grade: 5, gradeColor: 'bg-pink-100 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300' },
 ].filter((item) => item.slug);
 
 const strengths = [
-  { icon: '📘', title: 'Theo tiến trình học', description: 'Chủ đề được sắp xếp theo từng học kỳ và nhóm bài trong chương trình.' },
-  { icon: '🧠', title: 'Phản hồi có hướng dẫn', description: 'Gợi ý xuất hiện khi cần; lời giải từng bước giúp trẻ hiểu cách làm.' },
-  { icon: '🎯', title: 'Luyện tập thích ứng', description: 'Hệ thống ghi nhận kết quả và ưu tiên lại những kỹ năng còn yếu.' },
-  { icon: '📱', title: 'Dùng trên nhiều thiết bị', description: 'Điện thoại, máy tính bảng, máy tính và TV đều có thể bắt đầu nhanh.' },
+  { icon: '📘', title: 'Bám sát bài học trên lớp', description: 'Bài tập sắp xếp theo tuần và từng chủ đề quen thuộc, giúp bé củng cố ngay kiến thức vừa học.' },
+  { icon: '🧠', title: 'Gợi ý khi gặp bài khó', description: 'Gợi ý mở dần từng nấc giúp bé tự suy nghĩ tìm ra cách làm, kèm lời giải từng bước rõ ràng.' },
+  { icon: '🎯', title: 'Nhận biết điểm chưa vững', description: 'Ghi nhận dạng toán bé còn lúng túng để nhắc ôn lại đúng lúc, giúp bé tiến bộ từng ngày.' },
+  { icon: '📱', title: 'Tiện học trên mọi thiết bị', description: 'Học mượt mà trên điện thoại, máy tính bảng, máy tính hoặc mở nhanh trên màn hình TV.' },
 ];
 ---
 
 <BaseLayout title="Trạng Toán – Luyện Toán tiểu học lớp 1–5" description="Website luyện tập Toán lớp 1 đến lớp 5 với câu hỏi trực quan, gợi ý và lời giải từng bước.">
   <SiteHeader />
   <main class="overflow-hidden">
+    <!-- Hero Section -->
     <section class="relative border-b border-slate-200/70 bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_46%,#f5f3ff_100%)] dark:border-slate-800 dark:bg-[linear-gradient(135deg,#0b1120_0%,#111827_52%,#17142c_100%)]">
       <div class="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(#64748b_1px,transparent_1px)] [background-size:30px_30px] dark:opacity-[0.08]"></div>
       <div class="absolute -left-36 top-24 h-80 w-80 rounded-full bg-sky-200/45 blur-3xl dark:bg-sky-500/5"></div>
       <div class="absolute -right-32 -top-24 h-[30rem] w-[30rem] rounded-full bg-violet-200/55 blur-3xl dark:bg-violet-500/10"></div>
+      
       <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 md:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:py-20">
         <div class="max-w-3xl">
-          <div class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-sm font-extrabold text-violet-700 shadow-sm backdrop-blur dark:border-violet-400/20 dark:bg-violet-400/10 dark:text-violet-200"><span class="h-2 w-2 rounded-full bg-violet-500"></span>Luyện Toán tiểu học lớp 1–5</div>
-          <h1 class="mt-6 text-4xl font-black leading-[1.08] tracking-[-0.045em] text-slate-950 sm:text-5xl md:text-6xl">Luyện đúng bài,<br /><span class="bg-gradient-to-r from-violet-600 via-fuchsia-500 to-orange-500 bg-clip-text text-transparent">hiểu chắc từng bước</span></h1>
-          <p class="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 dark:text-slate-300">Hệ thống bài tập theo tiến trình học, có phản hồi tức thì, gợi ý phù hợp và lời giải từng bước.</p>
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row"><a href="#chon-lop" class="inline-flex items-center justify-center gap-3 rounded-2xl bg-violet-600 px-7 py-4 font-black text-white shadow-xl shadow-violet-200/70 transition hover:-translate-y-1 hover:bg-violet-700 dark:shadow-none">Chọn lớp đang học <span aria-hidden="true">→</span></a><a href="/thanh-tich" class="inline-flex items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white/85 px-7 py-4 font-black text-slate-700 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:border-amber-300 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200">Xem thành tích</a></div>
-          <div class="mt-8 flex flex-wrap gap-2.5 text-sm font-bold text-slate-600 dark:text-slate-300"><span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lớp 1–5</span><span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lời giải từng bước</span><span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Không cần đăng nhập</span></div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-sm font-extrabold text-violet-700 shadow-sm backdrop-blur dark:border-violet-400/20 dark:bg-violet-400/10 dark:text-violet-200">
+            <span class="h-2 w-2 rounded-full bg-violet-500"></span>
+            Cùng bé tự tin học Toán lớp 1–5
+          </div>
+          <h1 class="mt-6 text-4xl font-black leading-[1.08] tracking-[-0.045em] text-slate-950 sm:text-5xl md:text-6xl dark:text-white">
+            Luyện đúng bài,<br />
+            <span class="bg-gradient-to-r from-violet-600 via-fuchsia-500 to-orange-500 bg-clip-text text-transparent">hiểu chắc từng bước</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 dark:text-slate-300">
+            Bài tập vừa sức theo từng bài học trên lớp, có gợi ý khi gặp khó và lời giải từng bước để bé tự tin làm bài.
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#chon-lop" class="inline-flex items-center justify-center gap-3 rounded-2xl bg-violet-600 px-7 py-4 font-black text-white shadow-xl shadow-violet-200/70 transition hover:-translate-y-1 hover:bg-violet-700 dark:shadow-none">
+              Chọn lớp đang học <span aria-hidden="true" class="transition group-hover:translate-x-1">→</span>
+            </a>
+            <a href="/thanh-tich" class="inline-flex items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white/85 px-7 py-4 font-black text-slate-700 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:border-amber-300 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200">
+              Xem thành tích
+            </a>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-2.5 text-sm font-bold text-slate-600 dark:text-slate-300">
+            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lớp 1–5</span>
+            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lời giải từng bước</span>
+            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Không cần đăng nhập</span>
+          </div>
         </div>
+
         <div class="relative mx-auto w-full max-w-xl">
           <div class="relative overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white/90 p-5 shadow-[0_28px_90px_rgba(15,23,42,0.13)] backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/92 md:p-7">
-            <div class="flex items-center justify-between gap-5"><div><p class="text-sm font-extrabold uppercase tracking-[0.14em] text-violet-600 dark:text-violet-300">Chương trình luyện tập</p><h2 class="mt-2 text-2xl font-black text-slate-950 dark:text-white md:text-3xl">Chọn lớp đang học</h2></div><span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 text-3xl shadow-inner dark:from-amber-400/15 dark:to-orange-400/10">🎓</span></div>
-            <div class="mt-6 grid gap-2.5">{grades.map((item) => <a href={`/lop-${item.grade}`} class="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3 transition hover:-translate-y-0.5 hover:border-violet-300 hover:bg-white hover:shadow-lg dark:border-slate-700 dark:bg-slate-800/70 dark:hover:border-violet-400 dark:hover:bg-slate-800" aria-label={`Mở ${item.title}`}><span class={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br text-lg font-black text-white shadow-md ${item.gradient}`}>{item.grade}</span><span class="min-w-0 flex-1"><span class="block font-black text-slate-900 dark:text-white">{item.title}</span><span class="mt-0.5 block truncate text-sm font-semibold text-slate-500 dark:text-slate-400">{item.short}</span></span><span class="text-2xl transition group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">{item.mascot}</span><span class="text-lg text-slate-300 transition group-hover:translate-x-1 group-hover:text-violet-600 dark:text-slate-600 dark:group-hover:text-violet-300" aria-hidden="true">→</span></a>)}</div>
+            <div class="flex items-center justify-between gap-5">
+              <div>
+                <p class="text-sm font-extrabold uppercase tracking-[0.14em] text-violet-600 dark:text-violet-300">Chương trình luyện tập</p>
+                <h2 class="mt-2 text-2xl font-black text-slate-950 dark:text-white md:text-3xl">Chọn lớp đang học</h2>
+              </div>
+              <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 text-3xl shadow-inner dark:from-amber-400/15 dark:to-orange-400/10">🎓</span>
+            </div>
+            <div class="mt-6 grid gap-2.5">
+              {grades.map((item) => (
+                <a href={`/lop-${item.grade}`} class="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3 transition hover:-translate-y-0.5 hover:border-violet-300 hover:bg-white hover:shadow-lg dark:border-slate-700 dark:bg-slate-800/70 dark:hover:border-violet-400 dark:hover:bg-slate-800" aria-label={`Mở ${item.title}`}>
+                  <span class={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br text-lg font-black text-white shadow-md ${item.gradient}`}>{item.grade}</span>
+                  <span class="min-w-0 flex-1">
+                    <span class="block font-black text-slate-900 dark:text-white group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">{item.title}</span>
+                    <span class="mt-0.5 block truncate text-sm font-semibold text-slate-500 dark:text-slate-400">{item.short}</span>
+                  </span>
+                  <span class="text-2xl transition group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">{item.mascot}</span>
+                  <span class="text-lg text-slate-300 transition group-hover:translate-x-1.5 group-hover:text-violet-600 dark:text-slate-600 dark:group-hover:text-violet-300" aria-hidden="true">→</span>
+                </a>
+              ))}
+            </div>
           </div>
           <div class="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-[2rem] bg-gradient-to-br from-violet-200/80 to-sky-200/70 dark:from-violet-500/10 dark:to-sky-500/10"></div>
         </div>
       </div>
     </section>
 
+    <!-- Thanh tiếp tục học -->
     <ContinueLearning client:load />
 
+    <!-- Danh sách các khối lớp -->
     <section id="chon-lop" class="bg-white py-16 dark:bg-slate-950 md:py-20">
       <div class="mx-auto max-w-7xl px-4 md:px-8">
-        <div class="max-w-3xl"><p class="text-sm font-black uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Hành trình Toán lớp 1–5</p><h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Mỗi lớp một chặng khám phá</h2><p class="mt-4 max-w-2xl font-medium leading-7 text-slate-600 dark:text-slate-400">Từ những con số đầu tiên đến phân số, phần trăm và chuyển động, bé luôn có một người bạn đồng hành trong từng chủ đề.</p></div>
-        <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">{grades.map((item) => <a href={`/lop-${item.grade}`} class={`group relative flex min-h-80 flex-col overflow-hidden rounded-[1.75rem] border bg-gradient-to-br p-5 transition duration-200 hover:-translate-y-1.5 hover:shadow-xl dark:bg-none dark:bg-slate-900 ${item.pale} ${item.border}`}><div class="flex items-start justify-between gap-4"><span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white shadow-lg ${item.gradient}`}>{item.grade}</span><span class="text-3xl opacity-80 transition group-hover:rotate-6 group-hover:scale-110">{item.mascot}</span></div><h3 class="mt-6 text-xl font-black text-slate-950 dark:text-white">{item.title}</h3><p class="mt-3 flex-1 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">{item.description}</p><div class="mt-5 flex items-center justify-between border-t border-slate-200/80 pt-4 dark:border-slate-700"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">{item.count} chủ đề</span><span class={`font-black transition group-hover:translate-x-1 ${item.text}`}>Xem lộ trình →</span></div></a>)}</div>
+        <div class="max-w-3xl">
+          <p class="text-sm font-black uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Hành trình Toán lớp 1–5</p>
+          <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Mỗi lớp một chặng khám phá</h2>
+          <p class="mt-4 max-w-2xl font-medium leading-7 text-slate-600 dark:text-slate-400">Từ những con số đầu tiên đến phân số, phần trăm và chuyển động, bé luôn có một người bạn đồng hành trong từng chủ đề.</p>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {grades.map((item) => (
+            <a href={`/lop-${item.grade}`} class={`group relative flex min-h-80 flex-col overflow-hidden rounded-[1.75rem] border bg-gradient-to-br p-5 transition duration-200 hover:-translate-y-1.5 hover:shadow-xl dark:bg-none dark:bg-slate-900 ${item.pale} ${item.border}`}>
+              <div class="flex items-start justify-between gap-4">
+                <span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white shadow-lg ${item.gradient}`}>{item.grade}</span>
+                <span class="text-3xl opacity-80 transition group-hover:rotate-6 group-hover:scale-110">{item.mascot}</span>
+              </div>
+              <h3 class="mt-6 text-xl font-black text-slate-950 dark:text-white">{item.title}</h3>
+              <p class="mt-3 flex-1 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">{item.description}</p>
+              <div class="mt-5 flex items-center justify-between border-t border-slate-200/80 pt-4 dark:border-slate-700">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{item.count} chủ đề</span>
+                <span class={`font-black transition group-hover:translate-x-1.5 ${item.text}`}>Xem lộ trình →</span>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
+    <!-- Khối bắt đầu nhanh -->
     <section id="hoc-ngay" class="border-y border-slate-200 bg-slate-50 py-16 dark:border-slate-800 dark:bg-slate-900/60 md:py-20">
       <div class="mx-auto max-w-7xl px-4 md:px-8">
-        <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p class="text-sm font-black uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">Bắt đầu nhanh</p><h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Một chủ đề cho mỗi khối lớp</h2></div><p class="max-w-lg font-medium leading-7 text-slate-600 dark:text-slate-400">Các chủ đề nền tảng phù hợp để làm quen với cách luyện trên Trạng Toán.</p></div>
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{quickLessons.map((item) => <a href={`/luyen-tap/lop-${item.grade}/${item.slug}`} class="group flex min-h-52 flex-col rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:hover:border-violet-400"><div class="flex items-center justify-between gap-3"><span class={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br text-xl text-white shadow-md ${item.color}`}>{item.icon}</span><span class={`rounded-full px-2.5 py-1 text-xs font-black ${item.gradeColor}`}>Lớp {item.grade}</span></div><h3 class="mt-5 flex-1 font-black leading-snug text-slate-900 transition group-hover:text-violet-700 dark:text-white dark:group-hover:text-violet-300">{item.title}</h3><span class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm font-black text-slate-500 dark:border-slate-800 dark:text-slate-400">Luyện ngay <span class="text-lg transition group-hover:translate-x-1 group-hover:text-violet-600">→</span></span></a>)}</div>
+        <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <p class="text-sm font-black uppercase tracking-[0.16em] text-sky-700 dark:text-sky-300">Bắt đầu nhanh</p>
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Một chủ đề cho mỗi khối lớp</h2>
+          </div>
+          <p class="max-w-lg font-medium leading-7 text-slate-600 dark:text-slate-400">Các bài tập quen thuộc giúp bé dễ dàng làm quen với cách luyện tập trên Trạng Toán.</p>
+        </div>
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {quickLessons.map((item) => (
+            <a href={`/luyen-tap/lop-${item.grade}/${item.slug}`} class="group flex min-h-52 flex-col rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:hover:border-violet-400">
+              <div class="flex items-center justify-between gap-3">
+                <span class={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br text-xl text-white shadow-md ${item.color}`}>{item.icon}</span>
+                <span class={`rounded-full px-2.5 py-1 text-xs font-black ${item.gradeColor}`}>Lớp {item.grade}</span>
+              </div>
+              <h3 class="mt-5 flex-1 font-black leading-snug text-slate-900 transition group-hover:text-violet-700 dark:text-white dark:group-hover:text-violet-300">{item.title}</h3>
+              <span class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm font-black text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                Luyện ngay <span class="text-lg transition group-hover:translate-x-1.5 group-hover:text-violet-600">→</span>
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
+    <!-- Định hướng học tập -->
     <section class="bg-white py-16 dark:bg-slate-950 md:py-20">
-      <div class="mx-auto max-w-7xl px-4 md:px-8"><div class="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start"><div class="lg:sticky lg:top-28"><p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">Học hiệu quả hơn</p><h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Tập trung vào việc hiểu bài</h2><p class="mt-5 font-medium leading-8 text-slate-600 dark:text-slate-400">Trạng Toán được thiết kế như một công cụ luyện thêm: ngắn gọn, có hướng dẫn và không thay thế quá trình giảng dạy.</p></div><div class="grid gap-4 sm:grid-cols-2">{strengths.map((item, index) => <article class="rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-6 dark:border-slate-800 dark:bg-slate-900"><div class="flex items-center justify-between"><span class="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-sm dark:bg-slate-800">{item.icon}</span><span class="text-sm font-black text-slate-300 dark:text-slate-700">0{index + 1}</span></div><h3 class="mt-5 text-lg font-black text-slate-900 dark:text-white">{item.title}</h3><p class="mt-2 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">{item.description}</p></article>)}</div></div></div>
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div class="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+          <div class="lg:sticky lg:top-28">
+            <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">Học hiệu quả hơn</p>
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">Tập trung vào việc hiểu bài</h2>
+            <p class="mt-5 font-medium leading-8 text-slate-600 dark:text-slate-400">Trạng Toán được thiết kế như một người bạn đồng hành: ngắn gọn, có chỉ dẫn rõ ràng và không tạo áp lực điểm số.</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            {strengths.map((item, index) => (
+              <article class="rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-6 dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-center justify-between">
+                  <span class="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-sm dark:bg-slate-800">{item.icon}</span>
+                  <span class="text-sm font-black text-slate-300 dark:text-slate-700">0{index + 1}</span>
+                </div>
+                <h3 class="mt-5 text-lg font-black text-slate-900 dark:text-white">{item.title}</h3>
+                <p class="mt-2 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section id="phu-huynh" class="bg-slate-50 px-4 py-16 dark:bg-slate-900/60 md:px-8 md:py-20"><div class="mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#5b21b6_0%,#7c3aed_52%,#0369a1_100%)] p-8 text-white shadow-2xl shadow-violet-200/60 md:grid-cols-[1fr_auto] md:p-12 dark:shadow-none"><div><p class="text-sm font-black uppercase tracking-[0.16em] text-violet-200">Dành cho gia đình</p><h2 class="mt-3 max-w-4xl text-3xl font-black tracking-tight md:text-5xl">Luyện thêm đúng lúc, không tạo áp lực</h2><p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-violet-100">Mỗi lượt luyện có thể chọn 5, 10 hoặc 15 câu. Kết quả được lưu ngay trên thiết bị để gia đình theo dõi tiến bộ.</p></div><a href="#chon-lop" class="rounded-2xl bg-white px-7 py-4 text-center font-black text-violet-700 shadow-xl transition hover:-translate-y-1">Chọn lớp để bắt đầu</a></div></section>
+    <!-- Khối phụ huynh -->
+    <section id="phu-huynh" class="bg-slate-50 px-4 py-16 dark:bg-slate-900/60 md:px-8 md:py-20">
+      <div class="mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#5b21b6_0%,#7c3aed_52%,#0369a1_100%)] p-8 text-white shadow-2xl shadow-violet-200/60 md:grid-cols-[1fr_auto] md:p-12 dark:shadow-none">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.16em] text-violet-200">Dành cho gia đình</p>
+          <h2 class="mt-3 max-w-4xl text-3xl font-black tracking-tight md:text-5xl">Cùng con học bài nhẹ nhàng mỗi ngày</h2>
+          <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-violet-100">
+            Mỗi lượt luyện chỉ từ 5 đến 15 câu, vừa đủ để con ôn bài mà không căng thẳng. Toàn bộ kết quả được lưu ngay trên thiết bị để gia đình tiện theo dõi tiến bộ của con.
+          </p>
+        </div>
+        <a href="#chon-lop" class="rounded-2xl bg-white px-7 py-4 text-center font-black text-violet-700 shadow-xl transition hover:-translate-y-1 hover:bg-violet-50">
+          Chọn lớp để bắt đầu
+        </a>
+      </div>
+    </section>
   </main>
   <SiteFooter />
 </BaseLayout>
