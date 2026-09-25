@@ -132,6 +132,27 @@ function shapeSvg(shape: string) {
   return `<span class="data-pill">${escapeHtml(shape)}</span>`;
 }
 
+// Print diagrams use SVG and text because platform emoji fonts often disappear in PDFs.
+function massObjectSvg(icon: unknown) {
+  const objects: Record<string, { name: string; drawing: string }> = {
+    '🍉': { name: 'Quả dưa hấu', drawing: '<ellipse cx="48" cy="43" rx="33" ry="25" fill="#e2f7db"/><path d="M15 43a33 25 0 0 0 66 0" fill="#fca5a5"/><path d="M18 48q30 20 60 0" fill="none" stroke="#15803d" stroke-width="5"/>' },
+    '🎒': { name: 'Chiếc cặp', drawing: '<rect x="20" y="25" width="56" height="48" rx="7" fill="#dbeafe" stroke="#172033" stroke-width="3"/><path d="M36 25v-8h24v8M30 45h36M42 45v12h12V45" fill="none" stroke="#172033" stroke-width="3"/>' },
+    '🍚': { name: 'Túi gạo', drawing: '<path d="M30 20h36l-5 14 11 38H24l11-38z" fill="#fef3c7" stroke="#172033" stroke-width="3"/><path d="M35 34h26M33 52h30" stroke="#92400e" stroke-width="3"/>' },
+    '🐱': { name: 'Chú mèo', drawing: '<path d="M20 34V14l19 13q9-3 18 0l19-13v20a29 29 0 1 1-56 0z" fill="#fde68a" stroke="#172033" stroke-width="3"/><circle cx="38" cy="45" r="3"/><circle cx="58" cy="45" r="3"/><path d="M45 55l3 3 3-3M48 58v5" fill="none" stroke="#172033" stroke-width="2"/>' },
+    '🏋️': { name: 'Quả cân', drawing: '<path d="M36 23a12 12 0 0 1 24 0M30 30h36l10 43H20z" fill="#e2e8f0" stroke="#172033" stroke-width="3"/>' },
+  };
+  const item = objects[String(icon)];
+  if (!item) return `<strong>${escapeHtml(icon)}</strong>`;
+  return `<svg viewBox="0 0 96 88" role="img" aria-label="${item.name}">${item.drawing}</svg><strong>${item.name}</strong>`;
+}
+
+function waterContainerSvg(volume: number, label?: string, showVolume = true) {
+  // A labeled scale and a real water line make the volume readable in black-and-white PDFs.
+  const value = Math.max(0, Math.min(10, volume));
+  const waterTop = 77 - value * 5;
+  return `<div class="water-container"><svg viewBox="0 0 95 88" role="img" aria-label="${escapeHtml(label ?? 'Bình nước')}"><path d="M26 11h43v62q0 7-7 7H33q-7 0-7-7z" fill="white" stroke="#172033" stroke-width="3"/><path d="M29 ${waterTop}h37v${77 - waterTop}H29z" fill="#bfdbfe"/><path d="M29 ${waterTop}h37" stroke="#2563eb" stroke-width="3"/>${[2,4,6,8,10].map((mark) => `<path d="M62 ${77 - mark * 5}h7" stroke="#172033" stroke-width="1"/><text x="72" y="${80 - mark * 5}" font-size="7">${mark}</text>`).join('')}</svg>${label ? `<b>${escapeHtml(label)}</b>` : ''}${showVolume ? `<small>${value} l</small>` : ''}</div>`;
+}
+
 function polygonSvg(sides: number, variant = 0) {
   const shapes: Record<number, string[]> = {
     3: ['150,25 45,165 255,165'],
@@ -298,8 +319,8 @@ export function visualHtml(question: PrintableQuestion) {
     const notes = (q.notes as unknown[] ?? q.bills as unknown[] ?? []);
     return `<div class="money-list">${notes.map((note) => `<span>${escapeHtml(displayValue(note))} đồng</span>`).join('')}${q.price ? `<b>Giá: ${escapeHtml(displayValue(q.price))} đồng</b>` : ''}</div>`;
   }
-  if (type === 'balance') return `<div class="balance"><span>${escapeHtml(q.leftIcon)}<b>${escapeHtml(q.leftMass)} kg</b></span><i>⚖️</i><span>${escapeHtml(q.rightIcon)}<b>${escapeHtml(q.rightMass)} kg</b></span></div>`;
-  if (type === 'capacity') return `<div class="balance"><span>${escapeHtml(q.firstIcon)}<b>${escapeHtml(q.first)} l</b></span><i>↔</i><span>${escapeHtml(q.secondIcon)}<b>${escapeHtml(q.second)} l</b></span></div>`;
+  if (type === 'balance') return `<div class="print-comparison"><div class="print-item">${massObjectSvg(q.leftIcon)}<small>${q.mode === 'read' ? '? kg' : `${escapeHtml(q.leftMass)} kg`}</small></div><span class="comparison-symbol">${q.mode === 'read' ? '=' : '↔'}</span><div class="print-item">${massObjectSvg(q.rightIcon)}<small>${escapeHtml(q.rightMass)} kg</small></div></div>`;
+  if (type === 'capacity') return `<div class="print-comparison">${waterContainerSvg(Number(q.first ?? 0), q.mode === 'compare' ? 'Bình A' : undefined, q.mode === 'compare')}${q.mode === 'compare' ? `<span class="comparison-symbol">↔</span>${waterContainerSvg(Number(q.second ?? 0), 'Bình B')}` : ''}</div>`;
   if (type === 'count-data') return `<div class="objects">${(q.items as unknown[] ?? []).map((item) => escapeHtml(item)).join(' ')}</div>`;
   if (type === 'probability') return `<div class="balls">${(q.balls as unknown[] ?? []).map((ball) => `<span class="${escapeHtml(ball)}"></span>`).join('')}</div>`;
   if (type === 'identify-shape') return `<div class="shape-row">${shapeSvg(String(q.shape ?? ''))}</div>`;
@@ -398,7 +419,7 @@ function buildWorksheetHtml(options: { title: string; grade: string; size: Works
   @media print{body{background:white}.toolbar{display:none}.sheet{width:auto;min-height:auto;margin:0;padding:0;box-shadow:none}.question{break-inside:avoid}.answer-key{break-before:page}}
   @media screen and (max-width:800px){.sheet{width:100%;margin:0;padding:18px}.student{grid-template-columns:1fr}.answers{grid-template-columns:1fr}.toolbar{position:fixed;right:0;bottom:0;left:0;top:auto}.sheet{padding-bottom:82px}.shape-row{gap:2mm}.shape-row>svg{flex-basis:18mm;width:18mm;height:15mm}.shape-row>.polygon-diagram{flex-basis:58mm;width:58mm;height:38mm}.shape-row>div{flex-basis:21mm}.objects{font-size:20px}.two-groups{gap:3mm;font-size:18px}}
   @media print{.sheet{width:auto;max-width:186mm;padding:0}.student{grid-template-columns:2fr 1fr 1fr}.answers{grid-template-columns:repeat(2,minmax(0,1fr))}.question{overflow:hidden;break-inside:avoid-page}.question h2{overflow-wrap:anywhere}.visual{min-width:0;overflow:hidden}.visual>*{min-width:0}.shape-row{width:100%;flex-wrap:wrap}.shape-row>div{flex:0 0 27mm}.shape-row>svg{flex:0 0 22mm}.shape-row>.polygon-diagram{flex:0 0 60mm}.objects,.two-groups>div{word-break:normal;overflow-wrap:anywhere}.two-groups{width:100%}.sequence{max-width:100%;flex-wrap:wrap}.data-table{max-width:100%;flex-wrap:wrap}.data-table div{min-width:0}.answer-key{break-before:page}}
-  .empty-objects{border:2px dashed #94a3b8;border-radius:3mm;padding:5mm 12mm;font-size:13px;font-weight:700;color:#475569}
+  .empty-objects{border:2px dashed #94a3b8;border-radius:3mm;padding:5mm 12mm;font-size:13px;font-weight:700;color:#475569}.print-comparison{width:100%;display:flex;align-items:center;justify-content:center;gap:8mm;flex-wrap:wrap}.print-item,.water-container{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:35mm;font-size:12px}.print-item svg,.water-container svg{width:23mm;height:23mm}.print-item strong,.water-container b{font-size:11px}.print-item small,.water-container small{font-size:12px;font-weight:900;color:#172033}.comparison-symbol{font-size:21px;font-weight:900}
   </style></head><body><div class="toolbar"><button onclick="window.close()">Đóng</button><button class="primary" onclick="printWorksheet()">🖨️ In hoặc lưu PDF</button></div><main class="sheet"><header class="sheet-header"><div><div class="brand">Trạng Toán · Phiếu luyện tập</div><h1>${escapeHtml(title)}</h1><div class="meta">Toán lớp ${escapeHtml(grade)} · ${size} câu · Mã đề ${escapeHtml(code)}</div></div><div class="qr"><img src="${qr}" alt="QR Trạng Toán">Quét để luyện trực tuyến</div></header><div class="student"><div>Họ và tên: <span class="line"></span></div><div>Lớp: <span class="line"></span></div><div>Ngày: <span class="line"></span></div></div>${questionMarkup}${answerMarkup}<footer class="footer"><span>trangtoan.so1.asia</span><span>Mã đề ${escapeHtml(code)}</span></footer></main><script>async function printWorksheet(){if(document.fonts?.ready)await document.fonts.ready;await Promise.all(Array.from(document.images,image=>image.complete?Promise.resolve():new Promise(resolve=>{image.onload=resolve;image.onerror=resolve})));window.print()}</script></body></html>`;
 }
 
