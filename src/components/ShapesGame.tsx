@@ -98,7 +98,7 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
   if (composite === 'robot') {
     return (
       <svg viewBox="0 0 240 220" className="h-52 w-64" role="img" aria-label="Rô-bốt ghép từ các hình">
-        <rect x="75" y="15" width="90" height="70" fill="#a78bfa" />
+        <rect x="80" y="10" width="80" height="80" fill="#a78bfa" />
         <circle cx="102" cy="48" r="9" fill="white" />
         <circle cx="138" cy="48" r="9" fill="white" />
         <rect x="68" y="95" width="104" height="82" fill="#38bdf8" />
@@ -337,7 +337,12 @@ export default function ShapesGame() {
         <>
           <div className="grid min-h-64 place-items-center rounded-3xl bg-emerald-50 p-8 text-center">
             <div>
-              <div className="text-8xl">{question.objectIcon}</div>
+              {question.objectName === 'ô cửa sổ vuông' ? (
+                <svg viewBox="0 0 100 100" className="mx-auto h-24 w-24" role="img" aria-label="Ô cửa sổ hình vuông có bốn cạnh bằng nhau">
+                  <rect x="8" y="8" width="84" height="84" rx="3" fill="#dbeafe" stroke="#334155" strokeWidth="8" />
+                  <path d="M50 12v76M12 50h76" stroke="#334155" strokeWidth="5" />
+                </svg>
+              ) : <div className="text-8xl">{question.objectIcon}</div>}
               <p className="mt-4 text-xl font-black text-emerald-800">{question.objectName}</p>
             </div>
           </div>

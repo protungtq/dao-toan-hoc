@@ -108,6 +108,9 @@ export function clearLearningProfile() {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(ACTIVITY_KEY);
+    localStorage.removeItem('trang-toan:minigame-tickets:v1');
+    localStorage.removeItem('trang-toan:minigame-active:v1');
+    window.dispatchEvent(new Event('trang-toan:tickets-updated'));
   }
 }
 

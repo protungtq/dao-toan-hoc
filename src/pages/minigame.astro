@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MiniGameArcade from '../components/MiniGameArcade';
+---
+<BaseLayout title="Minigame Sóc và Gấu – Trạng Toán" description="Luyện tập Toán để nhận vé vui chơi cùng Sóc và Gấu.">
+  <SiteHeader compact />
+  <main class="min-h-[70vh] bg-gradient-to-br from-sky-50 to-violet-50 dark:from-slate-950 dark:to-slate-900"><MiniGameArcade client:load /></main>
+  <SiteFooter />
+</BaseLayout>

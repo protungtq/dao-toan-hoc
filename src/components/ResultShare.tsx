@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { recordLearningSession, recordSkillResult } from '../lib/learningProfile';
 import { trackEvent } from '../lib/analytics';
 import { canvasFont, canvasToPngBlob, drawSiteQrCode, ensureShareFontLoaded, isMobileShareDevice, roundedRect, shareOrDownloadImage } from '../lib/shareImage';
 import DesktopShareDialog from './DesktopShareDialog';
+import { countSuccessfulSession, readTickets, type TicketState } from '../lib/minigameTickets';
 
 type SkillAttempt = { questionId?: string; skillId: string; correctFirstTry: boolean };
 type Props = { score?: number; correct?: number; total?: number; stars?: number; attempts?: SkillAttempt[] };
@@ -69,13 +70,15 @@ export default function ResultShare(props: Props) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [desktopShare, setDesktopShare] = useState<null | { blob: Blob; filename: string; title: string; text: string }>(null);
+  const [ticketState, setTicketState] = useState<TicketState | null>(null);
+  const recordedAttempts = useRef<SkillAttempt[] | null>(null);
 
   useEffect(() => {
     if (!props.attempts?.length) return;
-    const marker = `trang-toan:recorded:${location.pathname}:${props.attempts.map((item) => `${item.questionId ?? item.skillId}-${item.correctFirstTry ? 1 : 0}`).join('|')}`;
-    if (sessionStorage.getItem(marker)) return;
+    if (recordedAttempts.current === props.attempts) return;
+    recordedAttempts.current = props.attempts;
     result.attempts.forEach((item) => recordSkillResult(item.skillId, item.correctFirstTry));
-    recordLearningSession({
+    const session = recordLearningSession({
       path: location.pathname,
       title: document.title.split(' – ')[0] || 'Bài luyện tập',
       score: result.score,
@@ -83,14 +86,21 @@ export default function ResultShare(props: Props) {
       total: result.total,
       stars: result.stars,
     });
+    if (session) setTicketState(countSuccessfulSession(session.id, session.score));
     trackEvent('lesson_complete', {
       score: result.score,
       correct_answers: result.correct,
       total_questions: result.total,
       stars: result.stars,
     });
-    sessionStorage.setItem(marker, '1');
   }, [props.attempts]);
+
+  useEffect(() => {
+    setTicketState(readTickets());
+    const update = () => setTicketState(readTickets());
+    window.addEventListener('trang-toan:tickets-updated', update);
+    return () => window.removeEventListener('trang-toan:tickets-updated', update);
+  }, []);
 
   async function share() {
     setBusy(true); setMessage('');
@@ -116,12 +126,12 @@ export default function ResultShare(props: Props) {
     } finally { setBusy(false); }
   }
 
-  return <div className="mt-7 rounded-3xl border-2 border-violet-100 bg-gradient-to-r from-violet-50 to-sky-50 p-5">
+  return <><div className="mt-7 rounded-3xl border-2 border-amber-200 bg-amber-50 p-5 text-left dark:border-amber-500/30 dark:bg-amber-500/10"><p className="font-black text-amber-900 dark:text-amber-200">🎟️ Vé vui chơi: {ticketState?.tickets ?? 0}/3</p><p className="mt-1 text-sm font-semibold text-amber-800 dark:text-amber-100">{result.score > 80 ? 'Lượt này đã được tính!' : 'Đạt trên 80% để tích lũy lượt nhận vé.'} Đã đạt {ticketState?.progress ?? 0}/3 lượt để nhận vé tiếp theo.</p><a className="mt-3 inline-block rounded-xl bg-amber-500 px-4 py-2 font-black text-white" href="/minigame">Đến khu minigame →</a></div><div className="mt-7 rounded-3xl border-2 border-violet-100 bg-gradient-to-r from-violet-50 to-sky-50 p-5">
     <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:text-left">
       <div><p className="font-black text-violet-800">Khoe thành tích với gia đình</p><p className="mt-1 text-sm font-semibold text-slate-600">Tạo ảnh có điểm số và địa chỉ Trạng Toán.</p></div>
       <button type="button" onClick={share} disabled={busy} className="w-full rounded-2xl bg-violet-600 px-6 py-4 font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:opacity-60 sm:w-auto">{busy ? 'Đang tạo ảnh…' : '📤 Chia sẻ kết quả'}</button>
     </div>
     {message && <p className="mt-3 text-sm font-bold text-emerald-700">{message}</p>}
     {desktopShare && <DesktopShareDialog {...desktopShare} onClose={() => setDesktopShare(null)} onAction={(method) => trackEvent('result_share', { method, score: result.score })} />}
-  </div>;
+  </div></>;
 }

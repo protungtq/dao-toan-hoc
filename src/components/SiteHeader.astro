@@ -22,6 +22,7 @@ const { compact = false } = Astro.props;
       <nav class="flex shrink-0 items-center gap-2" aria-label="Điều hướng nhanh">
         <ThemeToggle compact />
         <a href="/thanh-tich" class="rounded-xl bg-amber-50 px-3 py-2 text-sm font-black text-amber-700 transition hover:bg-amber-100 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/20"><span aria-hidden="true">🏆</span><span class="hidden sm:inline"> Thành tích</span></a>
+        <a href="/minigame" class="rounded-xl bg-violet-50 px-3 py-2 text-sm font-black text-violet-700 dark:bg-violet-400/10 dark:text-violet-300">🎟️<span class="hidden sm:inline"> Minigame</span></a>
         <a href="/" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-600 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-violet-500 dark:hover:bg-violet-400/10 dark:hover:text-violet-300">← <span class="hidden sm:inline">Trang chủ</span></a>
       </nav>
     ) : (
@@ -31,6 +32,7 @@ const { compact = false } = Astro.props;
           <a href="#chon-lop" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-white hover:text-violet-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-300">Chọn lớp</a>
           <a href="#hoc-ngay" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-white hover:text-violet-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-300">Học ngay</a>
           <a href="/thanh-tich" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-white hover:text-amber-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-amber-300">Thành tích</a>
+          <a href="/minigame" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-white hover:text-violet-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-300">🎟️ Minigame</a>
           <a href="#phu-huynh" class="rounded-xl px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-white hover:text-violet-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-violet-300">Phụ huynh</a>
           <ThemeToggle />
         </nav>

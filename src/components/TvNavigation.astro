@@ -109,6 +109,7 @@
 
   function refreshNumberedAnswers() {
     document.querySelectorAll<HTMLElement>('[data-tv-number]').forEach((element) => element.removeAttribute('data-tv-number'));
+    if (document.documentElement.dataset.minigamePlaying === 'true') return;
     const groups = answerGroups();
     if (!groups.length) return;
     const viewportX = window.innerWidth / 2;
@@ -156,6 +157,7 @@
   }
 
   function handleRemoteKey(event: KeyboardEvent) {
+    if (document.documentElement.dataset.minigamePlaying === 'true') return;
     const target = event.target;
     const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || (target instanceof HTMLElement && target.isContentEditable);
     if (typing) return;
