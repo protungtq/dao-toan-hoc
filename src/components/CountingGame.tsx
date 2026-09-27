@@ -1,4 +1,5 @@
 import ResultShare from './ResultShare';
+import Math3D from './Math3D';
 import SolutionExplanation from './SolutionExplanation';
 import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
@@ -226,9 +227,9 @@ export default function CountingGame() {
             type="button"
             disabled={canContinue}
             onClick={() => chooseAnswer(answer)}
-            className={`min-h-20 rounded-2xl border-4 px-3 py-4 text-xl font-black shadow-sm transition md:text-2xl ${buttonStyle(answer)}`}
+            className={`min-h-20 rounded-2xl border-4 px-3 py-4 text-xl font-black shadow-sm transition md:text-2xl ${typeof answer === 'number' ? 'math-choice-3d' : ''} ${buttonStyle(answer)}`}
           >
-            {answer}
+            {typeof answer === 'number' ? <Math3D expression={String(answer)} tone={canContinue && selectedAnswer === answer ? 'emerald' : 'violet'} className="text-4xl md:text-5xl" /> : answer}
           </button>
         ))}
       </div>
@@ -307,13 +308,13 @@ export default function CountingGame() {
         <>
           <div className="flex min-h-52 items-center justify-center gap-4 rounded-3xl bg-orange-50 p-5">
             <div className="grid h-24 w-24 place-items-center rounded-3xl bg-orange-400 text-5xl font-black text-white shadow-lg">
-              {question.left}
+              <Math3D expression={String(question.left)} tone="amber" className="text-5xl" />
             </div>
             <div className="grid h-20 w-20 place-items-center rounded-2xl border-4 border-dashed border-orange-300 bg-white text-4xl font-black text-orange-500">
               ?
             </div>
             <div className="grid h-24 w-24 place-items-center rounded-3xl bg-orange-400 text-5xl font-black text-white shadow-lg">
-              {question.right}
+              <Math3D expression={String(question.right)} tone="amber" className="text-5xl" />
             </div>
           </div>
           <div className="mt-6">{renderAnswerButtons(question.answers)}</div>
@@ -662,7 +663,7 @@ export default function CountingGame() {
 
       <section className="rounded-[2.5rem] border-4 border-white bg-white p-5 shadow-2xl shadow-sky-100 md:p-9">
         <div className="mb-6 flex items-center gap-4">
-          <span className="text-5xl">{questionIndex % 2 === 0 ? '🐿️' : '🐻'}</span>
+          <img src={`/models/previews/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}.svg`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
           <div>
             <p className="font-black text-violet-600">
               {questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}

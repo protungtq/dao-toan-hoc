@@ -1,5 +1,6 @@
 import ResultShare from './ResultShare';
 import SolutionExplanation from './SolutionExplanation';
+import Math3D from './Math3D';
 import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
@@ -48,9 +49,9 @@ function CalculationVisual({ question }: { question: Arithmetic100Question }) {
       <div className="grid min-h-64 place-items-center rounded-3xl bg-indigo-50 p-6">
         <div className="grid grid-cols-[3rem_5rem] text-right text-5xl font-black leading-tight text-slate-800">
           <span />
-          <span>{question.left}</span>
-          <span className="text-indigo-600">{sign}</span>
-          <span>{question.right}</span>
+          <Math3D expression={String(question.left)} tone="violet" className="text-5xl" />
+          <Math3D expression={sign} tone="violet" className="text-5xl" />
+          <Math3D expression={String(question.right)} tone="violet" className="text-5xl" />
           <span className="col-span-2 mt-2 border-t-4 border-slate-700 pt-3">?</span>
         </div>
       </div>
@@ -61,7 +62,7 @@ function CalculationVisual({ question }: { question: Arithmetic100Question }) {
       <div className="rounded-3xl bg-sky-50 p-5 md:p-7">
         <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
           <PlaceValue value={question.left} />
-          <span className="text-center text-5xl font-black text-indigo-600">{sign}</span>
+          <Math3D expression={sign} tone="violet" className="text-5xl" />
           <PlaceValue value={question.right} />
         </div>
         <p className="mt-5 text-center font-bold text-slate-500">Tính đơn vị trước, rồi tính chục</p>
@@ -70,7 +71,7 @@ function CalculationVisual({ question }: { question: Arithmetic100Question }) {
   }
   return (
     <div className="grid min-h-64 place-items-center rounded-3xl bg-blue-50 p-6">
-      <p className="text-5xl font-black text-blue-800 md:text-7xl">{question.left} {sign} {question.right} = ?</p>
+      <Math3D expression={`${question.left} ${sign} ${question.right} = ?`} tone="sky" className="text-4xl sm:text-5xl md:text-7xl" />
     </div>
   );
 }
@@ -258,7 +259,7 @@ export default function ArithmeticTo100Game() {
       <header className="mb-5 flex items-center justify-between gap-4"><button type="button" onClick={() => setScreen('intro')} className="rounded-xl bg-white px-4 py-3 font-black text-slate-600 shadow-sm">← Thoát</button><div className="text-right"><p className="font-black text-indigo-700">{reviewMode ? 'Ôn lại · ' : ''}Câu {questionIndex + 1}/{questions.length}</p><p className="text-sm font-bold text-slate-500">{ARITHMETIC_100_SKILL_LABELS[question.skillId]}</p></div></header>
       <div className="mb-6 h-3 overflow-hidden rounded-full bg-white"><div className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-blue-500 transition-all duration-500" style={{ width: `${progress}%` }} /></div>
       <section className="rounded-[2.5rem] border-4 border-white bg-white p-5 shadow-2xl shadow-indigo-100 md:p-9">
-        <div className="mb-6 flex items-center gap-4"><span className="text-5xl">{questionIndex % 2 === 0 ? '🐿️' : '🐻'}</span><div><p className="font-black text-indigo-700">{questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}</p><h1 className="mt-1 text-2xl font-black md:text-3xl">{question.instruction}</h1></div></div>
+        <div className="mb-6 flex items-center gap-4"><img src={`/models/previews/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}.svg`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" /><div><p className="font-black text-indigo-700">{questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}</p><h1 className="mt-1 text-2xl font-black md:text-3xl">{question.instruction}</h1></div></div>
         {question.type === 'word-problem' ? <div className="rounded-3xl bg-amber-50 p-7 text-center"><div className="text-7xl">{question.objectIcon}</div><p className="mx-auto mt-4 max-w-3xl text-xl font-black leading-9 text-slate-800">{question.story}</p></div> : <CalculationVisual question={question} />}
         <div className="mt-6"><AnswerButtons /></div>
         {selectedAnswer !== null && !canContinue && <div className="mt-6 rounded-3xl border-2 border-orange-200 bg-orange-50 p-5"><div className="flex items-start gap-3"><span className="text-3xl">💡</span><div className="flex-1"><h2 className="text-xl font-black text-orange-700">Chưa đúng, mình tính lại nhé!</h2><p className="mt-2 font-semibold leading-7 text-slate-600"><span className="font-black">Gợi ý {hintLevel}/3:</span> {question.hintSteps[Math.max(0, hintLevel - 1)]}</p><button type="button" onClick={() => setSelectedAnswer(null)} className="mt-4 rounded-xl bg-orange-500 px-5 py-3 font-black text-white">Chọn lại đáp án</button></div></div></div>}
