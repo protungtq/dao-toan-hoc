@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { endTicketGame, readTickets, startTicketGame, type TicketState } from '../lib/minigameTickets';
+import './MiniGameArcade.css';
 
 type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb';
 const GAME_KEY = 'trang-toan:minigame-active:v1';
@@ -22,6 +23,24 @@ function mazeStart(rows: string[]) {
   return [rows[y].indexOf('S'), y];
 }
 
+function BearClimbStage({ step, level, celebration, feedback }: { step: number; level: number; celebration: boolean; feedback: string }) {
+  const height = celebration ? 68 : 9 + step * 5.35;
+  return <div className={`climb-scene climb-scene-${level % 3} ${celebration ? 'climb-scene-win' : ''} ${feedback.startsWith('Chưa') ? 'climb-scene-miss' : ''}`} role="img" aria-label={`Gấu đang leo cây số ${level}, cành ${celebration ? 12 : step} trên 12, tổ mật ở ngọn cây`}>
+    <div className="climb-sun" />
+    <div className="climb-cloud climb-cloud-left" /><div className="climb-cloud climb-cloud-right" />
+    <div className="climb-hill climb-hill-left" /><div className="climb-hill climb-hill-right" />
+    <div className="climb-tree" aria-hidden="true">
+      <div className="climb-canopy climb-canopy-a" /><div className="climb-canopy climb-canopy-b" /><div className="climb-canopy climb-canopy-c" />
+      <div className="climb-trunk" />
+      {Array.from({ length: 12 }, (_, i) => <div key={i} className={`climb-branch ${i % 2 ? 'climb-branch-right' : 'climb-branch-left'} ${i < step || celebration ? 'climb-branch-passed' : ''}`} style={{ bottom: `${19 + i * 5.7}%` }}><span>🍃</span></div>)}
+      <div className="climb-hive">🍯<span className="climb-bee">🐝</span></div>
+    </div>
+    <div className="climb-bear" style={{ bottom: `${height}%`, left: `calc(50% + ${step % 2 ? 24 : -24}px)` }} aria-hidden="true"><img src="/models/mascots/bear-poster.webp" alt="" width="96" height="96" /></div>
+    <div className="climb-ground" />
+    {celebration && <div className="climb-confetti" aria-hidden="true">✨ 🍯 ✨</div>}
+  </div>;
+}
+
 export default function MiniGameArcade() {
   const [wallet, setWallet] = useState<TicketState>(() => readTickets());
   const [game, setGame] = useState<GameId | null>(null);
@@ -29,16 +48,22 @@ export default function MiniGameArcade() {
   const [points, setPoints] = useState(0);
   const [lane, setLane] = useState(2);
   const [item, setItem] = useState({ lane: 1, row: 0 });
+  const [catchFeedback, setCatchFeedback] = useState('');
+  const [catchResult, setCatchResult] = useState<'hit' | 'miss' | null>(null);
   const [position, setPosition] = useState([1, 1]);
   const [finished, setFinished] = useState(false);
   const [mazeLevel, setMazeLevel] = useState(1);
+  const [climbCelebration, setClimbCelebration] = useState(false);
+  const [climbFeedback, setClimbFeedback] = useState('');
   const maze = mazeFor(mazeLevel);
   const gameRef = useRef<GameId | null>(null);
   const laneRef = useRef(2);
   const itemRef = useRef(item);
   const doneRef = useRef(false);
   const moveRef = useRef<(dx: number, dy: number) => void>(() => {});
+  const climbRef = useRef<(side: 'left' | 'right') => void>(() => {});
   const levelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (game) {
@@ -61,12 +86,14 @@ export default function MiniGameArcade() {
       localStorage.removeItem(GAME_KEY);
       endTicketGame();
     }
-    return () => { if (levelTimer.current) clearTimeout(levelTimer.current); window.removeEventListener('trang-toan:tickets-updated', update); window.removeEventListener('storage', update); };
+    return () => { if (levelTimer.current) clearTimeout(levelTimer.current); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); window.removeEventListener('trang-toan:tickets-updated', update); window.removeEventListener('storage', update); };
   }, []);
 
   function stop() {
     if (levelTimer.current) clearTimeout(levelTimer.current);
+    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     levelTimer.current = null;
+    feedbackTimer.current = null;
     gameRef.current = null;
     setGame(null);
     localStorage.removeItem(GAME_KEY);
@@ -91,7 +118,14 @@ export default function MiniGameArcade() {
       if (doneRef.current) return;
       const current = itemRef.current;
       if (current.row >= 5) {
-        if (current.lane === laneRef.current) setPoints((value) => value + 1);
+        if (current.lane === laneRef.current) {
+          setPoints((value) => value + 1);
+          setCatchFeedback(game === 'squirrel-catch' ? 'Sóc bắt được hạt dẻ! 🌰' : 'Gấu hứng được mật ong! 🍯');
+          setCatchResult('hit');
+        } else {
+          setCatchFeedback('Suýt nữa! Di chuyển để đón lượt tiếp theo.');
+          setCatchResult('miss');
+        }
         itemRef.current = { lane: Math.floor(Math.random() * 5), row: 0 };
       } else itemRef.current = { ...current, row: current.row + 1 };
       setItem({ ...itemRef.current });
@@ -109,9 +143,13 @@ export default function MiniGameArcade() {
     gameRef.current = id;
     setGame(id);
     setPoints(0);
+    setCatchFeedback('');
+    setCatchResult(null);
     setFinished(false);
     doneRef.current = false;
     setMazeLevel(1);
+    setClimbCelebration(false);
+    setClimbFeedback('');
     setPosition(mazeStart(mazeFor(1)));
     laneRef.current = 2;
     setLane(2);
@@ -141,6 +179,27 @@ export default function MiniGameArcade() {
       return [nx, ny];
     });
   }
+  function climb(side: 'left' | 'right') {
+    if (gameRef.current !== 'bear-climb' || climbCelebration || readTickets().activeUntil <= Date.now()) return;
+    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+    const expected = points % 2 === 0 ? 'left' : 'right';
+    if (side !== expected) {
+      setClimbFeedback('Chưa đúng cành, thử phía bên kia nhé!');
+      feedbackTimer.current = setTimeout(() => setClimbFeedback(''), 850);
+      return;
+    }
+    const next = points + 1;
+    setPoints(next);
+    if (next % 12 === 0) {
+      setClimbCelebration(true);
+      setClimbFeedback('Gấu đã lấy được mật! Sắp sang cây tiếp theo.');
+      feedbackTimer.current = setTimeout(() => { setClimbCelebration(false); setClimbFeedback(''); }, 1300);
+    } else {
+      setClimbFeedback(`Giỏi lắm! Đã leo tới cành ${next % 12}.`);
+      feedbackTimer.current = setTimeout(() => setClimbFeedback(''), 720);
+    }
+  }
+  climbRef.current = climb;
   moveRef.current = move;
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
@@ -156,6 +215,7 @@ export default function MiniGameArcade() {
       if (directions[key]) {
         event.preventDefault();
         if (gameRef.current === 'squirrel-maze') moveRef.current(...directions[key]);
+        if (gameRef.current === 'bear-climb' && (key === 'ArrowLeft' || key === 'ArrowRight')) climbRef.current(key === 'ArrowLeft' ? 'left' : 'right');
         if (gameRef.current.endsWith('catch')) {
           const delta = key === 'ArrowLeft' ? -1 : key === 'ArrowRight' ? 1 : 0;
           laneRef.current = Math.max(0, Math.min(4, laneRef.current + delta));
@@ -175,11 +235,26 @@ export default function MiniGameArcade() {
       <p className="mt-3 font-semibold">Cứ 3 lượt luyện đạt trên 80% nhận 1 vé. Giữ tối đa 3 vé, mỗi vé chơi tối đa 3 phút.</p>
       <div className="mt-5 flex flex-wrap gap-3 text-sm font-black"><span className="rounded-xl bg-white/20 px-4 py-2">Vé hiện có: {wallet.tickets}/3</span><span className="rounded-xl bg-white/20 px-4 py-2">Tiến độ: {wallet.progress}/3 bài đạt</span></div>
     </div>
-    {!game ? <div className="mt-6 grid gap-4 sm:grid-cols-2">{GAMES.map((entry) => <article key={entry.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"><span className="text-5xl" aria-hidden="true">{entry.icon}</span><h2 className="mt-3 text-xl font-black">{entry.name}</h2><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{entry.description}</p><button disabled={wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Chơi · 1 vé</button></article>)}</div> : <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:p-7">
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{title}</h2><p className="font-bold text-violet-700 dark:text-violet-300">⭐ {points} điểm · Màn {game === 'squirrel-maze' ? mazeLevel : game === 'bear-climb' ? Math.floor(points / 12) + 1 : Math.floor(points / 8) + 1} · ⏱️ {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</p></div><button onClick={stop} className="rounded-xl border border-slate-300 px-4 py-2 font-bold dark:border-slate-600">Kết thúc lượt chơi</button></div>
-      {(game === 'squirrel-catch' || game === 'bear-catch') && <><p className="mt-5 text-center font-semibold">Dùng phím ← → hoặc chạm ô bên dưới để hứng {game === 'squirrel-catch' ? 'hạt dẻ' : 'mật ong'}.</p><div className="mx-auto mt-4 grid max-w-md grid-cols-5 gap-1 rounded-2xl bg-sky-100 p-3 dark:bg-slate-800">{Array.from({ length: 30 }, (_, i) => { const x = i % 5, y = Math.floor(i / 5); return <div key={i} className="grid aspect-square place-items-center rounded-xl bg-white text-2xl dark:bg-slate-700 sm:text-3xl">{item.lane === x && item.row === y ? game === 'squirrel-catch' ? '🌰' : '🍯' : y === 5 && lane === x ? game === 'squirrel-catch' ? '🐿️' : '🐻' : ''}</div>; })}</div><div className="mx-auto mt-3 grid max-w-md grid-cols-5 gap-1">{Array.from({ length: 5 }, (_, i) => <button key={i} onClick={() => { laneRef.current = i; setLane(i); }} className="rounded-xl bg-violet-100 py-3 font-black text-violet-800 focus:ring-4 focus:ring-violet-400 dark:bg-violet-900 dark:text-white" aria-label={`Di chuyển tới ô ${i + 1}`}>{i + 1}</button>)}</div></>}
-      {game === 'squirrel-maze' && <><p className="mt-5 text-center font-semibold">Dùng phím mũi tên hoặc các nút để đưa Sóc 🐿️ về nhà 🏡.</p><div className="mx-auto mt-4 grid max-w-md grid-cols-9 gap-0.5 rounded-2xl bg-emerald-200 p-2">{maze.flatMap((row, y) => [...row].map((tile, x) => <div key={`${x}-${y}`} className={`grid aspect-square place-items-center rounded text-lg sm:text-2xl ${tile === '#' ? 'bg-emerald-700' : 'bg-amber-50'}`}>{position[0] === x && position[1] === y ? '🐿️' : tile === 'H' ? '🏡' : ''}</div>))}</div><div className="mx-auto mt-4 grid w-48 grid-cols-3 gap-2">{[['', 0, 0], ['↑', 0, -1], ['', 0, 0], ['←', -1, 0], ['↓', 0, 1], ['→', 1, 0]].map(([label, dx, dy], i) => label ? <button key={i} onClick={() => move(Number(dx), Number(dy))} className="rounded-xl bg-emerald-600 py-3 text-xl font-black text-white">{label}</button> : <span key={i} />)}</div>{finished && <p className="mt-5 text-center text-xl font-black text-emerald-700">Sóc đã về nhà! Đang mở màn tiếp theo… 🎉</p>}</>}
-      {game === 'bear-climb' && <div className="mt-6 text-center"><div className="rounded-3xl bg-emerald-50 p-7 text-6xl dark:bg-emerald-950">{points > 0 && points % 12 === 0 ? '🐻🍯' : '🌳🐻'}</div><p className="mt-4 text-xl font-black">Gấu đã leo {points % 12} / 12 cành của màn này</p><p className="mt-2 font-semibold">Chạm lần lượt vào cành trái và cành phải để giúp Gấu leo lấy mật!</p><div className="mt-5 flex justify-center gap-4"><button onClick={() => { if (points % 2 === 0) setPoints(points + 1); }} className="rounded-2xl bg-emerald-600 px-8 py-5 text-xl font-black text-white">← Cành trái</button><button onClick={() => { if (points % 2 === 1) setPoints(points + 1); }} className="rounded-2xl bg-amber-500 px-8 py-5 text-xl font-black text-white">Cành phải →</button></div>{points > 0 && points % 12 === 0 && <p className="mt-5 font-black text-amber-700">Gấu đã lấy được mật ong! Tiếp tục leo cây khác nhé 🍯</p>}</div>}
+    {!game ? <div className="mt-6 grid gap-4 sm:grid-cols-2">{GAMES.map((entry) => <article key={entry.id} className="arcade-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"><div className={`arcade-card-art arcade-card-${entry.id}`}><img src={`/models/mascots/${entry.id.startsWith('squirrel') ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="88" height="88" /><span aria-hidden="true">{entry.id === 'bear-climb' ? '🌳🍯' : entry.id === 'squirrel-maze' ? '🏡' : entry.id === 'bear-catch' ? '🍯' : '🌰'}</span></div><h2 className="mt-3 text-xl font-black">{entry.name}</h2><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{entry.description}</p><button disabled={wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Chơi · 1 vé</button></article>)}</div> : <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:p-7">
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{title}</h2><p className="font-bold text-violet-700 dark:text-violet-300">⭐ {points} điểm · Màn {game === 'squirrel-maze' ? mazeLevel : game === 'bear-climb' ? climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1 : Math.floor(points / 8) + 1} · ⏱️ {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</p></div><button onClick={stop} className="rounded-xl border border-slate-300 px-4 py-2 font-bold dark:border-slate-600">Kết thúc lượt chơi</button></div>
+      {(game === 'squirrel-catch' || game === 'bear-catch') && <>
+        <p className="mt-5 text-center font-semibold">Dùng phím ← → hoặc chạm ô bên dưới để hứng {game === 'squirrel-catch' ? 'hạt dẻ' : 'mật ong'}.</p>
+        <div className={`arcade-catch-field arcade-catch-${game === 'bear-catch' ? 'bear' : 'squirrel'} mx-auto mt-4 grid max-w-md grid-cols-5 gap-1 rounded-2xl p-3 dark:bg-slate-800`}>
+          <div className="arcade-catch-scenery" aria-hidden="true"><span>🌿</span><span>☁️</span><span>🌳</span></div>
+          {Array.from({ length: 30 }, (_, i) => { const x = i % 5, y = Math.floor(i / 5); return <div key={i} className="arcade-catch-cell grid aspect-square place-items-center rounded-xl text-2xl sm:text-3xl">{item.lane === x && item.row === y ? <span className="arcade-falling-item" aria-label={game === 'squirrel-catch' ? 'Hạt dẻ' : 'Hũ mật'}>{game === 'squirrel-catch' ? '🌰' : '🍯'}</span> : null}</div>; })}
+          <div key={`${game}-${points}`} className={`arcade-player-avatar ${catchResult === 'hit' ? 'arcade-player-hit' : ''}`} style={{ left: `${(lane + .5) * 20}%` }} aria-label={game === 'squirrel-catch' ? 'Sóc Nâu' : 'Gấu Mật'}><img src={`/models/mascots/${game === 'squirrel-catch' ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="96" height="96" /></div>
+        </div>
+        <p role="status" aria-live="polite" className={`mt-3 min-h-6 text-center font-black ${catchResult === 'hit' ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300'}`}>{catchFeedback || 'Giúp bạn nhỏ đứng ngay dưới vật đang rơi nhé!'}</p>
+        <div className="mx-auto mt-3 grid max-w-md grid-cols-5 gap-1">{Array.from({ length: 5 }, (_, i) => <button key={i} onClick={() => { laneRef.current = i; setLane(i); }} className="rounded-xl bg-violet-100 py-3 font-black text-violet-800 focus:ring-4 focus:ring-violet-400 dark:bg-violet-900 dark:text-white" aria-label={`Di chuyển tới ô ${i + 1}`}>{i + 1}</button>)}</div>
+      </>}
+      {game === 'squirrel-maze' && <><p className="mt-5 text-center font-semibold">Dùng phím mũi tên hoặc các nút để đưa Sóc 🐿️ về nhà 🏡.</p><div className="mx-auto mt-4 grid max-w-md grid-cols-9 gap-0.5 rounded-2xl bg-emerald-200 p-2">{maze.flatMap((row, y) => [...row].map((tile, x) => <div key={`${x}-${y}`} className={`grid aspect-square place-items-center rounded text-lg sm:text-2xl ${tile === '#' ? 'bg-emerald-700' : 'bg-amber-50'}`}>{position[0] === x && position[1] === y ? <img src="/models/mascots/squirrel-poster.webp" alt="Sóc Nâu" className="arcade-maze-player" /> : tile === 'H' ? '🏡' : tile === '#' ? '🌿' : ''}</div>))}</div><div className="mx-auto mt-4 grid w-48 grid-cols-3 gap-2">{[['', 0, 0], ['↑', 0, -1], ['', 0, 0], ['←', -1, 0], ['↓', 0, 1], ['→', 1, 0]].map(([label, dx, dy], i) => label ? <button key={i} onClick={() => move(Number(dx), Number(dy))} className="rounded-xl bg-emerald-600 py-3 text-xl font-black text-white">{label}</button> : <span key={i} />)}</div>{finished && <p className="mt-5 text-center text-xl font-black text-emerald-700">Sóc đã về nhà! Đang mở màn tiếp theo… 🎉</p>}</>}
+      {game === 'bear-climb' && <div className="mt-6 text-center">
+        <BearClimbStage step={points % 12} level={climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1} celebration={climbCelebration} feedback={climbFeedback} />
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm font-black sm:text-base"><span className="rounded-full bg-amber-100 px-4 py-2 text-amber-900 dark:bg-amber-950 dark:text-amber-200">🌿 Cành {climbCelebration ? 12 : points % 12} / 12</span><span className="rounded-full bg-sky-100 px-4 py-2 text-sky-900 dark:bg-sky-950 dark:text-sky-200">🍯 Đã lấy {Math.floor(points / 12)} hũ mật</span></div>
+        <p className="mt-4 font-semibold">Giúp Gấu chọn cành trái rồi cành phải để leo tới tổ mật. Dùng phím ← → hoặc chạm nút.</p>
+        <p role="status" aria-live="polite" className={`mt-3 min-h-7 font-black ${climbFeedback.startsWith('Chưa') ? 'text-rose-700 dark:text-rose-300' : 'text-emerald-700 dark:text-emerald-300'}`}>{climbFeedback || (points % 2 === 0 ? 'Cành tiếp theo ở bên trái.' : 'Cành tiếp theo ở bên phải.')}</p>
+        <div className="mt-4 flex flex-wrap justify-center gap-3"><button disabled={climbCelebration} onClick={() => climb('left')} className={`climb-button rounded-2xl px-6 py-4 text-lg font-black text-white disabled:opacity-60 ${points % 2 === 0 ? 'bg-emerald-600' : 'bg-emerald-800'}`}>← Cành trái</button><button disabled={climbCelebration} onClick={() => climb('right')} className={`climb-button rounded-2xl px-6 py-4 text-lg font-black text-white disabled:opacity-60 ${points % 2 === 1 ? 'bg-amber-500' : 'bg-amber-700'}`}>Cành phải →</button></div>
+      </div>}
     </div>}
     <p className="mt-6 text-center text-sm font-semibold text-slate-500">Vé và tiến độ lưu trên thiết bị này. Khi kết thúc hoặc hết giờ, vé đã dùng không được hoàn lại.</p>
   </section>;

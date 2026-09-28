@@ -392,7 +392,7 @@ export default function AddSubtractGame() {
       <main className="mx-auto max-w-4xl px-4 py-10">
         <section className="rounded-[2.5rem] border-4 border-white bg-white p-7 shadow-2xl shadow-violet-100 md:p-10">
           <div className="flex items-start gap-4">
-            <span className="text-6xl">🐿️</span>
+            <img src="/models/mascots/squirrel-poster.webp" alt="" aria-hidden="true" className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
             <div><p className="font-black text-orange-600">Sóc Nâu nhắc bé</p><h1 className="mt-1 text-3xl font-black text-slate-900">Hiểu hành động trước khi tính</h1></div>
           </div>
           <div className="my-7 grid gap-4 sm:grid-cols-2">
@@ -459,7 +459,7 @@ export default function AddSubtractGame() {
       <div className="mb-6 h-3 overflow-hidden rounded-full bg-white shadow-inner"><div className="h-full rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-400 transition-all duration-500" style={{ width: `${progress}%` }} /></div>
       <section className="rounded-[2.5rem] border-4 border-white bg-white p-5 shadow-2xl shadow-violet-100 md:p-9">
         <div className="mb-6 flex items-center gap-4">
-          <img src={`/models/previews/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}.svg`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
+          <img src={`/models/mascots/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}-poster.webp`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
           <div><p className="font-black text-violet-700">{questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}</p><h1 className="mt-1 text-2xl font-black text-slate-900 md:text-3xl">{question.instruction}</h1></div>
         </div>
         {renderQuestion()}

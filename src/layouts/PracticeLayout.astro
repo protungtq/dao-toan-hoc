@@ -36,10 +36,12 @@ const lessonSlug = canonical.split('/').filter(Boolean).at(-1);
     data-grade={grade}
     data-lesson-slug={lessonSlug}
   >
+    <div class="practice-tools">
+      <SoundToggle client:load />
+      <ThemeToggle floating />
+    </div>
     <slot />
     <WorksheetPrintLauncher client:load />
-    <SoundToggle client:load />
-    <ThemeToggle floating />
     <TvNavigation />
     <PwaControls />
   </body>

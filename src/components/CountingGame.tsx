@@ -308,13 +308,13 @@ export default function CountingGame() {
         <>
           <div className="flex min-h-52 items-center justify-center gap-4 rounded-3xl bg-orange-50 p-5">
             <div className="grid h-24 w-24 place-items-center rounded-3xl bg-orange-400 text-5xl font-black text-white shadow-lg">
-              <Math3D expression={String(question.left)} tone="amber" className="text-5xl" />
+              <Math3D expression={String(question.left)} tone="navy" className="text-5xl" />
             </div>
             <div className="grid h-20 w-20 place-items-center rounded-2xl border-4 border-dashed border-orange-300 bg-white text-4xl font-black text-orange-500">
               ?
             </div>
             <div className="grid h-24 w-24 place-items-center rounded-3xl bg-orange-400 text-5xl font-black text-white shadow-lg">
-              <Math3D expression={String(question.right)} tone="amber" className="text-5xl" />
+              <Math3D expression={String(question.right)} tone="navy" className="text-5xl" />
             </div>
           </div>
           <div className="mt-6">{renderAnswerButtons(question.answers)}</div>
@@ -489,7 +489,7 @@ export default function CountingGame() {
       <main className="mx-auto max-w-4xl px-4 py-10">
         <section className="rounded-[2.5rem] border-4 border-white bg-white p-7 shadow-2xl shadow-sky-100 md:p-10">
           <div className="flex items-start gap-4">
-            <span className="text-6xl">🐿️</span>
+            <img src="/models/mascots/squirrel-poster.webp" alt="" aria-hidden="true" className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
             <div>
               <p className="font-black text-orange-600">Sóc Nâu nhắc bé</p>
               <h1 className="mt-1 text-3xl font-black text-slate-900">
@@ -663,7 +663,7 @@ export default function CountingGame() {
 
       <section className="rounded-[2.5rem] border-4 border-white bg-white p-5 shadow-2xl shadow-sky-100 md:p-9">
         <div className="mb-6 flex items-center gap-4">
-          <img src={`/models/previews/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}.svg`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
+          <img src={`/models/mascots/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}-poster.webp`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
           <div>
             <p className="font-black text-violet-600">
               {questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}

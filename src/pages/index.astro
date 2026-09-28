@@ -43,26 +43,26 @@ const strengths = [
   <SiteHeader />
   <main class="overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative border-b border-slate-200/70 bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_46%,#f5f3ff_100%)] dark:border-slate-800 dark:bg-[linear-gradient(135deg,#0b1120_0%,#111827_52%,#17142c_100%)]">
+    <section class="poster-hero relative overflow-hidden border-b border-emerald-200/70 dark:border-slate-800">
       <div class="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(#64748b_1px,transparent_1px)] [background-size:30px_30px] dark:opacity-[0.08]"></div>
       <div class="absolute -left-36 top-24 h-80 w-80 rounded-full bg-sky-200/45 blur-3xl dark:bg-sky-500/5"></div>
       <div class="absolute -right-32 -top-24 h-[30rem] w-[30rem] rounded-full bg-violet-200/55 blur-3xl dark:bg-violet-500/10"></div>
       
       <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 md:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:py-20">
         <div class="max-w-3xl">
-          <div class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-sm font-extrabold text-violet-700 shadow-sm backdrop-blur dark:border-violet-400/20 dark:bg-violet-400/10 dark:text-violet-200">
-            <span class="h-2 w-2 rounded-full bg-violet-500"></span>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-white/85 px-4 py-2 text-sm font-extrabold text-emerald-800 shadow-sm backdrop-blur dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
             Cùng bé tự tin học Toán lớp 1–5
           </div>
-          <h1 class="mt-6 text-4xl font-black leading-[1.08] tracking-[-0.045em] text-slate-950 sm:text-5xl md:text-6xl dark:text-white">
+          <h1 class="poster-headline mt-6 text-4xl font-black leading-[1.08] tracking-[-0.045em] text-slate-950 sm:text-5xl md:text-6xl dark:text-white">
             Luyện đúng bài,<br />
-            <span class="bg-gradient-to-r from-violet-600 via-fuchsia-500 to-orange-500 bg-clip-text text-transparent">hiểu chắc từng bước</span>
+            <span class="bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500 bg-clip-text text-transparent">hiểu chắc từng bước</span>
           </h1>
           <p class="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 dark:text-slate-300">
             Bài tập vừa sức theo từng bài học trên lớp, có gợi ý khi gặp khó và lời giải từng bước để bé tự tin làm bài.
           </p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#chon-lop" class="inline-flex items-center justify-center gap-3 rounded-2xl bg-violet-600 px-7 py-4 font-black text-white shadow-xl shadow-violet-200/70 transition hover:-translate-y-1 hover:bg-violet-700 dark:shadow-none">
+            <a href="#chon-lop" class="poster-primary-button inline-flex items-center justify-center gap-3 rounded-2xl px-7 py-4 font-black text-white transition hover:-translate-y-1">
               Chọn lớp đang học <span aria-hidden="true" class="transition group-hover:translate-x-1">→</span>
             </a>
             <a href="/thanh-tich" class="inline-flex items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white/85 px-7 py-4 font-black text-slate-700 shadow-sm backdrop-blur transition hover:-translate-y-1 hover:border-amber-300 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200">
@@ -77,10 +77,14 @@ const strengths = [
         </div>
 
         <div class="relative mx-auto w-full max-w-xl">
-          <div class="relative overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white/90 p-5 shadow-[0_28px_90px_rgba(15,23,42,0.13)] backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/92 md:p-7">
+          <div class="poster-character-stage" aria-hidden="true">
+            <span class="poster-orb poster-orb-one"></span><span class="poster-orb poster-orb-two"></span>
+            <img src="/models/mascots/squirrel-bear-poster.webp" alt="" width="1050" height="700" fetchpriority="high" class="poster-character-image" />
+          </div>
+          <div class="poster-grade-panel relative overflow-hidden rounded-[2rem] border border-emerald-200/90 bg-white/95 p-5 shadow-[0_28px_90px_rgba(15,23,42,0.13)] backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/92 md:p-7">
             <div class="flex items-center justify-between gap-5">
               <div>
-                <p class="text-sm font-extrabold uppercase tracking-[0.14em] text-violet-600 dark:text-violet-300">Chương trình luyện tập</p>
+                <p class="text-sm font-extrabold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">Chương trình luyện tập</p>
                 <h2 class="mt-2 text-2xl font-black text-slate-950 dark:text-white md:text-3xl">Chọn lớp đang học</h2>
               </div>
               <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 text-3xl shadow-inner dark:from-amber-400/15 dark:to-orange-400/10">🎓</span>
@@ -93,7 +97,7 @@ const strengths = [
                     <span class="block font-black text-slate-900 dark:text-white group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">{item.title}</span>
                     <span class="mt-0.5 block truncate text-sm font-semibold text-slate-500 dark:text-slate-400">{item.short}</span>
                   </span>
-                  <span class="text-2xl transition group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">{item.mascot}</span>
+                  <img src={`/models/grade-mascots/${item.grade}-compact.webp`} alt="" aria-hidden="true" width="56" height="56" class="h-14 w-14 shrink-0 object-contain drop-shadow-md transition group-hover:scale-110" />
                   <span class="text-lg text-slate-300 transition group-hover:translate-x-1.5 group-hover:text-violet-600 dark:text-slate-600 dark:group-hover:text-violet-300" aria-hidden="true">→</span>
                 </a>
               ))}
@@ -117,10 +121,10 @@ const strengths = [
         </div>
         <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {grades.map((item) => (
-            <a href={`/lop-${item.grade}`} class={`group relative flex min-h-80 flex-col overflow-hidden rounded-[1.75rem] border bg-gradient-to-br p-5 transition duration-200 hover:-translate-y-1.5 hover:shadow-xl dark:bg-none dark:bg-slate-900 ${item.pale} ${item.border}`}>
+            <a href={`/lop-${item.grade}`} class={`poster-grade-card group relative flex min-h-80 flex-col overflow-hidden rounded-[1.75rem] border bg-gradient-to-br p-5 transition duration-200 hover:-translate-y-1.5 hover:shadow-xl dark:bg-none dark:bg-slate-900 ${item.pale} ${item.border}`}>
+              <img src={`/models/grade-mascots/${item.grade}-compact.webp`} alt="" aria-hidden="true" width="224" height="224" loading="lazy" class="poster-grade-ghost" />
               <div class="flex items-start justify-between gap-4">
                 <span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white shadow-lg ${item.gradient}`}>{item.grade}</span>
-                <span class="text-3xl opacity-80 transition group-hover:rotate-6 group-hover:scale-110">{item.mascot}</span>
               </div>
               <h3 class="mt-6 text-xl font-black text-slate-950 dark:text-white">{item.title}</h3>
               <p class="mt-3 flex-1 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">{item.description}</p>

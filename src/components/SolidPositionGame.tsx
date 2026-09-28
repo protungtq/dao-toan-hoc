@@ -407,7 +407,7 @@ export default function SolidPositionGame() {
     return (
       <main className="mx-auto max-w-4xl px-4 py-10">
         <section className="rounded-[2.5rem] border-4 border-white bg-white p-7 shadow-2xl shadow-orange-100 md:p-10">
-          <div className="flex items-start gap-4"><span className="text-6xl">🐻</span><div><p className="font-black text-orange-600">Gấu Mật nhắc bé</p><h1 className="mt-1 text-3xl font-black text-slate-900">Hình khối không phải hình phẳng</h1></div></div>
+          <div className="flex items-start gap-4"><img src="/models/mascots/bear-poster.webp" alt="" aria-hidden="true" className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" /><div><p className="font-black text-orange-600">Gấu Mật nhắc bé</p><h1 className="mt-1 text-3xl font-black text-slate-900">Hình khối không phải hình phẳng</h1></div></div>
           <div className="my-7 grid gap-4 sm:grid-cols-2">
             <div className="rounded-3xl bg-sky-50 p-5"><p className="font-black text-sky-700">Khối lập phương</p><p className="mt-2 font-semibold leading-7 text-slate-600">Có dạng đều như con xúc xắc, các chiều trông bằng nhau.</p></div>
             <div className="rounded-3xl bg-orange-50 p-5"><p className="font-black text-orange-700">Khối hộp chữ nhật</p><p className="mt-2 font-semibold leading-7 text-slate-600">Có dạng hộp dài như quyển sách hoặc viên gạch.</p></div>
@@ -465,7 +465,7 @@ export default function SolidPositionGame() {
       </header>
       <div className="mb-6 h-3 overflow-hidden rounded-full bg-white shadow-inner"><div className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all duration-500" style={{ width: `${progress}%` }} /></div>
       <section className="rounded-[2.5rem] border-4 border-white bg-white p-5 shadow-2xl shadow-orange-100 md:p-9">
-        <div className="mb-6 flex items-center gap-4"><span className="text-5xl">{questionIndex % 2 === 0 ? '🐻' : '🐿️'}</span><div><p className="font-black text-orange-700">{questionIndex % 2 === 0 ? 'Gấu Mật hỏi' : 'Sóc Nâu hỏi'}</p><h1 className="mt-1 text-2xl font-black text-slate-900 md:text-3xl">{question.instruction}</h1></div></div>
+        <div className="mb-6 flex items-center gap-4"><img src={questionIndex % 2 === 0 ? '/models/mascots/bear-poster.webp' : '/models/mascots/squirrel-poster.webp'} alt="" aria-hidden="true" className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" /><div><p className="font-black text-orange-700">{questionIndex % 2 === 0 ? 'Gấu Mật hỏi' : 'Sóc Nâu hỏi'}</p><h1 className="mt-1 text-2xl font-black text-slate-900 md:text-3xl">{question.instruction}</h1></div></div>
         {renderQuestion()}
         {selectedAnswer !== null && !canContinue && (
           <div className="mt-6 rounded-3xl border-2 border-orange-200 bg-orange-50 p-5">
