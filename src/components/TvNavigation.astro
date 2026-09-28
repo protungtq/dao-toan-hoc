@@ -18,6 +18,8 @@
   let helpTimer = 0;
   let refreshFrame = 0;
   let tvEventTracked = false;
+  let lastHandledDirection = '';
+  let lastHandledAt = 0;
 
   function isVisible(element: HTMLElement) {
     const style = getComputedStyle(element);
@@ -90,12 +92,15 @@
         const overlap = vertical
           ? Math.max(0, Math.min(current.right, rect.right) - Math.max(current.left, rect.left))
           : Math.max(0, Math.min(current.bottom, rect.bottom) - Math.max(current.top, rect.top));
-        return { element, primary, score: primary + secondary * (overlap > 0 ? 0.35 : 1.8) };
+        return { element, primary, overlap, secondary, score: primary + secondary * (overlap > 0 ? 0.35 : 1.8) };
       })
       .filter((item) => item.primary > 6)
       .sort((left, right) => left.score - right.score);
 
-    if (candidates[0]) focusElement(candidates[0].element);
+    // On TV, move across the current row before jumping to another section.
+    const aligned = !vertical ? candidates.filter((item) => item.overlap > 0) : [];
+    const next = aligned[0] ?? candidates[0];
+    if (next) focusElement(next.element);
   }
 
   function answerGroups() {
@@ -142,7 +147,13 @@
       21: 'left', 37: 'left',
       22: 'right', 39: 'right',
     };
-    return byKey[event.key] ?? byCode[event.keyCode];
+    const byPhysicalCode: Record<string, 'up' | 'down' | 'left' | 'right'> = {
+      ArrowUp: 'up', DPAD_UP: 'up', DpadUp: 'up',
+      ArrowDown: 'down', DPAD_DOWN: 'down', DpadDown: 'down',
+      ArrowLeft: 'left', DPAD_LEFT: 'left', DpadLeft: 'left',
+      ArrowRight: 'right', DPAD_RIGHT: 'right', DpadRight: 'right',
+    };
+    return byKey[event.key] ?? byPhysicalCode[event.code] ?? byCode[event.keyCode];
   }
 
   function digitFromEvent(event: KeyboardEvent) {
@@ -168,6 +179,8 @@
       event.stopPropagation();
       revealTvHelp();
       moveFocus(direction);
+      lastHandledDirection = direction;
+      lastHandledAt = performance.now();
       return;
     }
 
@@ -222,6 +235,16 @@
   }
 
   document.addEventListener('keydown', handleRemoteKey, { capture: true });
+  // Some remotes/WebViews deliver directional presses only on keyup.
+  document.addEventListener('keyup', (event) => {
+    if (document.documentElement.dataset.minigamePlaying === 'true') return;
+    const direction = directionFromEvent(event);
+    if (!direction || (direction === lastHandledDirection && performance.now() - lastHandledAt < 180)) return;
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) return;
+    event.preventDefault();
+    revealTvHelp();
+    moveFocus(direction);
+  }, { capture: true });
 
   document.addEventListener('pointerdown', () => document.documentElement.classList.remove('tv-navigation-active'));
   new MutationObserver(scheduleNumberRefresh).observe(document.body, { childList: true, subtree: true });
