@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { endTicketGame, readTickets, startTicketGame, type TicketState } from '../lib/minigameTickets';
+import SquirrelCatch3D from './minigames/SquirrelCatch3D';
 import './MiniGameArcade.css';
 
 type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb';
@@ -239,11 +240,17 @@ export default function MiniGameArcade() {
       <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{title}</h2><p className="font-bold text-violet-700 dark:text-violet-300">⭐ {points} điểm · Màn {game === 'squirrel-maze' ? mazeLevel : game === 'bear-climb' ? climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1 : Math.floor(points / 8) + 1} · ⏱️ {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</p></div><button onClick={stop} className="rounded-xl border border-slate-300 px-4 py-2 font-bold dark:border-slate-600">Kết thúc lượt chơi</button></div>
       {(game === 'squirrel-catch' || game === 'bear-catch') && <>
         <p className="mt-5 text-center font-semibold">Dùng phím ← → hoặc chạm ô bên dưới để hứng {game === 'squirrel-catch' ? 'hạt dẻ' : 'mật ong'}.</p>
-        <div className={`arcade-catch-field arcade-catch-${game === 'bear-catch' ? 'bear' : 'squirrel'} mx-auto mt-4 grid max-w-md grid-cols-5 gap-1 rounded-2xl p-3 dark:bg-slate-800`}>
-          <div className="arcade-catch-scenery" aria-hidden="true"><span>🌿</span><span>☁️</span><span>🌳</span></div>
-          {Array.from({ length: 30 }, (_, i) => { const x = i % 5, y = Math.floor(i / 5); return <div key={i} className="arcade-catch-cell grid aspect-square place-items-center rounded-xl text-2xl sm:text-3xl">{item.lane === x && item.row === y ? <span className="arcade-falling-item" aria-label={game === 'squirrel-catch' ? 'Hạt dẻ' : 'Hũ mật'}>{game === 'squirrel-catch' ? '🌰' : '🍯'}</span> : null}</div>; })}
-          <div key={`${game}-${points}`} className={`arcade-player-avatar ${catchResult === 'hit' ? 'arcade-player-hit' : ''}`} style={{ left: `${(lane + .5) * 20}%` }} aria-label={game === 'squirrel-catch' ? 'Sóc Nâu' : 'Gấu Mật'}><img src={`/models/mascots/${game === 'squirrel-catch' ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="96" height="96" /></div>
-        </div>
+        {game === 'squirrel-catch' ? (
+          <div className="mx-auto mt-4 max-w-2xl">
+            <SquirrelCatch3D lane={lane} itemLane={item.lane} itemRow={item.row} points={points} hit={catchResult === 'hit'} />
+          </div>
+        ) : (
+          <div className="arcade-catch-field arcade-catch-bear mx-auto mt-4 grid max-w-md grid-cols-5 gap-1 rounded-2xl p-3 dark:bg-slate-800">
+            <div className="arcade-catch-scenery" aria-hidden="true"><span>🌿</span><span>☁️</span><span>🌳</span></div>
+            {Array.from({ length: 30 }, (_, i) => { const x = i % 5, y = Math.floor(i / 5); return <div key={i} className="arcade-catch-cell grid aspect-square place-items-center rounded-xl text-2xl sm:text-3xl">{item.lane === x && item.row === y ? <span className="arcade-falling-item" aria-label="Hũ mật">🍯</span> : null}</div>; })}
+            <div key={`${game}-${points}`} className={`arcade-player-avatar ${catchResult === 'hit' ? 'arcade-player-hit' : ''}`} style={{ left: `${(lane + .5) * 20}%` }} aria-label="Gấu Mật"><img src="/models/mascots/bear-poster.webp" alt="" width="96" height="96" /></div>
+          </div>
+        )}
         <p role="status" aria-live="polite" className={`mt-3 min-h-6 text-center font-black ${catchResult === 'hit' ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300'}`}>{catchFeedback || 'Giúp bạn nhỏ đứng ngay dưới vật đang rơi nhé!'}</p>
         <div className="mx-auto mt-3 grid max-w-md grid-cols-5 gap-1">{Array.from({ length: 5 }, (_, i) => <button key={i} onClick={() => { laneRef.current = i; setLane(i); }} className="rounded-xl bg-violet-100 py-3 font-black text-violet-800 focus:ring-4 focus:ring-violet-400 dark:bg-violet-900 dark:text-white" aria-label={`Di chuyển tới ô ${i + 1}`}>{i + 1}</button>)}</div>
       </>}
