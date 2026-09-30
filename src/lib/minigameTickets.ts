@@ -1,6 +1,7 @@
 export const TICKET_KEY = 'trang-toan:minigame-tickets:v1';
 export const MAX_TICKETS = 3;
 export const GAME_DURATION_MS = 180_000;
+export const ADMIN_PLAY_KEY = 'trang-toan:admin-play:v1';
 
 export type TicketState = { tickets: number; progress: number; countedSessionIds: string[]; activeUntil: number };
 const EMPTY: TicketState = { tickets: 0, progress: 0, countedSessionIds: [], activeUntil: 0 };
@@ -36,8 +37,23 @@ export function countSuccessfulSession(id: string, score: number) {
   return writeTickets(state);
 }
 
-export function startTicketGame() {
+export function readAdminPlayMode() {
+  if (typeof window === 'undefined') return false;
+  return sessionStorage.getItem(ADMIN_PLAY_KEY) === '1';
+}
+
+export function setAdminPlayMode(enabled: boolean) {
+  if (typeof window === 'undefined') return;
+  if (enabled) sessionStorage.setItem(ADMIN_PLAY_KEY, '1');
+  else sessionStorage.removeItem(ADMIN_PLAY_KEY);
+  window.dispatchEvent(new Event('trang-toan:admin-play-updated'));
+}
+
+export function startTicketGame(adminPlay = false) {
   const state = readTickets();
+  if (adminPlay) {
+    return { ...state, activeUntil: Date.now() + GAME_DURATION_MS };
+  }
   if (state.activeUntil > Date.now()) return state;
   if (!state.tickets) return null;
   state.tickets -= 1;
