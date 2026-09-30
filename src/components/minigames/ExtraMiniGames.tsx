@@ -48,12 +48,17 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
   const [snake, setSnake] = useState<number[][]>(initial);
   const [food, setFood] = useState([7, 5]);
   const [best, setBest] = useState(0);
+  const [heading, setHeading] = useState<'up' | 'down' | 'left' | 'right'>('right');
   const dir = useRef<[number, number]>([1, 0]);
 
   const changeDirection = useCallback((key: DirectionKey) => {
     const next = DIRS[key];
     if (next[0] === -dir.current[0] && next[1] === -dir.current[1]) return;
     dir.current = next;
+    if (key === 'ArrowUp') setHeading('up');
+    if (key === 'ArrowDown') setHeading('down');
+    if (key === 'ArrowLeft') setHeading('left');
+    if (key === 'ArrowRight') setHeading('right');
   }, []);
 
   useEffect(() => {
@@ -77,6 +82,7 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
 
         if (hit) {
           dir.current = [1, 0];
+          setHeading('right');
           onScore(0);
           return initial;
         }
@@ -108,8 +114,13 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
         const x = i % SNAKE_SIZE, y = Math.floor(i / SNAKE_SIZE);
         const s = snake.findIndex(p => p[0] === x && p[1] === y);
         const isFood = food[0] === x && food[1] === y;
-        return <div key={i} className={`snake-cell ${s === 0 ? 'snake-head' : s > 0 ? 'snake-body' : ''} ${isFood ? 'snake-food' : ''}`}>
+        return <div key={i} className={`snake-cell ${s === 0 ? `snake-head head-${heading}` : s > 0 ? 'snake-body' : ''} ${isFood ? 'snake-food' : ''}`}>
           {isFood && <span className="snake-apple" aria-label="Táo"><i className="snake-apple-leaf" /></span>}
+          {s === 0 && <>
+            <span className="snake-eye snake-eye-left" />
+            <span className="snake-eye snake-eye-right" />
+            <span className="snake-tongue" />
+          </>}
         </div>;
       })}
     </div>
