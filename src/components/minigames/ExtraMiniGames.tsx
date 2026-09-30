@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playMiniGameSound } from '../../lib/minigameSounds';
 
 type ExtraId = 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
 type Props = { game: ExtraId; onScore: (score: number) => void };
@@ -83,6 +84,7 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
         if (hit) {
           dir.current = [1, 0];
           setHeading('right');
+          playMiniGameSound('miss');
           onScore(0);
           return initial;
         }
@@ -93,6 +95,7 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
           const score = next.length - 3;
           setBest(v => Math.max(v, score));
           onScore(score);
+          playMiniGameSound('collect');
           let nextFood = [0, 0];
           do {
             nextFood = [Math.floor(Math.random() * SNAKE_SIZE), Math.floor(Math.random() * SNAKE_SIZE)];
@@ -101,7 +104,7 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
         }
         return next;
       });
-    }, 235);
+    }, 400);
     return () => clearInterval(t);
   }, [food, onScore]);
 
@@ -171,6 +174,7 @@ function Match3({ onScore }: { onScore: (score: number) => void }) {
     [swapped[selected], swapped[i]] = [swapped[i], swapped[selected]];
     const matched = findMatches(swapped);
     if (!matched.size) {
+      playMiniGameSound('miss');
       setCombo('Chưa tạo được bộ 3');
       setSelected(null);
       return;
@@ -181,6 +185,7 @@ function Match3({ onScore }: { onScore: (score: number) => void }) {
     setScore(next);
     onScore(next);
     setBoard(swapped);
+    playMiniGameSound('collect');
     setCombo(`+${matched.size} điểm ✨`);
     setSelected(null);
   };
@@ -248,6 +253,7 @@ function Twenty48({ onScore }: { onScore: (score: number) => void }) {
         setScore(s => {
           const next = s + gained;
           onScore(next);
+          playMiniGameSound('collect');
           return next;
         });
       }
@@ -281,7 +287,7 @@ function Flappy({ onScore }: { onScore: (score: number) => void }) {
   const [pipes,setPipes] = useState([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
   const [score,setScore] = useState(0);
 
-  const flap = useCallback(() => { vy.current = -5.0; }, []);
+  const flap = useCallback(() => { vy.current = -5.0; playMiniGameSound('flap'); }, []);
   useEffect(() => {
     const k=(e:KeyboardEvent)=>{
       if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}
@@ -298,7 +304,7 @@ function Flappy({ onScore }: { onScore: (score: number) => void }) {
         let next = { ...p, x:p.x-1.35 };
         if (!next.passed && next.x < 18) {
           next.passed = true;
-          setScore(s => { const n=s+1; onScore(n); return n; });
+          setScore(s => { const n=s+1; onScore(n); playMiniGameSound('collect'); return n; });
         }
         if (next.x < -12) next = {id:p.id+2,x:118,gap:34+Math.random()*32,passed:false};
         return next;
@@ -310,6 +316,7 @@ function Flappy({ onScore }: { onScore: (score: number) => void }) {
   const hit = y < 4 || y > 94 || pipes.some(p=>p.x>12&&p.x<27&&(y<p.gap-19||y>p.gap+19));
   useEffect(()=>{
     if(!hit) return;
+    playMiniGameSound('miss');
     setY(50);
     vy.current=0;
     setPipes([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
@@ -351,6 +358,8 @@ function Sudoku({ onScore }: { onScore:(score:number)=>void }) {
     const g=[...grid];
     g[sel]=n;
     setGrid(g);
+    if (n === 0) return;
+    playMiniGameSound(n === SOLUTION[sel] ? 'collect' : 'miss');
   };
 
   return <div className="extra-game-wrap">
