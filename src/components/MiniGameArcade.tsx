@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { endTicketGame, readAdminPlayMode, readTickets, setAdminPlayMode, startTicketGame, type TicketState } from '../lib/minigameTickets';
 import SquirrelCatch3D from './minigames/SquirrelCatch3D';
 import ExtraMiniGames from './minigames/ExtraMiniGames';
-import { BearCatch3D, BearClimb3D, SquirrelMaze3D } from './minigames/LegacyGames3D';
+import { BearCatch3D, SquirrelMaze3D } from './minigames/LegacyGames3D';
 import './MiniGameArcade.css';
 
 type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb' | 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
@@ -281,7 +281,7 @@ export default function MiniGameArcade() {
       </>}
       {game === 'squirrel-maze' && <><p className="mt-5 text-center font-semibold">Dùng phím mũi tên hoặc các nút để đưa Sóc 🐿️ về nhà 🏡.</p><div className="mx-auto mt-4 max-w-2xl"><SquirrelMaze3D maze={maze} position={position} /></div><div className="minigame-maze-controls mx-auto mt-4 grid w-48 grid-cols-3 gap-2">{[['', 0, 0], ['↑', 0, -1], ['', 0, 0], ['←', -1, 0], ['↓', 0, 1], ['→', 1, 0]].map(([label, dx, dy], i) => label ? <button key={i} onClick={() => move(Number(dx), Number(dy))} className="rounded-xl bg-emerald-600 py-3 text-xl font-black text-white">{label}</button> : <span key={i} />)}</div>{finished && <p className="mt-5 text-center text-xl font-black text-emerald-700">Sóc đã về nhà! Đang mở màn tiếp theo… 🎉</p>}</>}
       {game === 'bear-climb' && <div className="mt-6 text-center">
-        <div className="mx-auto max-w-2xl"><BearClimb3D step={points % 12} level={climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1} celebration={climbCelebration} /></div>
+        <div className="mx-auto max-w-2xl"><BearClimbStage step={points % 12} level={climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1} celebration={climbCelebration} feedback={climbFeedback} /></div>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm font-black sm:text-base"><span className="rounded-full bg-amber-100 px-4 py-2 text-amber-900 dark:bg-amber-950 dark:text-amber-200">🌿 Cành {climbCelebration ? 12 : points % 12} / 12</span><span className="rounded-full bg-sky-100 px-4 py-2 text-sky-900 dark:bg-sky-950 dark:text-sky-200">🍯 Đã lấy {Math.floor(points / 12)} hũ mật</span></div>
         <p className="mt-4 font-semibold">Giúp Gấu chọn cành trái rồi cành phải để leo tới tổ mật. Dùng phím ← → hoặc chạm nút.</p>
         <p role="status" aria-live="polite" className={`mt-3 min-h-7 font-black ${climbFeedback.startsWith('Chưa') ? 'text-rose-700 dark:text-rose-300' : 'text-emerald-700 dark:text-emerald-300'}`}>{climbFeedback || (points % 2 === 0 ? 'Cành tiếp theo ở bên trái.' : 'Cành tiếp theo ở bên phải.')}</p>
