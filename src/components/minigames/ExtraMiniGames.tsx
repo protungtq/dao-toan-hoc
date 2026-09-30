@@ -267,10 +267,10 @@ function Twenty48({ onScore }: { onScore: (score: number) => void }) {
 function Flappy({ onScore }: { onScore: (score: number) => void }) {
   const [y,setY] = useState(50);
   const vy = useRef(0);
-  const [pipes,setPipes] = useState([{id:1,x:82,gap:48,passed:false},{id:2,x:140,gap:32,passed:false}]);
+  const [pipes,setPipes] = useState([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
   const [score,setScore] = useState(0);
 
-  const flap = useCallback(() => { vy.current = -6.7; }, []);
+  const flap = useCallback(() => { vy.current = -5.0; }, []);
   useEffect(() => {
     const k=(e:KeyboardEvent)=>{
       if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}
@@ -281,34 +281,34 @@ function Flappy({ onScore }: { onScore: (score: number) => void }) {
 
   useEffect(() => {
     const t=setInterval(()=>{
-      vy.current += 0.5;
+      vy.current += 0.32;
       setY(v => Math.max(4, Math.min(94, v + vy.current)));
       setPipes(ps => ps.map(p => {
-        let next = { ...p, x:p.x-2 };
+        let next = { ...p, x:p.x-1.35 };
         if (!next.passed && next.x < 18) {
           next.passed = true;
           setScore(s => { const n=s+1; onScore(n); return n; });
         }
-        if (next.x < -12) next = {id:p.id+2,x:112,gap:28+Math.random()*44,passed:false};
+        if (next.x < -12) next = {id:p.id+2,x:118,gap:34+Math.random()*32,passed:false};
         return next;
       }));
     }, 70);
     return()=>clearInterval(t);
   }, [onScore]);
 
-  const hit = y < 3 || y > 95 || pipes.some(p=>p.x>12&&p.x<27&&(y<p.gap-14||y>p.gap+14));
+  const hit = y < 4 || y > 94 || pipes.some(p=>p.x>12&&p.x<27&&(y<p.gap-19||y>p.gap+19));
   useEffect(()=>{
     if(!hit) return;
     setY(50);
     vy.current=0;
-    setPipes([{id:1,x:82,gap:48,passed:false},{id:2,x:140,gap:32,passed:false}]);
+    setPipes([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
   },[hit]);
 
   return <div className="extra-game-wrap">
     <div className="minigame-mini-status">Cổng đã vượt: <strong>{score}</strong></div>
     <div className="flappy-board touch-game-board" onPointerDown={(e)=>{ e.preventDefault(); flap(); }} role="button" tabIndex={0} aria-label="Chạm để chim bay">
       <div className="flappy-bird" style={{top:`${y}%`}} aria-label="Chim"><span className="flappy-wing"/><span className="flappy-eye"/><span className="flappy-beak"/></div>
-      {pipes.map(p=><div key={p.id} className="pipe" style={{left:`${p.x}%`}}><span style={{height:`${Math.max(0,p.gap-14)}%`}}/><span style={{top:`${Math.min(100,p.gap+14)}%`,bottom:0}}/></div>)}
+      {pipes.map(p=><div key={p.id} className="pipe" style={{left:`${p.x}%`}}><span style={{height:`${Math.max(0,p.gap-19)}%`}}/><span style={{top:`${Math.min(100,p.gap+19)}%`,bottom:0}}/></div>)}
       <span className="flappy-tap-hint">CHẠM ĐỂ BAY</span>
     </div>
     <button type="button" className="flappy-touch-button" onPointerDown={(e)=>{e.preventDefault();flap();}}>↑ Bay lên</button>
