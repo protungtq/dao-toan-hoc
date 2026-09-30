@@ -52,7 +52,8 @@ export function setAdminPlayMode(enabled: boolean) {
 export function startTicketGame(adminPlay = false) {
   const state = readTickets();
   if (adminPlay) {
-    return { ...state, activeUntil: Date.now() + GAME_DURATION_MS };
+    state.activeUntil = Date.now() + GAME_DURATION_MS;
+    return writeTickets(state);
   }
   if (state.activeUntil > Date.now()) return state;
   if (!state.tickets) return null;
