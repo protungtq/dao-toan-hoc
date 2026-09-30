@@ -3,6 +3,7 @@ import { endTicketGame, readAdminPlayMode, readTickets, setAdminPlayMode, startT
 import SquirrelCatch3D from './minigames/SquirrelCatch3D';
 import ExtraMiniGames from './minigames/ExtraMiniGames';
 import { BearCatch3D, SquirrelMaze3D } from './minigames/LegacyGames3D';
+import { playMiniGameSound } from '../lib/minigameSounds';
 import './MiniGameArcade.css';
 
 type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb' | 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
@@ -139,9 +140,11 @@ export default function MiniGameArcade() {
           setPoints((value) => value + 1);
           setCatchFeedback(game === 'squirrel-catch' ? 'Sóc bắt được hạt dẻ! 🌰' : 'Gấu hứng được mật ong! 🍯');
           setCatchResult('hit');
+          playMiniGameSound('collect');
         } else {
           setCatchFeedback('Suýt nữa! Di chuyển để đón lượt tiếp theo.');
           setCatchResult('miss');
+          playMiniGameSound('miss');
         }
         itemRef.current = { lane: Math.floor(Math.random() * 5), row: 0 };
       } else itemRef.current = { ...current, row: current.row + 1 };
@@ -183,6 +186,7 @@ export default function MiniGameArcade() {
         doneRef.current = true;
         setFinished(true);
         setPoints((value) => value + 1);
+        playMiniGameSound('success');
         levelTimer.current = setTimeout(() => {
           if (gameRef.current !== 'squirrel-maze' || readTickets().activeUntil <= Date.now()) return;
           const next = mazeLevel + 1;
@@ -201,12 +205,14 @@ export default function MiniGameArcade() {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     const expected = points % 2 === 0 ? 'left' : 'right';
     if (side !== expected) {
+      playMiniGameSound('miss');
       setClimbFeedback('Chưa đúng cành, thử phía bên kia nhé!');
       feedbackTimer.current = setTimeout(() => setClimbFeedback(''), 850);
       return;
     }
     const next = points + 1;
     setPoints(next);
+    playMiniGameSound(next % 12 === 0 ? 'success' : 'step');
     if (next % 12 === 0) {
       setClimbCelebration(true);
       setClimbFeedback('Gấu đã lấy được mật! Sắp sang cây tiếp theo.');
