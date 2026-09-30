@@ -41,11 +41,11 @@ function HoneyJar({ lane, row }: { lane: number; row: number }) {
   useFrame((state, delta) => {
     if (!ref.current) return;
     ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, LANE_X[lane] ?? 0, 12, delta);
-    ref.current.position.y = THREE.MathUtils.damp(ref.current.position.y, 5.7 - row * 0.95, 12, delta);
+    ref.current.position.z = THREE.MathUtils.damp(ref.current.position.z, -4.4 + row * 1.55, 12, delta);
     ref.current.rotation.y += delta * 1.8;
     ref.current.rotation.z = Math.sin(state.clock.elapsedTime * 3.5) * 0.12;
   });
-  return <group ref={ref} position={[LANE_X[lane] ?? 0, 5.7, 0]}>
+  return <group ref={ref} position={[LANE_X[lane] ?? 0, 0.85, -4.4]}>
     <mesh scale={[0.55, 0.7, 0.55]}><cylinderGeometry args={[0.55, 0.48, 1.1, 14]} /><meshStandardMaterial color="#f4b431" roughness={0.55} /></mesh>
     <mesh position={[0, 0.62, 0]}><cylinderGeometry args={[0.45, 0.45, 0.2, 14]} /><meshStandardMaterial color="#f7df87" /></mesh>
   </group>;
@@ -61,17 +61,18 @@ function MovingBear({ lane, points, hit }: { lane: number; points: number; hit: 
     ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, targetX, 14, delta);
     bounce.current = Math.max(0, bounce.current - delta * 3.8);
     ref.current.position.y = Math.sin((1 - bounce.current) * Math.PI) * (bounce.current > 0 ? 0.6 : 0);
+    ref.current.position.z = 4.15;
   });
-  return <group ref={ref} position={[LANE_X[lane] ?? 0, 0, 0.35]}><Bear scale={0.9} /></group>;
+  return <group ref={ref} position={[LANE_X[lane] ?? 0, 0, 4.15]}><Bear scale={0.82} /></group>;
 }
 
 export function BearCatch3D({ lane, itemLane, itemRow, points, hit }: { lane: number; itemLane: number; itemRow: number; points: number; hit: boolean }) {
   return <div className="arcade-r3f-stage" role="img" aria-label="Sân chơi 3D Gấu hứng mật ong">
-    <Canvas camera={{ position: [0, 5.8, 10.6], fov: 42 }} dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
-      <color attach="background" args={['#bfe8ff']} /><fog attach="fog" args={['#dff6ff', 11, 22]} />
+    <Canvas orthographic camera={{ position: [0, 12, 0.01], zoom: 58, near: 0.1, far: 40 }} dpr={[1, 1.4]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+      <color attach="background" args={['#dff7ef']} />
       <ambientLight intensity={1.7} /><directionalLight position={[5, 9, 6]} intensity={2.2} />
       <Ground color="#9ada7f" />
-      {LANE_X.map((x, i) => <mesh key={x} position={[x, 0.02, -0.45]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[1.5, 8.5]} /><meshStandardMaterial color={i % 2 ? '#ffe7a9' : '#fff2c9'} /></mesh>)}
+      {LANE_X.map((x, i) => <mesh key={x} position={[x, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[1.5, 10.5]} /><meshStandardMaterial color={i % 2 ? '#ffe7a9' : '#fff2c9'} /></mesh>)}
       <HoneyJar lane={itemLane} row={itemRow} /><MovingBear lane={lane} points={points} hit={hit} />
     </Canvas>
   </div>;
@@ -83,16 +84,16 @@ export function SquirrelMaze3D({ maze, position }: { maze: string[]; position: n
     return [maze[y]?.indexOf('H') ?? 7, y] as [number, number];
   }, [maze]);
   return <div className="arcade-r3f-stage arcade-r3f-maze" role="img" aria-label="Mê cung 3D Sóc tìm đường về nhà">
-    <Canvas camera={{ position: [0, 9.5, 10.5], fov: 46 }} dpr={[1, 1.4]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+    <Canvas orthographic camera={{ position: [0, 13, 0.01], zoom: 52, near: 0.1, far: 40 }} dpr={[1, 1.3]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
       <color attach="background" args={['#dff7ff']} /><ambientLight intensity={1.8} /><directionalLight position={[4, 10, 8]} intensity={2} />
       <Ground color="#bce7a4" />
       <group position={[-4, 0, -4]}>
-        {maze.flatMap((row, y) => [...row].map((tile, x) => tile === '#' ? <mesh key={`${x}-${y}`} position={[x, 0.55, y]}><boxGeometry args={[0.92, 1.1, 0.92]} /><meshStandardMaterial color="#3f9b5f" roughness={1} /></mesh> : null))}
+        {maze.flatMap((row, y) => [...row].map((tile, x) => tile === '#' ? <mesh key={`${x}-${y}`} position={[x, 0.28, y]}><boxGeometry args={[0.92, 0.56, 0.92]} /><meshStandardMaterial color="#3f9b5f" roughness={1} /></mesh> : null))}
         <group position={[home[0], 0.1, home[1]]}>
           <mesh position={[0, 0.65, 0]}><boxGeometry args={[0.9, 1.1, 0.9]} /><meshStandardMaterial color="#f4c46a" /></mesh>
           <mesh position={[0, 1.35, 0]} rotation={[0, Math.PI / 4, 0]}><coneGeometry args={[0.75, 0.9, 4]} /><meshStandardMaterial color="#d85c4d" /></mesh>
         </group>
-        <Squirrel position={[position[0], 0.7, position[1]]} scale={0.42} />
+        <Squirrel position={[position[0], 0.55, position[1]]} scale={0.34} />
       </group>
     </Canvas>
   </div>;
@@ -104,7 +105,7 @@ export function BearClimb3D({ step, level, celebration }: { step: number; level:
   const y = celebration ? 6.7 : 0.8 + step * 0.5;
   const x = step % 2 ? 0.52 : -0.52;
   return <div className="arcade-r3f-stage arcade-r3f-climb" role="img" aria-label={`Gấu đang leo cây màn ${level}`}>
-    <Canvas camera={{ position: [0, 4.7, 10], fov: 42 }} dpr={[1, 1.4]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+    <Canvas orthographic camera={{ position: [0, 4.2, 12], zoom: 52, near: 0.1, far: 40 }} dpr={[1, 1.3]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
       <color attach="background" args={[level % 2 ? '#c9f1ff' : '#d9f7dc']} /><ambientLight intensity={1.7} /><directionalLight position={[5, 10, 7]} intensity={2.1} />
       <Ground color="#82d67a" />
       <mesh position={[0, 3.6, 0]}><cylinderGeometry args={[0.55, 0.85, 7.4, 10]} /><meshStandardMaterial color="#8a5531" roughness={1} /></mesh>
