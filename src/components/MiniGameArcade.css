@@ -68,3 +68,34 @@
 .arcade-player { width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 2px rgb(25 55 38 / 30%)); }
 .arcade-maze-player { width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 1px rgb(45 58 42 / 22%)); }
 @media (prefers-reduced-motion:reduce) { .arcade-player-avatar { transition:none; } .arcade-player-hit { animation:none; } }
+
+
+.squirrel-catch-3d {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 320px;
+  overflow: hidden;
+  border: 3px solid #b6e7cf;
+  border-radius: 1.5rem;
+  background: #bfeeff;
+  box-shadow: inset 0 3px 0 rgb(255 255 255 / 65%), 0 8px 0 rgb(87 160 120 / 16%), 0 18px 30px rgb(52 101 86 / 16%);
+  touch-action: manipulation;
+}
+.squirrel-catch-3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+@media (max-width: 640px) {
+  .squirrel-catch-3d {
+    aspect-ratio: 4 / 5;
+    min-height: 390px;
+    border-radius: 1.25rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .squirrel-catch-3d canvas {
+    scroll-behavior: auto;
+  }
+}
