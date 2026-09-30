@@ -45,14 +45,16 @@ function Snake({ onScore }: { onScore: (score: number) => void }) {
         const x = i % SIZE, y = Math.floor(i / SIZE);
         const s = snake.findIndex(p => p[0] === x && p[1] === y);
         const f = food[0] === x && food[1] === y;
-        return <div key={i} className={`snake-cell ${s === 0 ? 'snake-head' : s > 0 ? 'snake-body' : ''} ${f ? 'snake-food' : ''}`}>{f ? '🍎' : ''}</div>;
+        return <div key={i} className={`snake-cell ${s === 0 ? 'snake-head' : s > 0 ? 'snake-body' : ''} ${f ? 'snake-food' : ''}`}>
+          {f && <span className="snake-apple" aria-label="Táo"><i className="snake-apple-leaf" /></span>}
+        </div>;
       })}
     </div>
     <p>Dùng phím mũi tên để điều khiển.</p>
   </div>;
 }
 
-const COLORS = ['🍓','🍋','🍇','🥝','🫐','🍊'];
+const COLORS = ['ruby','amber','violet','emerald','sapphire','coral'];
 function makeBoard() { return Array.from({ length: 36 }, () => Math.floor(Math.random() * COLORS.length)); }
 function Match3({ onScore }: { onScore: (score: number) => void }) {
   const [board, setBoard] = useState(makeBoard);
@@ -76,7 +78,7 @@ function Match3({ onScore }: { onScore: (score: number) => void }) {
     }
     setBoard(b); setSelected(null);
   };
-  return <div className="extra-game-wrap"><div className="match3-board">{board.map((v,i)=><button key={i} onClick={()=>click(i)} className={selected===i?'selected':''}>{COLORS[v]}</button>)}</div><p>Đổi chỗ hai ô cạnh nhau để tạo 3 hình giống nhau.</p></div>;
+  return <div className="extra-game-wrap"><div className="match3-board">{board.map((v,i)=><button key={i} onClick={()=>click(i)} className={selected===i?'selected':''} aria-label={`Viên ngọc ${COLORS[v]}`}><span className={`gem gem-${COLORS[v]}`} /></button>)}</div><p>Đổi chỗ hai ô cạnh nhau để tạo 3 viên ngọc giống nhau.</p></div>;
 }
 
 function Twenty48({ onScore }: { onScore: (score: number) => void }) {
@@ -117,7 +119,7 @@ function Flappy({ onScore }: { onScore: (score: number) => void }) {
   useEffect(()=>{const flap=()=>{vy.current=-7}; const k=(e:KeyboardEvent)=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap()}};window.addEventListener('keydown',k);window.addEventListener('pointerdown',flap);return()=>{window.removeEventListener('keydown',k);window.removeEventListener('pointerdown',flap)}},[]);
   useEffect(()=>{const t=setInterval(()=>{vy.current+=0.55; setY(v=>Math.max(4,Math.min(92,v+vy.current))); setPipes(ps=>ps.map(p=>({ ...p, x:p.x-2.2 })).map(p=>p.x<-8?{x:108,gap:25+Math.random()*50}:p)); setScore(s=>{const n=s+1; onScore(Math.floor(n/20)); return n;});},70); return()=>clearInterval(t)},[onScore]);
   const hit = pipes.some(p=>p.x>14&&p.x<28&&(y<p.gap-14||y>p.gap+14)); useEffect(()=>{if(hit){setY(50);vy.current=0;setPipes([{x:82,gap:48},{x:140,gap:32}])}},[hit]);
-  return <div className="extra-game-wrap"><div className="flappy-board"><div className="flappy-bird" style={{top:`${y}%`}}>🐦</div>{pipes.map((p,i)=><div key={i} className="pipe" style={{left:`${p.x}%`}}><span style={{height:`${Math.max(0,p.gap-14)}%`}}/><span style={{top:`${Math.min(100,p.gap+14)}%`,bottom:0}}/></div>)}</div><p>Chạm màn hình hoặc nhấn Space/↑ để bay.</p></div>;
+  return <div className="extra-game-wrap"><div className="flappy-board"><div className="flappy-bird" style={{top:`${y}%`}} aria-label="Chim"><span className="flappy-wing"/><span className="flappy-eye"/><span className="flappy-beak"/></div>{pipes.map((p,i)=><div key={i} className="pipe" style={{left:`${p.x}%`}}><span style={{height:`${Math.max(0,p.gap-14)}%`}}/><span style={{top:`${Math.min(100,p.gap+14)}%`,bottom:0}}/></div>)}</div><p>Chạm màn hình hoặc nhấn Space/↑ để bay.</p></div>;
 }
 
 const PUZZLE = [
