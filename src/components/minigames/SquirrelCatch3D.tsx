@@ -1,7 +1,3 @@
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-
 type Props = {
   lane: number;
   itemLane: number;
@@ -10,178 +6,29 @@ type Props = {
   hit: boolean;
 };
 
-const LANE_X = [-4, -2, 0, 2, 4];
-
-function Acorn({ lane, row }: { lane: number; row: number }) {
-  const ref = useRef<THREE.Group>(null);
-  useFrame((state, delta) => {
-    if (!ref.current) return;
-    const targetX = LANE_X[lane] ?? 0;
-    const targetZ = -4.4 + row * 1.55;
-    ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, targetX, 12, delta);
-    ref.current.position.z = THREE.MathUtils.damp(ref.current.position.z, targetZ, 12, delta);
-    ref.current.rotation.y += delta * 2.2;
-    ref.current.rotation.z = Math.sin(state.clock.elapsedTime * 4) * 0.16;
-  });
-
+export default function SquirrelCatch3D({ lane, itemLane, itemRow, points, hit }: Props) {
   return (
-    <group ref={ref} position={[LANE_X[lane] ?? 0, 0.85, -4.4]}>
-      <mesh scale={[0.58, 0.72, 0.58]}>
-        <sphereGeometry args={[0.6, 16, 12]} />
-        <meshStandardMaterial color="#9a5b31" roughness={0.8} />
-      </mesh>
-      <mesh position={[0, 0.48, 0]} scale={[0.7, 0.25, 0.7]}>
-        <sphereGeometry args={[0.6, 16, 10]} />
-        <meshStandardMaterial color="#6f3f24" roughness={0.95} />
-      </mesh>
-      <mesh position={[0.05, 0.72, 0]} rotation={[0, 0, -0.25]}>
-        <cylinderGeometry args={[0.07, 0.09, 0.36, 8]} />
-        <meshStandardMaterial color="#4d331f" />
-      </mesh>
-    </group>
-  );
-}
+    <div className="catch2d-board catch2d-squirrel" role="img" aria-label="Sóc hứng hạt dẻ">
+      <div className="catch2d-lanes" aria-hidden="true">
+        {Array.from({ length: 5 }, (_, i) => <span key={i} />)}
+      </div>
 
-function Squirrel({ lane, points, hit }: { lane: number; points: number; hit: boolean }) {
-  const ref = useRef<THREE.Group>(null);
-  const bounce = useRef(0);
-
-  useEffect(() => {
-    if (hit) bounce.current = 1;
-  }, [points, hit]);
-
-  useFrame((state, delta) => {
-    if (!ref.current) return;
-    const targetX = LANE_X[lane] ?? 0;
-    ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, targetX, 14, delta);
-    bounce.current = Math.max(0, bounce.current - delta * 3.8);
-    const hop = bounce.current > 0 ? Math.sin((1 - bounce.current) * Math.PI) * 0.7 : 0;
-    ref.current.position.y = 0.52 + hop + Math.sin(state.clock.elapsedTime * 4) * 0.025;
-    ref.current.position.z = 4.15;
-    ref.current.rotation.z = THREE.MathUtils.damp(ref.current.rotation.z, (targetX - ref.current.position.x) * -0.08, 10, delta);
-  });
-
-  return (
-    <group ref={ref} position={[LANE_X[lane] ?? 0, 0.52, 4.15]} scale={0.82}>
-      <group position={[-0.72, 0.42, 0.55]} rotation={[0.2, 0, -0.42]}>
-        <mesh position={[-0.3, 0.25, 0]} scale={[0.75, 1.2, 0.72]}>
-          <sphereGeometry args={[0.7, 18, 14]} />
-          <meshStandardMaterial color="#b96732" roughness={0.9} />
-        </mesh>
-        <mesh position={[-0.62, 0.82, 0]} scale={[0.62, 1.0, 0.62]}>
-          <sphereGeometry args={[0.62, 16, 12]} />
-          <meshStandardMaterial color="#cf7b3e" roughness={0.9} />
-        </mesh>
-      </group>
-
-      <mesh scale={[0.82, 1.05, 0.72]}>
-        <sphereGeometry args={[0.78, 18, 14]} />
-        <meshStandardMaterial color="#c87538" roughness={0.88} />
-      </mesh>
-      <mesh position={[0, -0.05, 0.58]} scale={[0.52, 0.66, 0.18]}>
-        <sphereGeometry args={[0.72, 16, 12]} />
-        <meshStandardMaterial color="#f5d7a6" roughness={0.95} />
-      </mesh>
-
-      <group position={[0, 1.1, 0.05]}>
-        <mesh scale={[0.78, 0.72, 0.72]}>
-          <sphereGeometry args={[0.72, 18, 14]} />
-          <meshStandardMaterial color="#cf7b3e" roughness={0.88} />
-        </mesh>
-        <mesh position={[-0.42, 0.52, 0]} rotation={[0, 0, -0.18]}>
-          <coneGeometry args={[0.23, 0.62, 10]} />
-          <meshStandardMaterial color="#a9532b" roughness={0.95} />
-        </mesh>
-        <mesh position={[0.42, 0.52, 0]} rotation={[0, 0, 0.18]}>
-          <coneGeometry args={[0.23, 0.62, 10]} />
-          <meshStandardMaterial color="#a9532b" roughness={0.95} />
-        </mesh>
-        <mesh position={[-0.24, 0.08, 0.62]}>
-          <sphereGeometry args={[0.09, 10, 8]} />
-          <meshStandardMaterial color="#1f2937" roughness={0.4} />
-        </mesh>
-        <mesh position={[0.24, 0.08, 0.62]}>
-          <sphereGeometry args={[0.09, 10, 8]} />
-          <meshStandardMaterial color="#1f2937" roughness={0.4} />
-        </mesh>
-        <mesh position={[0, -0.08, 0.7]}>
-          <sphereGeometry args={[0.08, 10, 8]} />
-          <meshStandardMaterial color="#4a2c22" roughness={0.8} />
-        </mesh>
-      </group>
-
-      <mesh position={[-0.33, -0.78, 0.22]} scale={[0.36, 0.18, 0.55]}>
-        <sphereGeometry args={[0.7, 12, 10]} />
-        <meshStandardMaterial color="#a9532b" />
-      </mesh>
-      <mesh position={[0.33, -0.78, 0.22]} scale={[0.36, 0.18, 0.55]}>
-        <sphereGeometry args={[0.7, 12, 10]} />
-        <meshStandardMaterial color="#a9532b" />
-      </mesh>
-    </group>
-  );
-}
-
-function Tree({ x, z, scale = 1 }: { x: number; z: number; scale?: number }) {
-  return (
-    <group position={[x, 0, z]} scale={scale}>
-      <mesh position={[0, 1.05, 0]}>
-        <cylinderGeometry args={[0.22, 0.3, 2.1, 8]} />
-        <meshStandardMaterial color="#81522f" roughness={1} />
-      </mesh>
-      <mesh position={[0, 2.45, 0]}>
-        <sphereGeometry args={[1.05, 14, 10]} />
-        <meshStandardMaterial color="#4cae62" roughness={1} />
-      </mesh>
-      <mesh position={[-0.55, 2.15, 0.1]} scale={0.75}>
-        <sphereGeometry args={[0.9, 12, 9]} />
-        <meshStandardMaterial color="#63bf6e" roughness={1} />
-      </mesh>
-    </group>
-  );
-}
-
-function Scene({ lane, itemLane, itemRow, points, hit }: Props) {
-  return (
-    <>
-      <color attach="background" args={['#bfeeff']} />
-      <ambientLight intensity={1.8} />
-      <directionalLight position={[4, 10, 5]} intensity={2.1} />
-
-      <mesh position={[0, -0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[16, 14]} />
-        <meshStandardMaterial color="#85d878" roughness={1} />
-      </mesh>
-
-      {LANE_X.map((x, index) => (
-        <mesh key={x} position={[x, 0.025, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[1.55, 10.5]} />
-          <meshStandardMaterial color={index % 2 ? '#b9eaa2' : '#d6f2b7'} roughness={1} />
-        </mesh>
-      ))}
-
-      <Tree x={-6.2} z={-4.5} scale={0.9} />
-      <Tree x={6.2} z={-4.3} scale={0.95} />
-      <Tree x={-6.3} z={4.4} scale={0.8} />
-      <Tree x={6.3} z={4.3} scale={0.82} />
-
-      <Acorn lane={itemLane} row={itemRow} />
-      <Squirrel lane={lane} points={points} hit={hit} />
-    </>
-  );
-}
-
-export default function SquirrelCatch3D(props: Props) {
-  return (
-    <div className="squirrel-catch-3d" role="img" aria-label="Sân chơi 3D Sóc hứng hạt dẻ">
-      <Canvas
-        orthographic
-        camera={{ position: [0, 12, 0.01], zoom: 58, near: 0.1, far: 40 }}
-        dpr={[1, 1.4]}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+      <div
+        className="catch2d-item catch2d-acorn"
+        style={{ left: `${(itemLane + 0.5) * 20}%`, top: `${8 + itemRow * 13}%` }}
+        aria-label="Hạt dẻ"
       >
-        <Scene {...props} />
-      </Canvas>
+        🌰
+      </div>
+
+      <div
+        key={points}
+        className={`catch2d-player ${hit ? 'catch2d-player-hit' : ''}`}
+        style={{ left: `${(lane + 0.5) * 20}%` }}
+        aria-label="Sóc Nâu"
+      >
+        <img src="/models/mascots/squirrel-poster.webp" alt="" draggable={false} />
+      </div>
     </div>
   );
 }
