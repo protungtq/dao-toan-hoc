@@ -1,14 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { endTicketGame, readTickets, startTicketGame, type TicketState } from '../lib/minigameTickets';
+import SquirrelCatch3D from './minigames/SquirrelCatch3D';
+import ExtraMiniGames from './minigames/ExtraMiniGames';
+import { BearCatch3D, BearClimb3D, SquirrelMaze3D } from './minigames/LegacyGames3D';
 import './MiniGameArcade.css';
 
-type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb';
+type GameId = 'squirrel-catch' | 'bear-catch' | 'squirrel-maze' | 'bear-climb' | 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
+type ExtraGameId = 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
+const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', 'sudoku', '2048', 'flappy'];
 const GAME_KEY = 'trang-toan:minigame-active:v1';
 const GAMES: { id: GameId; name: string; icon: string; description: string }[] = [
   { id: 'squirrel-catch', name: 'Sóc hứng hạt dẻ', icon: '🐿️', description: 'Di chuyển Sóc để đón hạt dẻ.' },
   { id: 'bear-catch', name: 'Gấu hứng mật ong', icon: '🐻', description: 'Giúp Gấu hứng những hũ mật.' },
   { id: 'squirrel-maze', name: 'Sóc tìm đường về nhà', icon: '🏡', description: 'Dẫn Sóc đi qua mê cung.' },
   { id: 'bear-climb', name: 'Gấu leo cây lấy mật', icon: '🌳', description: 'Chọn đúng cành để Gấu leo cao.' },
+  { id: 'snake', name: 'Rắn săn mồi', icon: '🐍', description: 'Điều khiển rắn ăn táo và đừng tự cắn mình.' },
+  { id: 'match3', name: 'Vườn trái cây Match-3', icon: '💎', description: 'Đổi chỗ để ghép ít nhất 3 biểu tượng giống nhau.' },
+  { id: 'sudoku', name: 'Sudoku', icon: '🔢', description: 'Điền số còn thiếu vào bảng Sudoku.' },
+  { id: '2048', name: 'Ghép số 2048', icon: '🧩', description: 'Ghép các ô số giống nhau để tạo số lớn hơn.' },
+  { id: 'flappy', name: 'Chim bay', icon: '🐦', description: 'Giữ chú chim bay qua các khe chướng ngại.' },
 ];
 const MAZE = [
   '#########', '#S..#...#', '###.#.#.#', '#...#.#.#', '#.###.#.#', '#.....#.#', '#.#####.#', '#......H#', '#########',
@@ -235,25 +245,43 @@ export default function MiniGameArcade() {
       <p className="mt-3 font-semibold">Cứ 3 lượt luyện đạt trên 80% nhận 1 vé. Giữ tối đa 3 vé, mỗi vé chơi tối đa 3 phút.</p>
       <div className="mt-5 flex flex-wrap gap-3 text-sm font-black"><span className="rounded-xl bg-white/20 px-4 py-2">Vé hiện có: {wallet.tickets}/3</span><span className="rounded-xl bg-white/20 px-4 py-2">Tiến độ: {wallet.progress}/3 bài đạt</span></div>
     </div>
-    {!game ? <div className="mt-6 grid gap-4 sm:grid-cols-2">{GAMES.map((entry) => <article key={entry.id} className="arcade-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"><div className={`arcade-card-art arcade-card-${entry.id}`}><img src={`/models/mascots/${entry.id.startsWith('squirrel') ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="88" height="88" /><span aria-hidden="true">{entry.id === 'bear-climb' ? '🌳🍯' : entry.id === 'squirrel-maze' ? '🏡' : entry.id === 'bear-catch' ? '🍯' : '🌰'}</span></div><h2 className="mt-3 text-xl font-black">{entry.name}</h2><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{entry.description}</p><button disabled={wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Chơi · 1 vé</button></article>)}</div> : <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:p-7">
+    {!game ? <div className="mt-6 grid gap-4 sm:grid-cols-2">{GAMES.map((entry) => {
+      const classic = entry.id.startsWith('squirrel') || entry.id.startsWith('bear');
+      return <article key={entry.id} className="arcade-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className={`arcade-card-art arcade-card-${entry.id}`}>
+          {classic ? <img src={`/models/mascots/${entry.id.startsWith('squirrel') ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="88" height="88" /> : <span className="arcade-card-emoji" aria-hidden="true">{entry.icon}</span>}
+          <span aria-hidden="true">{entry.icon}</span>
+        </div>
+        <h2 className="mt-3 text-xl font-black">{entry.name}</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{entry.description}</p>
+        <button disabled={wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Chơi · 1 vé</button>
+      </article>;
+    })}</div> : <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{title}</h2><p className="font-bold text-violet-700 dark:text-violet-300">⭐ {points} điểm · Màn {game === 'squirrel-maze' ? mazeLevel : game === 'bear-climb' ? climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1 : Math.floor(points / 8) + 1} · ⏱️ {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</p></div><button onClick={stop} className="rounded-xl border border-slate-300 px-4 py-2 font-bold dark:border-slate-600">Kết thúc lượt chơi</button></div>
       {(game === 'squirrel-catch' || game === 'bear-catch') && <>
         <p className="mt-5 text-center font-semibold">Dùng phím ← → hoặc chạm ô bên dưới để hứng {game === 'squirrel-catch' ? 'hạt dẻ' : 'mật ong'}.</p>
-        <div className={`arcade-catch-field arcade-catch-${game === 'bear-catch' ? 'bear' : 'squirrel'} mx-auto mt-4 grid max-w-md grid-cols-5 gap-1 rounded-2xl p-3 dark:bg-slate-800`}>
-          <div className="arcade-catch-scenery" aria-hidden="true"><span>🌿</span><span>☁️</span><span>🌳</span></div>
-          {Array.from({ length: 30 }, (_, i) => { const x = i % 5, y = Math.floor(i / 5); return <div key={i} className="arcade-catch-cell grid aspect-square place-items-center rounded-xl text-2xl sm:text-3xl">{item.lane === x && item.row === y ? <span className="arcade-falling-item" aria-label={game === 'squirrel-catch' ? 'Hạt dẻ' : 'Hũ mật'}>{game === 'squirrel-catch' ? '🌰' : '🍯'}</span> : null}</div>; })}
-          <div key={`${game}-${points}`} className={`arcade-player-avatar ${catchResult === 'hit' ? 'arcade-player-hit' : ''}`} style={{ left: `${(lane + .5) * 20}%` }} aria-label={game === 'squirrel-catch' ? 'Sóc Nâu' : 'Gấu Mật'}><img src={`/models/mascots/${game === 'squirrel-catch' ? 'squirrel' : 'bear'}-poster.webp`} alt="" width="96" height="96" /></div>
-        </div>
+        {game === 'squirrel-catch' ? (
+          <div className="mx-auto mt-4 max-w-2xl">
+            <SquirrelCatch3D lane={lane} itemLane={item.lane} itemRow={item.row} points={points} hit={catchResult === 'hit'} />
+          </div>
+        ) : (
+          <div className="mx-auto mt-4 max-w-2xl">
+            <BearCatch3D lane={lane} itemLane={item.lane} itemRow={item.row} points={points} hit={catchResult === 'hit'} />
+          </div>
+        )}
         <p role="status" aria-live="polite" className={`mt-3 min-h-6 text-center font-black ${catchResult === 'hit' ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300'}`}>{catchFeedback || 'Giúp bạn nhỏ đứng ngay dưới vật đang rơi nhé!'}</p>
         <div className="mx-auto mt-3 grid max-w-md grid-cols-5 gap-1">{Array.from({ length: 5 }, (_, i) => <button key={i} onClick={() => { laneRef.current = i; setLane(i); }} className="rounded-xl bg-violet-100 py-3 font-black text-violet-800 focus:ring-4 focus:ring-violet-400 dark:bg-violet-900 dark:text-white" aria-label={`Di chuyển tới ô ${i + 1}`}>{i + 1}</button>)}</div>
       </>}
-      {game === 'squirrel-maze' && <><p className="mt-5 text-center font-semibold">Dùng phím mũi tên hoặc các nút để đưa Sóc 🐿️ về nhà 🏡.</p><div className="mx-auto mt-4 grid max-w-md grid-cols-9 gap-0.5 rounded-2xl bg-emerald-200 p-2">{maze.flatMap((row, y) => [...row].map((tile, x) => <div key={`${x}-${y}`} className={`grid aspect-square place-items-center rounded text-lg sm:text-2xl ${tile === '#' ? 'bg-emerald-700' : 'bg-amber-50'}`}>{position[0] === x && position[1] === y ? <img src="/models/mascots/squirrel-poster.webp" alt="Sóc Nâu" className="arcade-maze-player" /> : tile === 'H' ? '🏡' : tile === '#' ? '🌿' : ''}</div>))}</div><div className="mx-auto mt-4 grid w-48 grid-cols-3 gap-2">{[['', 0, 0], ['↑', 0, -1], ['', 0, 0], ['←', -1, 0], ['↓', 0, 1], ['→', 1, 0]].map(([label, dx, dy], i) => label ? <button key={i} onClick={() => move(Number(dx), Number(dy))} className="rounded-xl bg-emerald-600 py-3 text-xl font-black text-white">{label}</button> : <span key={i} />)}</div>{finished && <p className="mt-5 text-center text-xl font-black text-emerald-700">Sóc đã về nhà! Đang mở màn tiếp theo… 🎉</p>}</>}
+      {game === 'squirrel-maze' && <><p className="mt-5 text-center font-semibold">Dùng phím mũi tên hoặc các nút để đưa Sóc 🐿️ về nhà 🏡.</p><div className="mx-auto mt-4 max-w-2xl"><SquirrelMaze3D maze={maze} position={position} /></div><div className="mx-auto mt-4 grid w-48 grid-cols-3 gap-2">{[['', 0, 0], ['↑', 0, -1], ['', 0, 0], ['←', -1, 0], ['↓', 0, 1], ['→', 1, 0]].map(([label, dx, dy], i) => label ? <button key={i} onClick={() => move(Number(dx), Number(dy))} className="rounded-xl bg-emerald-600 py-3 text-xl font-black text-white">{label}</button> : <span key={i} />)}</div>{finished && <p className="mt-5 text-center text-xl font-black text-emerald-700">Sóc đã về nhà! Đang mở màn tiếp theo… 🎉</p>}</>}
       {game === 'bear-climb' && <div className="mt-6 text-center">
-        <BearClimbStage step={points % 12} level={climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1} celebration={climbCelebration} feedback={climbFeedback} />
+        <div className="mx-auto max-w-2xl"><BearClimb3D step={points % 12} level={climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1} celebration={climbCelebration} /></div>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm font-black sm:text-base"><span className="rounded-full bg-amber-100 px-4 py-2 text-amber-900 dark:bg-amber-950 dark:text-amber-200">🌿 Cành {climbCelebration ? 12 : points % 12} / 12</span><span className="rounded-full bg-sky-100 px-4 py-2 text-sky-900 dark:bg-sky-950 dark:text-sky-200">🍯 Đã lấy {Math.floor(points / 12)} hũ mật</span></div>
         <p className="mt-4 font-semibold">Giúp Gấu chọn cành trái rồi cành phải để leo tới tổ mật. Dùng phím ← → hoặc chạm nút.</p>
         <p role="status" aria-live="polite" className={`mt-3 min-h-7 font-black ${climbFeedback.startsWith('Chưa') ? 'text-rose-700 dark:text-rose-300' : 'text-emerald-700 dark:text-emerald-300'}`}>{climbFeedback || (points % 2 === 0 ? 'Cành tiếp theo ở bên trái.' : 'Cành tiếp theo ở bên phải.')}</p>
         <div className="mt-4 flex flex-wrap justify-center gap-3"><button disabled={climbCelebration} onClick={() => climb('left')} className={`climb-button rounded-2xl px-6 py-4 text-lg font-black text-white disabled:opacity-60 ${points % 2 === 0 ? 'bg-emerald-600' : 'bg-emerald-800'}`}>← Cành trái</button><button disabled={climbCelebration} onClick={() => climb('right')} className={`climb-button rounded-2xl px-6 py-4 text-lg font-black text-white disabled:opacity-60 ${points % 2 === 1 ? 'bg-amber-500' : 'bg-amber-700'}`}>Cành phải →</button></div>
+      </div>}
+      {game && EXTRA_GAMES.includes(game as ExtraGameId) && <div className="mt-6">
+        <ExtraMiniGames game={game as ExtraGameId} onScore={setPoints} />
       </div>}
     </div>}
     <p className="mt-6 text-center text-sm font-semibold text-slate-500">Vé và tiến độ lưu trên thiết bị này. Khi kết thúc hoặc hết giờ, vé đã dùng không được hoàn lại.</p>
