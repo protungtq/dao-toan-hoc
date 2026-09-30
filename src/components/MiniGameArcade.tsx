@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { endTicketGame, readTickets, startTicketGame, type TicketState } from '../lib/minigameTickets';
+import { endTicketGame, readAdminPlayMode, readTickets, setAdminPlayMode, startTicketGame, type TicketState } from '../lib/minigameTickets';
 import SquirrelCatch3D from './minigames/SquirrelCatch3D';
 import ExtraMiniGames from './minigames/ExtraMiniGames';
 import { BearCatch3D, BearClimb3D, SquirrelMaze3D } from './minigames/LegacyGames3D';
@@ -53,6 +53,7 @@ function BearClimbStage({ step, level, celebration, feedback }: { step: number; 
 
 export default function MiniGameArcade() {
   const [wallet, setWallet] = useState<TicketState>(() => readTickets());
+  const [adminPlay, setAdminPlay] = useState(false);
   const [game, setGame] = useState<GameId | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [points, setPoints] = useState(0);
@@ -86,8 +87,14 @@ export default function MiniGameArcade() {
 
   useEffect(() => {
     const update = () => setWallet(readTickets());
+    const updateAdmin = () => setAdminPlay(readAdminPlayMode());
     window.addEventListener('trang-toan:tickets-updated', update);
     window.addEventListener('storage', update);
+    window.addEventListener('trang-toan:admin-play-updated', updateAdmin);
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === 'play') setAdminPlayMode(true);
+    if (params.get('admin') === 'off') setAdminPlayMode(false);
+    setAdminPlay(readAdminPlayMode());
     const stored = localStorage.getItem(GAME_KEY);
     if (stored && GAMES.some((entry) => entry.id === stored) && readTickets().activeUntil > Date.now()) {
       gameRef.current = stored as GameId;
@@ -96,7 +103,7 @@ export default function MiniGameArcade() {
       localStorage.removeItem(GAME_KEY);
       endTicketGame();
     }
-    return () => { if (levelTimer.current) clearTimeout(levelTimer.current); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); window.removeEventListener('trang-toan:tickets-updated', update); window.removeEventListener('storage', update); };
+    return () => { if (levelTimer.current) clearTimeout(levelTimer.current); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); window.removeEventListener('trang-toan:tickets-updated', update); window.removeEventListener('storage', update); window.removeEventListener('trang-toan:admin-play-updated', updateAdmin); };
   }, []);
 
   function stop() {
@@ -145,7 +152,7 @@ export default function MiniGameArcade() {
 
   function start(id: GameId) {
     if (readTickets().activeUntil > Date.now()) return;
-    const state = startTicketGame();
+    const state = startTicketGame(adminPlay);
     if (!state) return;
     if (state.activeUntil <= Date.now()) return;
     setWallet(state);
@@ -243,7 +250,7 @@ export default function MiniGameArcade() {
       <p className="font-bold text-white/85">Phần thưởng sau giờ luyện</p>
       <h1 className="mt-2 text-3xl font-black md:text-4xl">🎟️ Khu vui chơi Sóc và Gấu</h1>
       <p className="mt-3 font-semibold">Cứ 3 lượt luyện đạt trên 80% nhận 1 vé. Giữ tối đa 3 vé, mỗi vé chơi tối đa 3 phút.</p>
-      <div className="mt-5 flex flex-wrap gap-3 text-sm font-black"><span className="rounded-xl bg-white/20 px-4 py-2">Vé hiện có: {wallet.tickets}/3</span><span className="rounded-xl bg-white/20 px-4 py-2">Tiến độ: {wallet.progress}/3 bài đạt</span></div>
+      <div className="mt-5 flex flex-wrap gap-3 text-sm font-black"><span className="rounded-xl bg-white/20 px-4 py-2">Vé hiện có: {wallet.tickets}/3</span><span className="rounded-xl bg-white/20 px-4 py-2">Tiến độ: {wallet.progress}/3 bài đạt</span>{adminPlay && <span className="rounded-xl bg-amber-300 px-4 py-2 text-amber-950">🛠️ Admin play · không trừ vé</span>}</div>
     </div>
     {!game ? <div className="mt-6 grid gap-4 sm:grid-cols-2">{GAMES.map((entry) => {
       const classic = entry.id.startsWith('squirrel') || entry.id.startsWith('bear');
@@ -254,7 +261,7 @@ export default function MiniGameArcade() {
         </div>
         <h2 className="mt-3 text-xl font-black">{entry.name}</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{entry.description}</p>
-        <button disabled={wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Chơi · 1 vé</button>
+        <button disabled={!adminPlay && wallet.tickets < 1} onClick={() => start(entry.id)} className="mt-5 rounded-2xl bg-violet-600 px-6 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{adminPlay ? 'Chơi thử · Admin' : 'Chơi · 1 vé'}</button>
       </article>;
     })}</div> : <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{title}</h2><p className="font-bold text-violet-700 dark:text-violet-300">⭐ {points} điểm · Màn {game === 'squirrel-maze' ? mazeLevel : game === 'bear-climb' ? climbCelebration ? Math.ceil(points / 12) : Math.floor(points / 12) + 1 : Math.floor(points / 8) + 1} · ⏱️ {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</p></div><button onClick={stop} className="rounded-xl border border-slate-300 px-4 py-2 font-bold dark:border-slate-600">Kết thúc lượt chơi</button></div>
@@ -284,6 +291,6 @@ export default function MiniGameArcade() {
         <ExtraMiniGames game={game as ExtraGameId} onScore={setPoints} />
       </div>}
     </div>}
-    <p className="mt-6 text-center text-sm font-semibold text-slate-500">Vé và tiến độ lưu trên thiết bị này. Khi kết thúc hoặc hết giờ, vé đã dùng không được hoàn lại.</p>
+    <p className="mt-6 text-center text-sm font-semibold text-slate-500">{adminPlay ? 'Đang ở chế độ Admin play: chơi thử không trừ vé trong phiên trình duyệt này.' : 'Vé và tiến độ lưu trên thiết bị này. Khi kết thúc hoặc hết giờ, vé đã dùng không được hoàn lại.'}</p>
   </section>;
 }
