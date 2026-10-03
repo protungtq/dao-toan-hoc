@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { RotateCcw, Eye, Sparkles, Timer, Flame } from 'lucide-react';
-import { sound } from '../../utils/audio';
+import { playMiniGameSound } from '../../lib/minigameSounds';
 
 interface Props {
-  highScore: number;
-  onGameOver: (score: number, extra?: { moves?: number }) => void;
-  onExit: () => void;
+  onScore?: (score: number) => void;
+  onFinish?: (score: number) => void;
+  onExit?: () => void;
 }
 
 interface CardItem {
@@ -17,7 +16,7 @@ interface CardItem {
 
 const GLYPH_POOL = ['⚡', '🔮', '💎', '🚀', '👾', '🔥', '🛡️', '👑', '🌌', '🧬', '🌀', '🎯'];
 
-export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
+export const MemoryGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
   const [cards, setCards] = useState<CardItem[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [moves, setMoves] = useState<number>(0);
@@ -31,7 +30,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
 
   const initGame = useCallback(
     (count: 16 | 24 = cardCount) => {
-      sound.click();
+      playMiniGameSound('step');
       const pairsNeeded = count / 2;
       const selectedGlyphs = GLYPH_POOL.slice(0, pairsNeeded);
       const deck: CardItem[] = [];
@@ -41,7 +40,6 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
         deck.push({ id: idx * 2 + 1, glyph, isFlipped: false, isMatched: false });
       });
 
-      // Shuffle deck
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -56,15 +54,15 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
       setStreak(0);
       setHintsLeft(2);
       setIsPeeking(false);
+      onScore?.(0);
     },
-    [cardCount]
+    [cardCount, onScore]
   );
 
   useEffect(() => {
     initGame(cardCount);
   }, [initGame, cardCount]);
 
-  // Timer tick
   useEffect(() => {
     if (isVictory) return;
     const timer = setInterval(() => {
@@ -73,13 +71,12 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
     return () => clearInterval(timer);
   }, [isVictory]);
 
-  // Flip card handler
   const handleCardClick = (index: number) => {
     if (isPeeking || isVictory) return;
     const card = cards[index];
     if (card.isFlipped || card.isMatched || flippedIndices.length >= 2) return;
 
-    sound.cardFlip();
+    playMiniGameSound('step');
 
     const newIndices = [...flippedIndices, index];
     setCards((prev) =>
@@ -87,7 +84,6 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
     );
     setFlippedIndices(newIndices);
 
-    // If 2 cards are now open
     if (newIndices.length === 2) {
       setMoves((m) => m + 1);
       const [idx1, idx2] = newIndices;
@@ -95,20 +91,24 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
       const card2 = cards[idx2];
 
       if (card1.glyph === card2.glyph) {
-        // Matched!
         setTimeout(() => {
-          sound.cardMatch();
-          setStreak((st) => st + 1);
+          playMiniGameSound('collect');
+          const nextStreak = streak + 1;
+          setStreak(nextStreak);
+          
           setMatchesCount((mc) => {
             const nextMatch = mc + 1;
+            const timeBonus = Math.max(0, 300 - seconds * 3);
+            const movesPenalty = (moves + 1) * 10;
+            const currentScore = Math.max(0, nextMatch * 120 + timeBonus - movesPenalty + nextStreak * 30);
+            onScore?.(currentScore);
+
             if (nextMatch === cards.length / 2) {
-              // Victory
-              sound.victory();
+              playMiniGameSound('success');
               setIsVictory(true);
-              const timeBonus = Math.max(0, 300 - seconds * 3);
-              const movesPenalty = moves * 10;
-              const finalScore = Math.max(100, 1000 + timeBonus - movesPenalty + streak * 50);
-              onGameOver(finalScore, { moves: moves + 1 });
+              const finalScore = Math.max(100, 1000 + timeBonus - movesPenalty + nextStreak * 50);
+              onScore?.(finalScore);
+              onFinish?.(finalScore);
             }
             return nextMatch;
           });
@@ -121,7 +121,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
           setFlippedIndices([]);
         }, 400);
       } else {
-        // Mismatch
+        playMiniGameSound('miss');
         setStreak(0);
         setTimeout(() => {
           setCards((prev) =>
@@ -135,10 +135,9 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
     }
   };
 
-  // Peek Hint
   const handlePeek = () => {
     if (hintsLeft <= 0 || isPeeking || isVictory) return;
-    sound.bonus();
+    playMiniGameSound('collect');
     setHintsLeft((h) => h - 1);
     setIsPeeking(true);
 
@@ -154,7 +153,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 max-w-xl mx-auto w-full select-none">
+    <div className="flex flex-col items-center justify-center p-4 max-w-xl mx-auto w-full select-none text-slate-100">
       {/* HUD Bar */}
       <div className="w-full flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
         <div className="flex items-center gap-4">
@@ -175,18 +174,19 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
         <div className="flex items-center gap-3">
           {streak > 1 && (
             <div className="flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg">
-              <Flame className="w-3.5 h-3.5 fill-current" />
-              <span>Chuỗi x{streak}</span>
+              <span>🔥 Chuỗi x{streak}</span>
             </div>
           )}
           <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-            <Timer className="w-3.5 h-3.5 text-slate-400" />
+            <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span>{Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}</span>
           </div>
         </div>
       </div>
 
-      {/* Mode Selector & Power-Up */}
+      {/* Mode Selector & Hint */}
       <div className="w-full flex items-center justify-between mb-4">
         <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
           <button
@@ -194,7 +194,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
               setCardCount(16);
               initGame(16);
             }}
-            className={`px-3 py-1 text-xs font-semibold rounded ${
+            className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
               cardCount === 16 ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -205,7 +205,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
               setCardCount(24);
               initGame(24);
             }}
-            className={`px-3 py-1 text-xs font-semibold rounded ${
+            className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
               cardCount === 24 ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -213,7 +213,6 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
           </button>
         </div>
 
-        {/* Soi bài button */}
         <button
           onClick={handlePeek}
           disabled={hintsLeft <= 0 || isPeeking}
@@ -224,7 +223,10 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
           }`}
           title="Mở toàn bộ thẻ trong 1.2 giây"
         >
-          <Eye className="w-3.5 h-3.5" />
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
           <span>Soi bài ({hintsLeft})</span>
         </button>
       </div>
@@ -252,7 +254,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
                 }`}
               >
                 {isShown ? (
-                  <span className="text-2xl sm:text-3xl select-none animate-scale-in">
+                  <span className="text-2xl sm:text-3xl select-none">
                     {card.glyph}
                   </span>
                 ) : (
@@ -268,7 +270,7 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
         {/* Victory Modal */}
         {isVictory && (
           <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-2xl animate-fade-in">
-            <Sparkles className="w-12 h-12 text-purple-400 mb-2 animate-bounce" />
+            <span className="text-4xl mb-2 animate-bounce">✨</span>
             <h3 className="text-2xl font-bold text-white mb-1">XUẤT SẮC! ĐÃ TÌM HẾT CÁC CẶP</h3>
             <p className="text-sm text-slate-300 mb-1">
               Số lượt lật: <span className="font-mono text-purple-300 font-bold">{moves}</span> lượt
@@ -276,26 +278,42 @@ export const MemoryGame: React.FC<Props> = ({ highScore, onGameOver }) => {
             <p className="text-sm text-slate-300 mb-5">
               Thời gian hoàn thành: <span className="font-mono text-purple-300 font-bold">{seconds}s</span>
             </p>
-            <button
-              onClick={() => initGame(cardCount)}
-              className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl flex items-center gap-2 active:scale-95 shadow-lg shadow-purple-600/30"
-            >
-              <RotateCcw className="w-5 h-5" />
-              Chơi Lại Ván Mới
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => initGame(cardCount)}
+                className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl flex items-center gap-2 active:scale-95 shadow-lg shadow-purple-600/30"
+              >
+                Chơi Lại
+              </button>
+              {onExit && (
+                <button
+                  onClick={onExit}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl"
+                >
+                  Thoát
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Reset button */}
-      <div className="mt-4">
+      {/* Footer controls */}
+      <div className="mt-4 flex gap-3">
         <button
           onClick={() => initGame(cardCount)}
           className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 flex items-center gap-2 text-xs font-semibold"
         >
-          <RotateCcw className="w-4 h-4" />
           Trộn bài & Làm mới
         </button>
+        {onExit && (
+          <button
+            onClick={onExit}
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 text-xs font-semibold"
+          >
+            Thoát game
+          </button>
+        )}
       </div>
     </div>
   );
