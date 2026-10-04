@@ -1,9 +1,102 @@
-<footer class="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-  <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm font-semibold text-slate-500 md:flex-row md:items-center md:justify-between md:px-8">
-    <div><p class="font-black text-slate-800 dark:text-slate-100">Trạng Toán</p><p class="mt-1 text-xs">Luyện mỗi ngày · Giỏi từng bước</p></div>
-    <nav class="flex flex-wrap gap-2" aria-label="Chọn lớp ở chân trang">
-      <a href="/thanh-tich" class="rounded-lg px-3 py-2 font-black text-amber-700 transition hover:bg-amber-50">🏆 Thành tích</a>
-      {[1, 2, 3, 4, 5].map((grade) => <a href={`/lop-${grade}`} class="rounded-lg px-3 py-2 transition hover:bg-violet-50 hover:text-violet-700">Lớp {grade}</a>)}
-    </nav>
+<footer class="border-t border-slate-200/90 bg-white dark:border-slate-800 dark:bg-slate-950 transition-colors">
+  <div class="mx-auto max-w-7xl px-4 py-12 md:px-8">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      {/* Brand & Purpose */}
+      <div class="lg:col-span-1">
+        <a href="/" class="flex items-center gap-3" aria-label="Về trang chủ Trạng Toán">
+          <img src="/icon/android-chrome-192x192.png" alt="" width="40" height="40" class="h-10 w-10 rounded-2xl shadow-md" />
+          <span class="poster-brand text-xl font-black tracking-tight text-slate-900 dark:text-white">Trạng Toán</span>
+        </a>
+        <p class="mt-4 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400">
+          Nền tảng luyện Toán tiểu học trực quan, bám sát sách giáo khoa hiện hành. Giúp các bạn nhỏ hiểu sâu từng bước, tự tin làm bài mà không có áp lực điểm số.
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+          <span>🛡️ 100% Miễn phí & An toàn cho trẻ em</span>
+        </div>
+      </div>
+
+      {/* Grade links */}
+      <div>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Toán lớp 1 đến lớp 5</h3>
+        <ul class="mt-4 space-y-2.5 text-sm font-semibold">
+          {[
+            { grade: 1, title: 'Toán lớp 1', desc: 'Số đến 100 & hình phẳng' },
+            { grade: 2, title: 'Toán lớp 2', desc: 'Nhân chia & phép tính có nhớ' },
+            { grade: 3, title: 'Toán lớp 3', desc: 'Số đến 100 000 & hình khối' },
+            { grade: 4, title: 'Toán lớp 4', desc: 'Số lớn, góc & phân số' },
+            { grade: 5, title: 'Toán lớp 5', desc: 'Thập phân & toán chuyển động' },
+          ].map((item) => (
+            <li>
+              <a
+                href={`/lop-${item.grade}`}
+                class="group flex items-center justify-between text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors"
+              >
+                <span>{item.title}</span>
+                <span class="text-xs text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Activities & Arcade */}
+      <div>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Góc học tập & Thư giãn</h3>
+        <ul class="mt-4 space-y-2.5 text-sm font-semibold">
+          <li>
+            <a href="/minigame" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+              <span>🎟️</span>
+              <span>Đảo Minigame giải trí</span>
+            </a>
+          </li>
+          <li>
+            <a href="/thanh-tich" class="flex items-center gap-2 text-slate-600 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-300 transition-colors">
+              <span>🏆</span>
+              <span>Bảng vàng thành tích</span>
+            </a>
+          </li>
+          <li>
+            <a href="/#hoc-ngay" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+              <span>⚡</span>
+              <span>Bắt đầu bài luyện nhanh</span>
+            </a>
+          </li>
+          <li>
+            <a href="/#chon-lop" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+              <span>🎒</span>
+              <span>Lộ trình bài học theo khối</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Commitments & Devices */}
+      <div>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Cam kết vì học sinh</h3>
+        <div class="mt-4 space-y-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400">
+          <p>
+            🔒 <strong class="text-slate-800 dark:text-slate-200">Không quảng cáo</strong>: Toàn bộ không gian học tập và trò chơi đều sạch sẽ, không xao nhãng.
+          </p>
+          <p>
+            📺 <strong class="text-slate-800 dark:text-slate-200">Đa thiết bị</strong>: Học mượt mà trên Smart TV, máy tính bảng, điện thoại và máy tính.
+          </p>
+          <p>
+            🌱 <strong class="text-slate-800 dark:text-slate-200">Không áp lực</strong>: Gợi ý từng bước nhẹ nhàng để bé tìm ra lời giải bằng năng lực của mình.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom bar */}
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-6 text-xs font-semibold text-slate-500 dark:border-slate-800/80 dark:text-slate-400 sm:flex-row">
+      <p>© 2026 Trạng Toán · Nền tảng luyện Toán tiểu học lớp 1–5.</p>
+      <div class="flex items-center gap-3">
+        <span>Chuẩn GDPT 2018</span>
+        <span>·</span>
+        <span>Tiếng Việt</span>
+        <span>·</span>
+        <span>Học tập & Giải trí lành mạnh</span>
+      </div>
+    </div>
   </div>
 </footer>

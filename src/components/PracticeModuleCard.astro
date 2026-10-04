@@ -17,9 +17,9 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
     <div class={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${practiceModule.color}`}></div>
     <div class="flex items-start justify-between gap-4">
       <span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white shadow-lg transition group-hover:rotate-3 group-hover:scale-105 ${practiceModule.color}`}>{practiceModule.icon}</span>
-      <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">Sẵn sàng</span>
+      <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">⭐ Chuẩn SGK</span>
     </div>
-    <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Mục {practiceModule.number} · Bài {firstLesson}–{lastLesson}</p>
+    <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Chủ đề {practiceModule.number} · Bài {firstLesson}–{lastLesson} SGK</p>
     <h3 class="mt-2 text-xl font-black leading-snug text-slate-950 transition group-hover:text-violet-700 dark:text-slate-50 dark:group-hover:text-violet-300">{practiceModule.title}</h3>
     <p class="mt-3 flex-1 font-medium leading-7 text-slate-500 dark:text-slate-400">{practiceModule.description}</p>
     <div class="mt-5 flex flex-wrap gap-2">
@@ -30,14 +30,14 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
   </a>
 ) : (
   <article class={`flex h-full flex-col rounded-[1.5rem] border border-slate-200 p-6 opacity-80 dark:border-slate-800 dark:bg-slate-900 ${surface}`}>
-    <div class="flex items-start justify-between gap-4"><span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white ${practiceModule.color}`}>{practiceModule.icon}</span><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-extrabold text-amber-700">Đang xây dựng</span></div>
-    <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Mục {practiceModule.number} · Bài {firstLesson}–{lastLesson}</p>
+    <div class="flex items-start justify-between gap-4"><span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white ${practiceModule.color}`}>{practiceModule.icon}</span><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-extrabold text-amber-700">Sắp ra mắt</span></div>
+    <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Chủ đề {practiceModule.number} · Bài {firstLesson}–{lastLesson} SGK</p>
     <h3 class="mt-2 text-xl font-black text-slate-800">{practiceModule.title}</h3>
     <p class="mt-3 flex-1 font-medium leading-7 text-slate-500">{practiceModule.description}</p>
     <div class="mt-5 flex flex-wrap gap-2">
       {practiceModule.skills.slice(0, 3).map((skill) => <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">{skill.icon} {skill.title}</span>)}
       {practiceModule.skills.length > 3 && <span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500">+{practiceModule.skills.length - 3}</span>}
     </div>
-    <div class="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-center font-black text-slate-400">Đang chuẩn bị nội dung</div>
+    <div class="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-center font-black text-slate-400">Đang chuẩn bị nội dung mở rộng</div>
   </article>
 )}

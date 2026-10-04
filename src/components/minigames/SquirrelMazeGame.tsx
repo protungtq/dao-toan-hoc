@@ -188,31 +188,33 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 max-w-xl mx-auto w-full select-none text-slate-100">
-      <div className="w-full flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+    <div className="flex flex-col items-center justify-center p-2 sm:p-4 max-w-xl mx-auto w-full select-none text-slate-800 dark:text-slate-100">
+      {/* HUD Header */}
+      <div className="w-full flex items-center justify-between mb-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-4">
           <div>
-            <div className="text-xs text-slate-400 font-medium">MÀN CHƠI</div>
-            <div className="text-xl font-bold font-mono text-emerald-400">Tầng {level}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">MÀN CHƠI</div>
+            <div className="text-xl font-black font-mono text-emerald-600 dark:text-emerald-400">Tầng {level}</div>
           </div>
-          <div className="h-8 w-px bg-slate-800" />
+          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
           <div>
-            <div className="text-xs text-slate-400 font-medium">ĐIỂM TỔNG</div>
-            <div className="text-2xl font-bold font-mono text-amber-400 tabular-nums">{score}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM TỔNG</div>
+            <div className="text-2xl font-black font-mono text-amber-500 dark:text-amber-400 tabular-nums">{score}</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs font-mono font-bold bg-slate-950 px-3.5 py-1.5 rounded-lg border border-slate-800 text-slate-200">
-          <svg className={`w-4 h-4 ${secondsLeft < 10 ? 'text-red-500 animate-spin' : 'text-emerald-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex items-center gap-2 text-xs font-mono font-bold bg-slate-100 dark:bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200">
+          <svg className={`w-4 h-4 ${secondsLeft < 10 ? 'text-rose-500 animate-spin' : 'text-emerald-500 dark:text-emerald-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span className={secondsLeft < 10 ? 'text-red-400' : ''}>{secondsLeft}s</span>
+          <span className={secondsLeft < 10 ? 'text-rose-600 dark:text-rose-400 font-black' : ''}>{secondsLeft}s</span>
         </div>
       </div>
 
-      <div className="relative bg-slate-950 border-2 border-slate-800 rounded-2xl p-2 sm:p-3 shadow-2xl">
+      {/* Maze Board */}
+      <div className="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xl">
         <div
-          className="grid gap-1 w-[320px] sm:w-[380px] h-[320px] sm:h-[380px]"
+          className="grid gap-1 w-[300px] sm:w-[360px] md:w-[380px] h-[300px] sm:h-[360px] md:h-[380px] bg-emerald-50 dark:bg-slate-900/50 p-1.5 rounded-2xl border border-emerald-100 dark:border-slate-800"
           style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
         >
           {maze.map((row, r) =>
@@ -221,8 +223,8 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
               const isGoal = goalPos.r === r && goalPos.c === c;
               const hasAcorn = acorns.some((a) => a.r === r && a.c === c);
 
-              let bg = 'bg-slate-900/40';
-              if (cell === 1) bg = 'bg-emerald-950/70 border border-emerald-900/50 rounded-xs';
+              let bg = 'bg-white/60 dark:bg-slate-900/40';
+              if (cell === 1) bg = 'bg-emerald-600 dark:bg-emerald-800/80 border border-emerald-500 dark:border-emerald-700/60 rounded-xs shadow-2xs';
 
               return (
                 <div
@@ -230,11 +232,11 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
                   className={`flex items-center justify-center text-xs sm:text-sm select-none transition-all ${bg}`}
                 >
                   {isPlayer ? (
-                    <span className="text-base sm:text-lg animate-bounce">🐿️</span>
+                    <span className="text-base sm:text-lg animate-bounce drop-shadow-sm">🐿️</span>
                   ) : isGoal ? (
-                    <span className="text-base sm:text-lg animate-pulse">🏡</span>
+                    <span className="text-base sm:text-lg animate-pulse drop-shadow-sm">🏡</span>
                   ) : hasAcorn ? (
-                    <span className="text-xs">🌰</span>
+                    <span className="text-xs drop-shadow-xs">🌰</span>
                   ) : null}
                 </div>
               );
@@ -243,15 +245,16 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
         </div>
 
         {levelWon && (
-          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-2xl animate-fade-in">
-            <span className="text-4xl mb-2">🎉</span>
-            <h3 className="text-2xl font-bold text-white mb-1">VỀ NHÀ AN TOÀN!</h3>
-            <p className="text-xs text-slate-300 mb-5">
-              Sóc đã về đến tổ ấm trước khi trời tối! Điểm hiện tại: <span className="text-emerald-400 font-bold">{score}</span>
+          <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-3xl animate-fade-in z-20">
+            <span className="text-5xl mb-2">🎉</span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-1">VỀ NHÀ AN TOÀN!</h3>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-5">
+              Sóc đã về đến tổ ấm trước khi trời tối! Điểm hiện tại: <span className="text-emerald-600 dark:text-emerald-400 font-black">{score}</span>
             </p>
             <button
+              type="button"
               onClick={nextLevel}
-              className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl active:scale-95 shadow-lg shadow-emerald-500/20"
+              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-emerald-600/30 transition-all"
             >
               Tiếp tục Màn {level + 1}
             </button>
@@ -259,27 +262,29 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
         )}
 
         {isGameOver && (
-          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-2xl animate-fade-in">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mb-2">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-3xl animate-fade-in z-20">
+            <div className="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
+              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-1">HẾT GIỜ!</h3>
-            <p className="text-sm text-slate-300 mb-4">
-              Điểm đạt được: <span className="font-mono text-amber-400 font-bold text-lg">{score}</span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-1">HẾT GIỜ!</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">
+              Điểm đạt được: <span className="font-mono text-amber-500 dark:text-amber-400 font-black text-xl">{score}</span>
             </p>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={resetAll}
-                className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 active:scale-95 shadow-lg shadow-emerald-500/20"
+                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl flex items-center gap-2 active:scale-95 shadow-lg shadow-emerald-600/30 transition-all"
               >
-                Chơi Lại
+                Chơi lại
               </button>
               {onExit && (
                 <button
+                  type="button"
                   onClick={onExit}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl"
+                  className="px-5 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
                 >
                   Thoát
                 </button>
@@ -289,33 +294,42 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
         )}
       </div>
 
+      {/* D-Pad */}
       <div className="mt-4 grid grid-cols-3 gap-2 w-44">
         <div />
         <button
+          type="button"
           onClick={() => movePlayer(-1, 0)}
-          className="p-3 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center transition-colors"
+          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
+          aria-label="Lên"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
         </button>
         <div />
 
         <button
+          type="button"
           onClick={() => movePlayer(0, -1)}
-          className="p-3 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center transition-colors"
+          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
+          aria-label="Trái"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         </button>
         <button
+          type="button"
           onClick={() => movePlayer(1, 0)}
-          className="p-3 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center transition-colors"
+          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
+          aria-label="Xuống"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
         </button>
         <button
+          type="button"
           onClick={() => movePlayer(0, 1)}
-          className="p-3 bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center transition-colors"
+          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
+          aria-label="Phải"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
         </button>
       </div>
     </div>

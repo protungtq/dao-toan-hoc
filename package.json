@@ -6,16 +6,15 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --host 0.0.0.0 --port 3000",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "astro preview --host 0.0.0.0 --port 3000",
+    "astro": "astro",
+    "lint": "astro sync"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.6",
     "@astrojs/sitemap": "^3.7.4",
-    "@capacitor/android": "^8.5.2",
-    "@capacitor/core": "^8.5.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -31,7 +30,6 @@
     "esbuild": true
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.5.2",
     "@types/qrcode": "^1.5.6"
   }
 }

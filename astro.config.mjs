@@ -11,6 +11,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://trangtoan.so1.asia',
 
+  server: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+
   integrations: [react(), sitemap()],
 
   devToolbar: {

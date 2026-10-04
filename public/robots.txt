@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
 
+# Search Engines & AI Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
 Sitemap: https://trangtoan.so1.asia/sitemap-index.xml

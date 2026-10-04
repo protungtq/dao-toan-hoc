@@ -69,10 +69,12 @@ const strengths = [
               Xem thành tích
             </a>
           </div>
-          <div class="mt-8 flex flex-wrap gap-2.5 text-sm font-bold text-slate-600 dark:text-slate-300">
-            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lớp 1–5</span>
-            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Lời giải từng bước</span>
-            <span class="rounded-full border border-slate-200 bg-white/70 px-3.5 py-2 dark:border-slate-700 dark:bg-slate-900/60">Không cần đăng nhập</span>
+          <div class="mt-8 flex flex-wrap items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300">
+            <span>Toán lớp 1–5</span>
+            <span aria-hidden="true" class="text-slate-400">·</span>
+            <span>Lời giải chi tiết từng bước</span>
+            <span aria-hidden="true" class="text-slate-400">·</span>
+            <span>Miễn phí & Không cần đăng nhập</span>
           </div>
         </div>
 
@@ -186,6 +188,156 @@ const strengths = [
               </article>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Khu vui chơi & Minigame đổi thưởng -->
+    <section class="border-t border-slate-200 bg-gradient-to-b from-slate-50 to-violet-50/40 py-16 dark:border-slate-800 dark:from-slate-900/60 dark:to-slate-950 md:py-20">
+      <div class="mx-auto max-w-7xl px-4 md:px-8">
+        <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <div class="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-100/70 px-3.5 py-1.5 text-xs font-black text-violet-800 dark:border-violet-800 dark:bg-violet-900/40 dark:text-violet-300">
+              <span>🎟️</span>
+              <span>Đảo Minigame Thưởng Vé</span>
+            </div>
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-5xl">
+              Luyện bài đạt điểm, nhận vé vui chơi
+            </h2>
+          </div>
+          <p class="max-w-md font-medium leading-7 text-slate-600 dark:text-slate-300">
+            Học toán hào hứng hơn với phần thưởng vé minigame sau mỗi bài tập đạt kết quả tốt. Hỗ trợ mượt mà trên TV, điện thoại, máy tính bảng và máy tính!
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="group flex flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs transition hover:-translate-y-1.5 hover:border-cyan-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-3xl shadow-md">🚀</span>
+              <h3 class="mt-4 text-lg font-black text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">Phi thuyền không gian</h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Lái tàu vũ trụ lượn qua dải ngân hà, phá thiên thạch và thu thập sao lấp lánh.</p>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-1 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">🎮 TV Remote</span>
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">📱 Cảm ứng</span>
+            </div>
+          </div>
+
+          <div class="group flex flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs transition hover:-translate-y-1.5 hover:border-violet-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-3xl shadow-md">🎈</span>
+              <h3 class="mt-4 text-lg font-black text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">Bong bóng số học</h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Bắn vỡ bong bóng số chẵn, lẻ hoặc phép tính. Thử thách phản xạ cực vui cho bé.</p>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-1 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">🎮 Phím số TV</span>
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">🖱️ Chuột/Chạm</span>
+            </div>
+          </div>
+
+          <div class="group flex flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs transition hover:-translate-y-1.5 hover:border-emerald-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-3xl shadow-md">🧱</span>
+              <h3 class="mt-4 text-lg font-black text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Bóng nảy phá gạch</h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Đỡ bóng nảy phá vỡ các khối gạch màu sắc rực rỡ và nhặt các viên năng lượng.</p>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-1 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">🎮 TV</span>
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">⌨️ Phím</span>
+            </div>
+          </div>
+
+          <div class="group flex flex-col justify-between rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs transition hover:-translate-y-1.5 hover:border-amber-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div>
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-3xl shadow-md">🐿️</span>
+              <h3 class="mt-4 text-lg font-black text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Sóc & Gấu hái lộc</h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Hứng hạt dẻ, mật ong và dẫn bạn Sóc vượt qua mê cung đá 3D sinh động.</p>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-1 border-t border-slate-100 pt-3 dark:border-slate-800">
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">🎮 D-pad TV</span>
+              <span class="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300">📱 Cảm ứng</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-center">
+          <a
+            href="/minigame"
+            class="inline-flex items-center gap-2.5 rounded-2xl bg-violet-600 px-7 py-4 text-base font-black text-white shadow-lg shadow-violet-600/25 transition hover:-translate-y-1 hover:bg-violet-500 active:scale-98"
+          >
+            <span>Vào Đảo Minigame giải trí ngay</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Câu hỏi thường gặp (FAQ) cho phụ huynh & SEO Google/AI -->
+    <section class="bg-white py-16 dark:bg-slate-950 md:py-20">
+      <div class="mx-auto max-w-4xl px-4 md:px-8">
+        <div class="text-center">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 text-xs font-black text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <span>❓</span>
+            <span>Giải đáp thắc mắc</span>
+          </div>
+          <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-4xl">
+            Câu hỏi thường gặp của cha mẹ
+          </h2>
+          <p class="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-400">
+            Những thông tin cần biết để cùng con bắt đầu học tập nhẹ nhàng, hiệu quả trên Trạng Toán.
+          </p>
+        </div>
+
+        <div class="mt-10 space-y-4">
+          <details class="group rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 transition hover:border-violet-300 dark:border-slate-800 dark:bg-slate-900" open>
+            <summary class="flex cursor-pointer items-center justify-between text-base font-black text-slate-900 dark:text-white list-none">
+              <span>Trạng Toán dành cho đối tượng nào và có chương trình những lớp nào?</span>
+              <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold shadow-xs transition group-open:rotate-180 dark:bg-slate-800">↓</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Trạng Toán được biên soạn chuyên biệt cho học sinh tiểu học từ lớp 1 đến lớp 5 tại Việt Nam. Toàn bộ nội dung bám sát khung chương trình Giáo dục Phổ thông 2018, tương thích cao với các bộ sách giáo khoa hiện hành như <em>Kết nối tri thức với cuộc sống</em>, <em>Cánh diều</em>, và <em>Chân trời sáng tạo</em>.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 transition hover:border-violet-300 dark:border-slate-800 dark:bg-slate-900">
+            <summary class="flex cursor-pointer items-center justify-between text-base font-black text-slate-900 dark:text-white list-none">
+              <span>Trạng Toán có thu phí hay yêu cầu đăng ký tài khoản không?</span>
+              <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold shadow-xs transition group-open:rotate-180 dark:bg-slate-800">↓</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Hoàn toàn <strong>miễn phí 100%</strong>. Trạng Toán không yêu cầu tạo tài khoản, không thu thập bất kỳ thông tin cá nhân nào của trẻ nhỏ và tuyệt đối không chèn quảng cáo gây xao nhãng việc học của con.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 transition hover:border-violet-300 dark:border-slate-800 dark:bg-slate-900">
+            <summary class="flex cursor-pointer items-center justify-between text-base font-black text-slate-900 dark:text-white list-none">
+              <span>Cơ chế vé thưởng Minigame hoạt động như thế nào?</span>
+              <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold shadow-xs transition group-open:rotate-180 dark:bg-slate-800">↓</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Khi con làm bài tập đạt điểm giỏi (từ 80% trở lên), hệ thống sẽ tự động thưởng vé vui chơi tại Đảo Minigame. Tại đây con có thể giải trí với các trò chơi vừa rèn phản xạ tính nhẩm vừa thư giãn lành mạnh như Phi thuyền không gian, Bong bóng số học, Bóng nảy phá gạch, Sóc hứng hạt dẻ.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 transition hover:border-violet-300 dark:border-slate-800 dark:bg-slate-900">
+            <summary class="flex cursor-pointer items-center justify-between text-base font-black text-slate-900 dark:text-white list-none">
+              <span>Trạng Toán có học được trên TV hoặc máy tính bảng không?</span>
+              <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold shadow-xs transition group-open:rotate-180 dark:bg-slate-800">↓</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Trạng Toán hỗ trợ đầy đủ và tối ưu riêng cho <strong>Smart TV</strong> (điều khiển bằng remote, phím D-pad, phím số 1–5), <strong>máy tính bảng</strong>, <strong>điện thoại</strong> và <strong>máy tính</strong>. Cho con học trên màn hình TV lớn là giải pháp tuyệt vời giúp bảo vệ mắt của con.
+            </p>
+          </details>
+
+          <details class="group rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 transition hover:border-violet-300 dark:border-slate-800 dark:bg-slate-900">
+            <summary class="flex cursor-pointer items-center justify-between text-base font-black text-slate-900 dark:text-white list-none">
+              <span>Khi gặp bài toán khó, hệ thống giúp đỡ bé như thế nào?</span>
+              <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold shadow-xs transition group-open:rotate-180 dark:bg-slate-800">↓</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Mỗi câu hỏi đều được trang bị hệ thống gợi ý từng bước (bấm để xem gợi ý nhẹ nhàng giúp con tự suy nghĩ) và lời giải thích chi tiết, minh họa bằng hình ảnh trực quan sinh động để con hiểu sâu bản chất vấn đề.
+            </p>
+          </details>
         </div>
       </div>
     </section>

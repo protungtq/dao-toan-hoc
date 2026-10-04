@@ -174,26 +174,28 @@ export const ReflexMathGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
   const multiplier = streak >= 10 ? 5 : streak >= 6 ? 3 : streak >= 3 ? 2 : 1;
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 max-w-xl mx-auto w-full select-none text-slate-100">
-      <div className="w-full flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+    <div className="flex flex-col items-center justify-center p-2 sm:p-4 max-w-xl mx-auto w-full select-none text-slate-800 dark:text-slate-100">
+      {/* HUD Header */}
+      <div className="w-full flex items-center justify-between mb-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-4">
           <div>
-            <div className="text-xs text-slate-400 font-medium">ĐIỂM SỐ</div>
-            <div className="text-2xl font-bold font-mono text-amber-400 tabular-nums">{score}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM SỐ</div>
+            <div className="text-2xl font-black font-mono text-violet-600 dark:text-amber-400 tabular-nums">{score}</div>
           </div>
-          <div className="h-8 w-px bg-slate-800" />
+          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
           <div>
-            <div className="text-xs text-slate-400 font-medium">CHUỖI CAO NHẤT</div>
-            <div className="text-2xl font-bold font-mono text-slate-200 tabular-nums">{maxStreak}🔥</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">CHUỖI CAO NHẤT</div>
+            <div className="text-2xl font-black font-mono text-slate-800 dark:text-slate-200 tabular-nums">{maxStreak} 🔥</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+        {/* Lives (Hearts) */}
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800" aria-label={`Còn ${lives} lượt`}>
           {Array.from({ length: 3 }).map((_, i) => (
             <svg
               key={i}
-              className={`w-4 h-4 transition-colors ${
-                i < lives ? 'text-rose-500 fill-rose-500' : 'text-slate-700'
+              className={`w-5 h-5 transition-transform duration-200 ${
+                i < lives ? 'text-rose-500 fill-rose-500 scale-100' : 'text-slate-300 dark:text-slate-700 scale-90'
               }`}
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -204,88 +206,101 @@ export const ReflexMathGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
         </div>
       </div>
 
+      {/* Main Problem Card */}
       <div
-        className={`relative w-full max-w-[420px] bg-slate-950 border-2 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col items-center justify-center transition-colors duration-200 ${
+        className={`relative w-full max-w-[440px] bg-white dark:bg-slate-950 border-2 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col items-center justify-center transition-colors duration-200 ${
           flashFeedback === 'correct'
-            ? 'border-emerald-500 bg-emerald-950/20'
+            ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20'
             : flashFeedback === 'wrong'
-            ? 'border-red-500 bg-red-950/20'
-            : 'border-slate-800'
+            ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20'
+            : 'border-slate-200 dark:border-slate-800'
         }`}
       >
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-2 min-h-7">
           {streak > 0 && (
-            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full animate-bounce">
-              <span>🔥 Chuỗi {streak} liên tiếp · Hệ số x{multiplier}!</span>
+            <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/30 px-3 py-1 rounded-full animate-bounce">
+              <span>🔥 Chuỗi {streak} liên tiếp · Nhân x{multiplier}!</span>
             </div>
           )}
         </div>
 
-        <div className="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden mb-6 border border-slate-800">
+        {/* Animated Countdown Bar */}
+        <div className="w-full bg-slate-100 dark:bg-slate-900 h-3 rounded-full overflow-hidden mb-6 border border-slate-200 dark:border-slate-800">
           <div
-            className={`h-full transition-all duration-75 ${
-              timeLeft / maxTime < 0.3 ? 'bg-red-500' : 'bg-amber-400'
+            className={`h-full transition-all duration-75 rounded-full ${
+              timeLeft / maxTime < 0.3
+                ? 'bg-rose-500'
+                : timeLeft / maxTime < 0.6
+                ? 'bg-amber-500'
+                : 'bg-emerald-500'
             }`}
             style={{ width: `${Math.max(0, (timeLeft / maxTime) * 100)}%` }}
           />
         </div>
 
-        <div className="text-3xl sm:text-4xl font-extrabold font-display text-white tracking-wide my-4 text-center">
+        {/* Problem text */}
+        <div className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight my-4 text-center tabular-nums">
           {question.text}
         </div>
 
-        <p className="text-xs text-slate-400 mt-2 mb-6">
-          Phép tính trên là đúng hay sai? (Còn {timeLeft.toFixed(1)}s)
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 mb-6 text-center font-medium">
+          Phép tính trên ĐÚNG hay SAI? (Còn <span className="font-mono font-bold text-slate-700 dark:text-slate-200">{timeLeft.toFixed(1)}s</span>)
         </p>
 
+        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-4 w-full">
           <button
+            type="button"
             onClick={() => handleAnswer(true)}
-            className="py-4 px-6 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-400 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 active:scale-95 transition-all"
+            className="py-4 px-5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-black rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 active:scale-95 transition-all text-base sm:text-lg"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
-            <span className="text-lg">ĐÚNG</span>
+            <span>ĐÚNG</span>
           </button>
 
           <button
+            type="button"
             onClick={() => handleAnswer(false)}
-            className="py-4 px-6 bg-red-600 hover:bg-red-500 active:bg-red-400 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 active:scale-95 transition-all"
+            className="py-4 px-5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-black rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-rose-600/25 active:scale-95 transition-all text-base sm:text-lg"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
             </svg>
-            <span className="text-lg">SAI</span>
+            <span>SAI</span>
           </button>
         </div>
 
-        <div className="flex items-center justify-between w-full mt-4 text-[11px] text-slate-500 font-mono">
-          <span>Phím A / ← : Đúng</span>
-          <span>Phím D / → : Sai</span>
+        <div className="flex items-center justify-between w-full mt-5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+          <span>👈 Phím A / ← : Đúng</span>
+          <span>Phím D / → : Sai 👉</span>
         </div>
 
+        {/* Game Over Screen */}
         {isGameOver && (
-          <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-2xl animate-fade-in">
-            <span className="text-4xl mb-2">🏆</span>
-            <h3 className="text-2xl font-bold text-white mb-1">KẾT THÚC LƯỢT ĐẤU!</h3>
-            <p className="text-sm text-slate-400 mb-1">
-              Điểm số: <span className="font-mono text-amber-400 font-bold text-lg">{score}</span>
+          <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-3xl animate-fade-in z-20">
+            <span className="text-5xl mb-2">🏆</span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">KẾT THÚC LƯỢT ĐẤU!</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+              Điểm đạt được: <span className="font-mono text-violet-600 dark:text-amber-400 font-black text-xl">{score}</span>
             </p>
-            <p className="text-xs text-slate-400 mb-5">
-              Chuỗi đúng dài nhất: <span className="font-mono text-amber-400 font-bold">{maxStreak} câu</span>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+              Chuỗi trả lời đúng liên tiếp: <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{maxStreak} câu</span>
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <button
+                type="button"
                 onClick={resetGame}
-                className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl active:scale-95 shadow-lg shadow-amber-500/20"
+                className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl active:scale-95 shadow-md shadow-amber-500/20 transition-all"
               >
-                Thử Thách Lại
+                Thử thách lại
               </button>
               {onExit && (
                 <button
+                  type="button"
                   onClick={onExit}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl"
+                  className="px-5 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
                 >
                   Thoát
                 </button>
@@ -295,8 +310,8 @@ export const ReflexMathGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
         )}
       </div>
 
-      <div className="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
-        <span>⚡ Càng trả lời đúng nhanh, điểm thưởng thời gian càng cao!</span>
+      <div className="mt-4 text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+        <span>⚡ Càng phản xạ trả lời đúng nhanh, điểm thưởng thời gian càng cao!</span>
       </div>
     </div>
   );

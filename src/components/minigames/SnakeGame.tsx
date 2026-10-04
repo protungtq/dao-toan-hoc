@@ -283,43 +283,54 @@ export const SnakeGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 max-w-xl mx-auto w-full select-none text-slate-100">
-      <div className="w-full flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
+    <div className="flex flex-col items-center justify-center p-2 sm:p-4 max-w-xl mx-auto w-full select-none text-slate-800 dark:text-slate-100">
+      {/* HUD Bar */}
+      <div className="w-full flex items-center justify-between mb-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
         <div className="flex items-center gap-4">
           <div>
-            <div className="text-xs text-slate-400 font-medium">ĐIỂM HIỆN TẠI</div>
-            <div className="text-2xl font-bold font-mono text-emerald-400 tabular-nums">{score}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM HIỆN TẠI</div>
+            <div className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">{score}</div>
           </div>
-          <div className="h-8 w-px bg-slate-800" />
+          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
           <div>
-            <div className="text-xs text-slate-400 font-medium">KỶ LỤC CỦA BẠN</div>
-            <div className="text-2xl font-bold font-mono text-slate-200 tabular-nums">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">KỶ LỤC CỦA BÉ</div>
+            <div className="text-2xl font-black font-mono text-slate-800 dark:text-slate-200 tabular-nums">
               {Math.max(score, highScore)}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-lg border border-slate-800">
+        {/* Speed Selector */}
+        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
           <button
+            type="button"
             onClick={() => setSpeed(140)}
-            className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
-              speed === 140 ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
+              speed === 140
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Dễ
           </button>
           <button
+            type="button"
             onClick={() => setSpeed(100)}
-            className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
-              speed === 100 ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
+              speed === 100
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Vừa
           </button>
           <button
+            type="button"
             onClick={() => setSpeed(70)}
-            className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
-              speed === 70 ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
+              speed === 70
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Nhanh
@@ -327,27 +338,29 @@ export const SnakeGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
         </div>
       </div>
 
-      <div className="relative rounded-2xl overflow-hidden border-2 border-slate-800 shadow-2xl bg-slate-950">
+      {/* Canvas Area */}
+      <div className="relative rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 shadow-xl bg-slate-950">
         <canvas
           ref={canvasRef}
           width={CANVAS_SIZE}
           height={CANVAS_SIZE}
-          className="block max-w-full aspect-square w-[340px] sm:w-[380px] md:w-[400px]"
+          className="block max-w-full aspect-square w-[320px] sm:w-[380px] md:w-[400px]"
         />
 
         {bonusStar && (
-          <div className="absolute top-3 left-3 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs px-2.5 py-1 rounded-full flex items-center gap-1.5 animate-bounce">
+          <div className="absolute top-3 left-3 bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs px-3 py-1 rounded-full flex items-center gap-1.5 animate-bounce shadow-md">
             <span>⭐ Sao vàng +50 điểm!</span>
           </div>
         )}
 
         {isPaused && !isGameOver && (
-          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center">
-            <h3 className="text-2xl font-bold text-white mb-2">ĐÃ TẠM DỪNG</h3>
-            <p className="text-sm text-slate-400 mb-6">Nhấn phím Cách hoặc nút bên dưới để tiếp tục</p>
+          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-10">
+            <h3 className="text-2xl font-black text-white mb-2">ĐÃ TẠM DỪNG</h3>
+            <p className="text-sm text-slate-300 mb-6">Nhấn phím Cách hoặc nút bên dưới để tiếp tục</p>
             <button
+              type="button"
               onClick={() => setIsPaused(false)}
-              className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 active:scale-95"
+              className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl flex items-center gap-2 active:scale-95 shadow-lg shadow-emerald-500/30 transition-all"
             >
               Tiếp tục chơi
             </button>
@@ -355,23 +368,25 @@ export const SnakeGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
         )}
 
         {isGameOver && (
-          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center animate-fade-in">
-            <span className="text-4xl mb-3">💀</span>
-            <h3 className="text-2xl font-bold text-white mb-1">RẮN ĐÃ VA CHẠM!</h3>
-            <p className="text-sm text-slate-400 mb-4">
-              Điểm đạt được: <span className="font-mono text-emerald-400 font-bold text-lg">{score}</span>
+          <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
+            <span className="text-5xl mb-3">💥</span>
+            <h3 className="text-2xl font-black text-white mb-1">RẮN ĐÃ VA CHẠM!</h3>
+            <p className="text-sm text-slate-300 mb-5">
+              Điểm đạt được: <span className="font-mono text-emerald-400 font-black text-xl">{score}</span>
             </p>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={resetGame}
-                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl active:scale-95 shadow-lg shadow-emerald-500/20"
+                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl active:scale-95 shadow-lg shadow-emerald-500/20 transition-all"
               >
-                Chơi Lại
+                Chơi lại
               </button>
               {onExit && (
                 <button
+                  type="button"
                   onClick={onExit}
-                  className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl"
+                  className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-2xl transition-all"
                 >
                   Thoát
                 </button>
@@ -381,54 +396,65 @@ export const SnakeGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
         )}
       </div>
 
-      <div className="w-full mt-5 flex items-center justify-between max-w-[400px]">
+      {/* Control bar + D-pad */}
+      <div className="w-full mt-4 flex items-center justify-between max-w-[400px]">
         <div className="flex flex-col gap-2">
           <button
+            type="button"
             onClick={() => setIsPaused((p) => !p)}
-            className="p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 flex items-center justify-center"
+            className="p-3 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-700 dark:text-slate-300 flex items-center justify-center shadow-xs transition-colors"
             title="Tạm dừng"
           >
-            {isPaused ? '▶️️' : '⏸️'}
+            {isPaused ? '▶️' : '⏸️'}
           </button>
           <button
+            type="button"
             onClick={resetGame}
-            className="p-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 flex items-center justify-center"
+            className="p-3 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-700 dark:text-slate-300 flex items-center justify-center shadow-xs transition-colors"
             title="Làm mới"
           >
             🔄
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-1.5 w-36 h-36">
+        <div className="grid grid-cols-3 gap-2 w-36 h-36">
           <div />
           <button
+            type="button"
             onClick={() => changeDirection('UP')}
-            className="bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center text-xl font-bold"
+            className="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center text-xl font-black shadow-md active:scale-95 transition-all"
+            aria-label="Lên"
           >
             ↑
           </button>
           <div />
 
           <button
+            type="button"
             onClick={() => changeDirection('LEFT')}
-            className="bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center text-xl font-bold"
+            className="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center text-xl font-black shadow-md active:scale-95 transition-all"
+            aria-label="Trái"
           >
             ←
           </button>
-          <div className="flex items-center justify-center text-slate-600 text-[10px] font-mono select-none">
+          <div className="flex items-center justify-center text-slate-400 dark:text-slate-600 text-[10px] font-black tracking-wider select-none">
             D-PAD
           </div>
           <button
+            type="button"
             onClick={() => changeDirection('RIGHT')}
-            className="bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center text-xl font-bold"
+            className="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center text-xl font-black shadow-md active:scale-95 transition-all"
+            aria-label="Phải"
           >
             →
           </button>
 
           <div />
           <button
+            type="button"
             onClick={() => changeDirection('DOWN')}
-            className="bg-slate-800 hover:bg-slate-700 active:bg-emerald-500 active:text-slate-950 text-slate-200 rounded-xl flex items-center justify-center text-xl font-bold"
+            className="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center text-xl font-black shadow-md active:scale-95 transition-all"
+            aria-label="Xuống"
           >
             ↓
           </button>

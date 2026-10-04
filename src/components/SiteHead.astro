@@ -26,14 +26,69 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Trạng Toán',
-  alternateName: 'Trạng Toán – Luyện Toán tiểu học',
+  alternateName: 'Trạng Toán – Luyện Toán tiểu học lớp 1–5',
   url: Astro.site?.toString() ?? 'https://trangtoan.so1.asia/',
   inLanguage: 'vi-VN',
-  description: 'Nền tảng luyện Toán tiểu học trực quan, sinh động và bám sát nội dung học trên lớp.',
+  description: 'Nền tảng luyện Toán tiểu học trực quan, sinh động bám sát chương trình GDPT lớp 1–5 với gợi ý từng bước, không quảng cáo và miễn phí 100%.',
   educationalLevel: 'Tiểu học',
   audience: { '@type': 'EducationalAudience', educationalRole: 'student' },
 };
-const schemas: Record<string, unknown>[] = [websiteSchema];
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: 'Trạng Toán',
+  alternateName: 'Học Toán Tiểu Học Trạng Toán',
+  url: Astro.site?.toString() ?? 'https://trangtoan.so1.asia/',
+  logo: new URL('/icon/android-chrome-512x512.png', Astro.site ?? 'https://trangtoan.so1.asia').toString(),
+  description: 'Nền tảng học tập và phát triển tư duy toán học trực quan cho học sinh tiểu học Việt Nam.',
+  areaServed: { '@type': 'Country', name: 'Vietnam' },
+};
+
+const schemas: Record<string, unknown>[] = [websiteSchema, orgSchema];
+
+// Home page FAQ schema for Google & AI search rich answers
+if (Astro.url.pathname === '/' || Astro.url.pathname === '') {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Trạng Toán là gì và dành cho học sinh lớp mấy?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Trạng Toán là nền tảng luyện Toán tiểu học trực quan, sinh động dành cho học sinh từ lớp 1 đến lớp 5, bám sát các bộ sách giáo khoa hiện hành theo chương trình Giáo dục Phổ thông mới.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Trang web có thu phí hay yêu cầu đăng ký tài khoản không?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Trạng Toán hoàn toàn miễn phí 100%, không yêu cầu tạo tài khoản, không thu thập dữ liệu cá nhân của trẻ nhỏ và không có quảng cáo gây xao nhãng.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Làm thế nào để nhận vé vui chơi tại Đảo Minigame?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Mỗi khi con hoàn thành một bài luyện tập đạt điểm giỏi (từ 80% trở lên), hệ thống sẽ tặng vé để con trải nghiệm các minigame giáo dục rèn luyện phản xạ tính nhẩm như Phi thuyền không gian, Bong bóng số học, Bóng nảy phá gạch.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Trạng Toán có học được trên TV hoặc máy tính bảng không?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Có, Trạng Toán hỗ trợ mượt mà trên Smart TV qua điều khiển từ xa (phím mũi tên D-pad, phím số 1–5), máy tính bảng, điện thoại di động và máy tính.',
+        },
+      },
+    ],
+  };
+  schemas.push(faqSchema);
+}
 
 if (pathParts.length) {
   const items = [
@@ -57,6 +112,15 @@ if (Astro.url.pathname.startsWith('/luyen-tap/')) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content={description} />
+<meta name="keywords" content="toán tiểu học, toán lớp 1, toán lớp 2, toán lớp 3, toán lớp 4, toán lớp 5, bài tập toán trực quan, giải toán từng bước, học toán không áp lực, trạng toán, minigame toán học" />
+<meta name="author" content="Trạng Toán" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<meta name="geo.region" content="VN" />
+<meta name="geo.placename" content="Vietnam" />
+<link rel="alternate" hreflang="vi" href={canonicalUrl} />
+<link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 <meta name="application-name" content="Trạng Toán" />
 <meta name="apple-mobile-web-app-title" content="Trạng Toán" />
 <meta name="apple-mobile-web-app-capable" content="yes" />

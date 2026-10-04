@@ -1,0 +1,7 @@
+{
+  "name": "Trạng Toán",
+  "description": "Nền tảng luyện Toán tiểu học trực quan, sinh động và bám sát nội dung học trên lớp.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
