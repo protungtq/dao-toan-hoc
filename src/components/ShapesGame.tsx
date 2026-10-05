@@ -184,14 +184,20 @@ function GeometricShapePiece({
 function CompositePicture({ composite }: { composite: CompositeId }) {
   if (composite === 'house') {
     return (
-      <svg viewBox="0 0 240 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Ngôi nhà ghép từ các hình">
+      <svg viewBox="0 0 240 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Ngôi nhà ghép từ hình tam giác, hình chữ nhật và hình vuông">
+        {/* Mái nhà: hình tam giác */}
         <polygon points="120,15 25,95 215,95" fill="#f97316" stroke="#c2410c" strokeWidth="4" strokeLinejoin="miter" />
+        {/* Thân nhà: hình chữ nhật */}
         <rect x="48" y="95" width="144" height="92" rx="0" fill="#38bdf8" stroke="#0284c7" strokeWidth="4" strokeLinejoin="miter" />
-        <rect x="100" y="125" width="42" height="62" rx="0" fill="#8b5cf6" stroke="#6d28d9" strokeWidth="3" strokeLinejoin="miter" />
-        {/* Khung cửa sổ vuông sắc nét */}
-        <rect x="62" y="112" width="26" height="26" rx="0" fill="#fef08a" stroke="#ca8a04" strokeWidth="2.5" strokeLinejoin="miter" />
-        <line x1="75" y1="112" x2="75" y2="138" stroke="#ca8a04" strokeWidth="2" />
-        <line x1="62" y1="125" x2="88" y2="125" stroke="#ca8a04" strokeWidth="2" />
+        {/* Cửa ra vào: hình chữ nhật */}
+        <rect x="106" y="125" width="42" height="62" rx="0" fill="#8b5cf6" stroke="#6d28d9" strokeWidth="3" strokeLinejoin="miter" />
+        {/* Cửa sổ: 4 ô vuông nhỏ ghép thành 1 cửa sổ vuông sắc nét */}
+        <g stroke="#ca8a04" strokeWidth="2" strokeLinejoin="miter" fill="#fef08a">
+          <rect x="60" y="112" width="15" height="15" rx="0" />
+          <rect x="78" y="112" width="15" height="15" rx="0" />
+          <rect x="60" y="130" width="15" height="15" rx="0" />
+          <rect x="78" y="130" width="15" height="15" rx="0" />
+        </g>
       </svg>
     );
   }
@@ -224,11 +230,11 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
     );
   }
   return (
-    <svg viewBox="0 0 260 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Chiếc thuyền ghép từ các hình">
-      <rect x="126" y="20" width="8" height="115" rx="0" fill="#475569" />
+    <svg viewBox="0 0 260 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Chiếc thuyền ghép từ hình tam giác và hình chữ nhật">
+      <rect x="126" y="20" width="8" height="108" rx="0" fill="#475569" />
       <polygon points="126,25 45,125 126,125" fill="#38bdf8" stroke="#0284c7" strokeWidth="3" strokeLinejoin="miter" />
-      <polygon points="136,45 210,125 136,125" fill="#a78bfa" stroke="#7c3aed" strokeWidth="3" strokeLinejoin="miter" />
-      <polygon points="38,130 222,130 196,176 64,176" fill="#f97316" stroke="#c2410c" strokeWidth="4" strokeLinejoin="miter" />
+      <polygon points="134,45 210,125 134,125" fill="#a78bfa" stroke="#7c3aed" strokeWidth="3" strokeLinejoin="miter" />
+      <rect x="36" y="130" width="188" height="42" rx="0" fill="#f97316" stroke="#c2410c" strokeWidth="4" strokeLinejoin="miter" />
     </svg>
   );
 }

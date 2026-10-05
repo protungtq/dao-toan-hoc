@@ -101,9 +101,9 @@ const COMPOSITES = [
   {
     id: 'house',
     name: 'ngôi nhà',
-    answer: 'Hình chữ nhật và hình tam giác',
+    answer: 'Hình vuông, hình chữ nhật và hình tam giác',
     explanation:
-      'Mái nhà giống hình tam giác; thân nhà và cửa ra vào giống hình chữ nhật.',
+      'Mái nhà là hình tam giác; thân nhà và cửa ra vào là hình chữ nhật; cửa sổ gồm các ô hình vuông.',
   },
   {
     id: 'robot',
@@ -117,14 +117,14 @@ const COMPOSITES = [
     name: 'cây kem',
     answer: 'Hình tròn và hình tam giác',
     explanation:
-      'Viên kem giống hình tròn, phần ốc quế giống hình tam giác.',
+      'Viên kem là hình tròn, phần ốc quế là hình tam giác.',
   },
   {
     id: 'boat',
     name: 'chiếc thuyền',
     answer: 'Hình chữ nhật và hình tam giác',
     explanation:
-      'Cánh buồm giống hình tam giác, thân thuyền được ghép bằng hình chữ nhật.',
+      'Cánh buồm là hình tam giác, thân thuyền và cột buồm là hình chữ nhật.',
   },
 ] as const satisfies ReadonlyArray<{
   id: CompositeId;
@@ -134,11 +134,13 @@ const COMPOSITES = [
 }>;
 
 const COMPOSITION_ANSWERS = [
+  'Hình vuông, hình chữ nhật và hình tam giác',
   'Hình chữ nhật và hình tam giác',
   'Hình vuông, hình chữ nhật và hình tròn',
   'Hình tròn và hình tam giác',
   'Hình vuông và hình tam giác',
   'Hình tròn và hình chữ nhật',
+  'Hình vuông và hình chữ nhật',
 ] as const;
 
 function randomInteger(min: number, max: number) {
@@ -308,11 +310,11 @@ function composeQuestion(): ComposeShapeQuestion {
     instruction: `${item.name} được ghép từ những hình nào?`,
     composite: item.id,
     compositeName: item.name,
-    answers: shuffle([item.answer, ...shuffle(wrongAnswers).slice(0, 2)]),
+    answers: shuffle([item.answer, ...shuffle(wrongAnswers).slice(0, 3)]),
     correctAnswer: item.answer,
     hintSteps: [
       'Nhìn từng bộ phận riêng thay vì nhìn cả hình.',
-      'So sánh mái, thân, đầu hoặc bánh xe với các hình đã học.',
+      'Quan sát kỹ các chi tiết như mái, thân, cửa chính, cửa sổ...',
       item.explanation,
     ],
     explanation: item.explanation,
