@@ -184,57 +184,214 @@ function GeometricShapePiece({
 function CompositePicture({ composite }: { composite: CompositeId }) {
   if (composite === 'house') {
     return (
-      <svg viewBox="0 0 240 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Ngôi nhà ghép từ hình tam giác, hình chữ nhật và hình vuông">
-        {/* Mái nhà: hình tam giác */}
-        <polygon points="120,15 25,95 215,95" fill="#f97316" stroke="#c2410c" strokeWidth="4" strokeLinejoin="miter" />
+      <svg
+        viewBox="0 0 240 210"
+        className="h-56 w-64 drop-shadow-md"
+        role="img"
+        aria-label="Ngôi nhà ghép từ hình tam giác, hình chữ nhật và 5 hình vuông (4 ô vuông nhỏ ghép thành 1 ô vuông lớn)"
+      >
+        {/* Mái nhà: hình tam giác cân sắc nét */}
+        <polygon
+          points="120,15 25,95 215,95"
+          fill="#f97316"
+          stroke="#c2410c"
+          strokeWidth="4"
+          strokeLinejoin="miter"
+        />
         {/* Thân nhà: hình chữ nhật */}
-        <rect x="48" y="95" width="144" height="92" rx="0" fill="#38bdf8" stroke="#0284c7" strokeWidth="4" strokeLinejoin="miter" />
+        <rect
+          x="48"
+          y="95"
+          width="144"
+          height="100"
+          rx="0"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="4"
+          strokeLinejoin="miter"
+        />
         {/* Cửa ra vào: hình chữ nhật */}
-        <rect x="106" y="125" width="42" height="62" rx="0" fill="#8b5cf6" stroke="#6d28d9" strokeWidth="3" strokeLinejoin="miter" />
-        {/* Cửa sổ: 4 ô vuông nhỏ ghép thành 1 cửa sổ vuông sắc nét */}
-        <g stroke="#ca8a04" strokeWidth="2" strokeLinejoin="miter" fill="#fef08a">
-          <rect x="60" y="112" width="15" height="15" rx="0" />
-          <rect x="78" y="112" width="15" height="15" rx="0" />
-          <rect x="60" y="130" width="15" height="15" rx="0" />
-          <rect x="78" y="130" width="15" height="15" rx="0" />
+        <rect
+          x="112"
+          y="130"
+          width="42"
+          height="65"
+          rx="0"
+          fill="#8b5cf6"
+          stroke="#6d28d9"
+          strokeWidth="3.5"
+          strokeLinejoin="miter"
+        />
+        {/* Tay nắm cửa tròn */}
+        <circle cx="146" cy="162" r="3" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+
+        {/* Cửa sổ: 1 khung vuông lớn (38x38 px) chia thành 4 ô vuông nhỏ (19x19 px mỗi ô) */}
+        <g stroke="#b45309" strokeWidth="2.5" strokeLinejoin="miter">
+          {/* Ô vuông lớn bao ngoài */}
+          <rect
+            x="58"
+            y="115"
+            width="38"
+            height="38"
+            rx="0"
+            fill="#fef08a"
+            stroke="#b45309"
+            strokeWidth="3.5"
+          />
+          {/* Đường chia thành 4 ô vuông nhỏ đều nhau bên trong */}
+          <line x1="77" y1="115" x2="77" y2="153" stroke="#b45309" strokeWidth="2.5" />
+          <line x1="58" y1="134" x2="96" y2="134" stroke="#b45309" strokeWidth="2.5" />
         </g>
       </svg>
     );
   }
   if (composite === 'robot') {
     return (
-      <svg viewBox="0 0 240 220" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Rô-bốt ghép từ các hình">
-        {/* Đầu rô-bốt là hình vuông sắc cạnh */}
-        <rect x="80" y="10" width="80" height="80" rx="0" fill="#a78bfa" stroke="#6d28d9" strokeWidth="4" strokeLinejoin="miter" />
-        <circle cx="102" cy="48" r="9" fill="white" stroke="#6d28d9" strokeWidth="2" />
-        <circle cx="138" cy="48" r="9" fill="white" stroke="#6d28d9" strokeWidth="2" />
-        <circle cx="102" cy="48" r="4" fill="#0f172a" />
-        <circle cx="138" cy="48" r="4" fill="#0f172a" />
-        <rect x="100" y="68" width="40" height="8" rx="0" fill="#f43f5e" />
+      <svg
+        viewBox="0 0 240 225"
+        className="h-56 w-64 drop-shadow-md"
+        role="img"
+        aria-label="Chú rô-bốt ghép từ hình vuông, hình chữ nhật và hình tròn"
+      >
+        <line x1="120" y1="12" x2="120" y2="28" stroke="#059669" strokeWidth="3" />
+        <circle cx="120" cy="10" r="5" fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
+        {/* Đầu rô-bốt: hình vuông hoàn hảo 60x60 px */}
+        <rect
+          x="90"
+          y="28"
+          width="60"
+          height="60"
+          rx="0"
+          fill="#34d399"
+          stroke="#059669"
+          strokeWidth="4"
+          strokeLinejoin="miter"
+        />
+        {/* 2 mắt tròn */}
+        <circle cx="106" cy="52" r="8" fill="white" stroke="#059669" strokeWidth="2" />
+        <circle cx="134" cy="52" r="8" fill="white" stroke="#059669" strokeWidth="2" />
+        <circle cx="106" cy="52" r="3.5" fill="#065f46" />
+        <circle cx="134" cy="52" r="3.5" fill="#065f46" />
+        {/* Miệng chữ nhật */}
+        <rect x="105" y="68" width="30" height="8" rx="0" fill="#f43f5e" stroke="#be123c" strokeWidth="1.5" />
         {/* Thân chữ nhật */}
-        <rect x="68" y="95" width="104" height="82" rx="0" fill="#38bdf8" stroke="#0284c7" strokeWidth="4" strokeLinejoin="miter" />
-        <rect x="34" y="102" width="28" height="70" rx="0" fill="#10b981" stroke="#047857" strokeWidth="3" strokeLinejoin="miter" />
-        <rect x="178" y="102" width="28" height="70" rx="0" fill="#10b981" stroke="#047857" strokeWidth="3" strokeLinejoin="miter" />
-        <rect x="82" y="182" width="28" height="34" rx="0" fill="#f97316" stroke="#c2410c" strokeWidth="3" strokeLinejoin="miter" />
-        <rect x="130" y="182" width="28" height="34" rx="0" fill="#f97316" stroke="#c2410c" strokeWidth="3" strokeLinejoin="miter" />
+        <rect
+          x="75"
+          y="92"
+          width="90"
+          height="80"
+          rx="0"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="4"
+          strokeLinejoin="miter"
+        />
+        {/* Tay chữ nhật */}
+        <rect
+          x="44"
+          y="98"
+          width="24"
+          height="58"
+          rx="0"
+          fill="#a78bfa"
+          stroke="#7c3aed"
+          strokeWidth="3"
+          strokeLinejoin="miter"
+        />
+        <rect
+          x="172"
+          y="98"
+          width="24"
+          height="58"
+          rx="0"
+          fill="#a78bfa"
+          stroke="#7c3aed"
+          strokeWidth="3"
+          strokeLinejoin="miter"
+        />
+        {/* Chân chữ nhật */}
+        <rect
+          x="88"
+          y="176"
+          width="26"
+          height="38"
+          rx="0"
+          fill="#f97316"
+          stroke="#c2410c"
+          strokeWidth="3"
+          strokeLinejoin="miter"
+        />
+        <rect
+          x="126"
+          y="176"
+          width="26"
+          height="38"
+          rx="0"
+          fill="#f97316"
+          stroke="#c2410c"
+          strokeWidth="3"
+          strokeLinejoin="miter"
+        />
       </svg>
     );
   }
   if (composite === 'ice-cream') {
     return (
-      <svg viewBox="0 0 200 220" className="h-52 w-56 drop-shadow-md" role="img" aria-label="Cây kem ghép từ các hình">
-        <circle cx="100" cy="62" r="52" fill="#f472b6" stroke="#e11d48" strokeWidth="4" />
-        <polygon points="48,88 152,88 100,212" fill="#f59e0b" stroke="#b45309" strokeWidth="4" strokeLinejoin="miter" />
-        <circle cx="100" cy="22" r="10" fill="#ef4444" />
+      <svg
+        viewBox="0 0 200 220"
+        className="h-56 w-56 drop-shadow-md"
+        role="img"
+        aria-label="Cây kem gồm viên kem hình tròn và ốc quế hình tam giác"
+      >
+        <circle cx="100" cy="70" r="50" fill="#f472b6" stroke="#e11d48" strokeWidth="4" />
+        <polygon
+          points="50,96 150,96 100,214"
+          fill="#f59e0b"
+          stroke="#b45309"
+          strokeWidth="4"
+          strokeLinejoin="miter"
+        />
+        <circle cx="100" cy="22" r="9" fill="#ef4444" stroke="#991b1b" strokeWidth="2" />
+        <path d="M100,20 Q110,6 118,8" fill="none" stroke="#65a30d" strokeWidth="2" />
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 260 200" className="h-52 w-64 drop-shadow-md" role="img" aria-label="Chiếc thuyền ghép từ hình tam giác và hình chữ nhật">
-      <rect x="126" y="20" width="8" height="108" rx="0" fill="#475569" />
-      <polygon points="126,25 45,125 126,125" fill="#38bdf8" stroke="#0284c7" strokeWidth="3" strokeLinejoin="miter" />
-      <polygon points="134,45 210,125 134,125" fill="#a78bfa" stroke="#7c3aed" strokeWidth="3" strokeLinejoin="miter" />
-      <rect x="36" y="130" width="188" height="42" rx="0" fill="#f97316" stroke="#c2410c" strokeWidth="4" strokeLinejoin="miter" />
+    <svg
+      viewBox="0 0 260 210"
+      className="h-56 w-64 drop-shadow-md"
+      role="img"
+      aria-label="Chiếc thuyền gồm cánh buồm hình tam giác, thân thuyền và cột buồm hình chữ nhật"
+    >
+      <rect x="126" y="20" width="8" height="110" rx="0" fill="#78350f" stroke="#451a03" strokeWidth="1.5" />
+      <polygon
+        points="126,25 45,125 126,125"
+        fill="#38bdf8"
+        stroke="#0284c7"
+        strokeWidth="3.5"
+        strokeLinejoin="miter"
+      />
+      <polygon
+        points="134,45 210,125 134,125"
+        fill="#fbbf24"
+        stroke="#d97706"
+        strokeWidth="3.5"
+        strokeLinejoin="miter"
+      />
+      <polygon
+        points="30,135 225,135 195,178 60,178"
+        fill="#f97316"
+        stroke="#c2410c"
+        strokeWidth="4"
+        strokeLinejoin="miter"
+      />
+      <path
+        d="M20,192 Q50,184 80,192 T140,192 T200,192 T245,192"
+        fill="none"
+        stroke="#0284c7"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -251,6 +408,7 @@ export default function ShapesGame() {
   const [results, setResults] = useState<QuestionResult[]>([]);
   const [bestResult, setBestResult] = useState<SavedBest | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
+  const [showCheatSheet, setShowCheatSheet] = useState(false);
 
   useEffect(() => {
     setQuestions(generateShapeQuestions(10));
@@ -358,7 +516,7 @@ export default function ShapesGame() {
     prepareSession(practiceSize);
   }
 
-  // Keyboard shortcut listener for answers & continue
+  // Keyboard shortcut listener for answers & continue (supports 1-4 and a-d)
   useEffect(() => {
     if (screen !== 'lesson' || !question) return;
 
@@ -368,14 +526,22 @@ export default function ShapesGame() {
         nextQuestion();
         return;
       }
-      if (!canContinue && ['1', '2', '3', '4'].includes(e.key)) {
-        const idx = parseInt(e.key, 10) - 1;
-        if (question.type === 'choose-shape' && question.shapeOptions[idx]) {
-          chooseAnswer(question.shapeOptions[idx]);
-        } else if (question.type === 'odd-shape' && idx < question.shapes.length) {
-          chooseAnswer(idx);
-        } else if (question.answers[idx] !== undefined) {
-          chooseAnswer(question.answers[idx]);
+      if (!canContinue) {
+        let idx = -1;
+        if (['1', '2', '3', '4'].includes(e.key)) {
+          idx = parseInt(e.key, 10) - 1;
+        } else if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) {
+          idx = ['a', 'b', 'c', 'd'].indexOf(e.key.toLowerCase());
+        }
+
+        if (idx !== -1) {
+          if (question.type === 'choose-shape' && question.shapeOptions[idx]) {
+            chooseAnswer(question.shapeOptions[idx]);
+          } else if (question.type === 'odd-shape' && idx < question.shapes.length) {
+            chooseAnswer(idx);
+          } else if (question.answers[idx] !== undefined) {
+            chooseAnswer(question.answers[idx]);
+          }
         }
       }
     };
@@ -395,24 +561,25 @@ export default function ShapesGame() {
   }
 
   function AnswerButtons({ answers }: { answers: ShapeAnswer[] }) {
+    const letters = ['A', 'B', 'C', 'D'];
     return (
-      <div className={`grid gap-3.5 ${answers.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}>
+      <div className={`grid gap-3 sm:gap-4 ${answers.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}>
         {answers.map((answer, i) => (
           <button
             key={String(answer)}
             type="button"
             disabled={canContinue}
             onClick={() => chooseAnswer(answer)}
-            className={`group relative flex min-h-20 items-center justify-center rounded-2xl border-3 px-4 py-3 text-lg font-black transition-all ${answerClass(answer)}`}
+            className={`group relative flex min-h-20 sm:min-h-22 items-center justify-center rounded-2xl sm:rounded-3xl border-3 px-4 py-3 text-lg font-black transition-all ${answerClass(answer)}`}
           >
-            {/* Phím tắt hiển thị rất mờ và nhỏ dạng [1], [2] chỉ trên desktop để tuyệt đối không nhầm lẫn với số đáp án */}
+            {/* Nhãn phương án A, B, C, D chuẩn khảo thí, không bao giờ nhầm lẫn với số đáp án */}
             <span
-              className="absolute left-2.5 top-2 hidden text-[10px] font-mono font-medium text-slate-400/35 select-none dark:text-slate-500/35 sm:inline-block"
-              title={`Phím tắt [${i + 1}]`}
+              className="absolute left-3 top-2.5 flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-slate-500 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-700 dark:bg-slate-700 dark:text-slate-300 select-none shadow-xs"
+              title={`Phương án ${letters[i] || i + 1} (Phím: ${letters[i]} hoặc ${i + 1})`}
             >
-              [{i + 1}]
+              {letters[i] || i + 1}
             </span>
-            <span className="text-center text-2xl font-black">{answer}</span>
+            <span className="text-center text-xl sm:text-2xl font-black px-2">{answer}</span>
           </button>
         ))}
       </div>
@@ -437,6 +604,7 @@ export default function ShapesGame() {
     }
 
     if (question.type === 'choose-shape') {
+      const letters = ['A', 'B', 'C', 'D'];
       return (
         <div className="grid grid-cols-2 gap-4 rounded-3xl bg-slate-50/80 p-5 dark:bg-slate-900/40 sm:grid-cols-4">
           {question.shapeOptions.map((shape, index) => (
@@ -448,6 +616,9 @@ export default function ShapesGame() {
               className={`math-notebook-grid group relative flex min-h-48 flex-col items-center justify-center rounded-3xl border-3 p-4 transition-all hover:-translate-y-1 active:translate-y-0.5 ${answerClass(shape)}`}
               aria-label={SHAPE_LABELS[shape]}
             >
+              <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-slate-500 select-none dark:bg-slate-700 dark:text-slate-300 shadow-xs">
+                {letters[index]}
+              </span>
               <GeometricShapePiece
                 shape={shape}
                 color={['violet', 'sky', 'emerald', 'orange'][index % 4]}
@@ -485,6 +656,7 @@ export default function ShapesGame() {
     }
 
     if (question.type === 'odd-shape') {
+      const letters = ['A', 'B', 'C', 'D'];
       return (
         <div className="grid grid-cols-2 gap-4 rounded-3xl bg-slate-50/80 p-5 dark:bg-slate-900/40 sm:grid-cols-4">
           {question.shapes.map((shape, index) => (
@@ -495,9 +667,12 @@ export default function ShapesGame() {
               onClick={() => chooseAnswer(index)}
               className={`math-notebook-grid group relative flex min-h-48 flex-col items-center justify-center rounded-3xl border-3 p-4 transition-all hover:-translate-y-1 active:translate-y-0.5 ${answerClass(index)}`}
             >
+              <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-lg bg-slate-100 text-xs font-black text-slate-500 select-none dark:bg-slate-700 dark:text-slate-300 shadow-xs">
+                {letters[index]}
+              </span>
               <GeometricShapePiece shape={shape} color="rose" small />
               <span className="mt-3 text-sm font-black text-slate-700 dark:text-slate-200">
-                Hình {index + 1}
+                Hình {letters[index]}
               </span>
             </button>
           ))}
@@ -898,13 +1073,23 @@ export default function ShapesGame() {
     <main className="mx-auto max-w-5xl px-4 py-7">
       {/* Floating Header */}
       <header className="mb-5 flex flex-wrap items-center justify-between gap-4">
-        <button
-          type="button"
-          onClick={() => setScreen('intro')}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 font-black text-slate-600 shadow-sm transition hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200"
-        >
-          <span>←</span> Thoát
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setScreen('intro')}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3.5 py-2.5 font-black text-slate-600 shadow-sm transition hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200"
+          >
+            <span>←</span> Thoát
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowCheatSheet(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-white/90 px-3.5 py-2.5 text-xs sm:text-sm font-black text-emerald-800 shadow-sm transition hover:bg-emerald-50 dark:border-emerald-800 dark:bg-slate-800 dark:text-emerald-300"
+            title="Mở cẩm nang 4 hình phẳng chuẩn SGK"
+          >
+            <span>📖</span> <span className="hidden xs:inline">Cẩm nang</span> 4 hình
+          </button>
+        </div>
 
         <div className="text-right">
           <p className="font-black text-emerald-700 dark:text-emerald-400">
@@ -1001,6 +1186,122 @@ export default function ShapesGame() {
           </div>
         )}
       </section>
+
+      {/* Modal Cẩm nang 4 hình phẳng trực quan */}
+      {showCheatSheet && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cẩm nang 4 hình phẳng chuẩn SGK"
+        >
+          <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-white bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 md:p-8">
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">📐</span>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white md:text-2xl">
+                    Cẩm nang 4 hình phẳng chuẩn SGK
+                  </h2>
+                  <p className="text-xs font-bold text-slate-500">Ghi nhớ nhanh để làm đúng 100%</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCheatSheet(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-lg font-black text-slate-600 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                aria-label="Đóng cẩm nang"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="my-5 grid gap-3.5 sm:grid-cols-2">
+              {/* Hình vuông */}
+              <div className="math-notebook-grid rounded-2xl border-2 border-emerald-200 p-4 dark:border-emerald-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center border-2 border-emerald-600 bg-emerald-100 font-black text-xs text-emerald-800">
+                    1:1
+                  </div>
+                  <div>
+                    <h3 className="font-black text-emerald-800 dark:text-emerald-300">Hình vuông</h3>
+                    <p className="text-[11px] font-bold text-slate-500">4 cạnh thẳng bằng nhau</p>
+                  </div>
+                </div>
+                <ul className="mt-2 space-y-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <li>• 4 cạnh thẳng dài bằng nhau hoàn hảo.</li>
+                  <li>• 4 góc vuông 90° sắc nét, không bo tròn.</li>
+                </ul>
+              </div>
+
+              {/* Hình chữ nhật */}
+              <div className="math-notebook-grid rounded-2xl border-2 border-sky-200 p-4 dark:border-sky-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-11 items-center justify-center border-2 border-sky-600 bg-sky-100 font-black text-[10px] text-sky-800">
+                    Dài/Rộng
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sky-800 dark:text-sky-300">Hình chữ nhật</h3>
+                    <p className="text-[11px] font-bold text-slate-500">2 cạnh dài, 2 cạnh ngắn</p>
+                  </div>
+                </div>
+                <ul className="mt-2 space-y-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <li>• 2 cạnh dài bằng nhau, 2 cạnh ngắn bằng nhau.</li>
+                  <li>• 4 góc vuông sắc nét 90°.</li>
+                </ul>
+              </div>
+
+              {/* Hình tam giác */}
+              <div className="math-notebook-grid rounded-2xl border-2 border-violet-200 p-4 dark:border-violet-800">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-2xl">🔺</span>
+                  <div>
+                    <h3 className="font-black text-violet-800 dark:text-violet-300">Hình tam giác</h3>
+                    <p className="text-[11px] font-bold text-slate-500">3 cạnh và 3 góc</p>
+                  </div>
+                </div>
+                <ul className="mt-2 space-y-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <li>• Có đúng 3 cạnh thẳng khép kín.</li>
+                  <li>• Có đúng 3 góc và 3 đỉnh nhọn.</li>
+                </ul>
+              </div>
+
+              {/* Hình tròn */}
+              <div className="math-notebook-grid rounded-2xl border-2 border-amber-200 p-4 dark:border-amber-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-full border-2 border-amber-600 bg-amber-100" />
+                  <div>
+                    <h3 className="font-black text-amber-800 dark:text-amber-300">Hình tròn</h3>
+                    <p className="text-[11px] font-bold text-slate-500">Đường cong khép kín</p>
+                  </div>
+                </div>
+                <ul className="mt-2 space-y-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <li>• Đường cong tròn đều, trơn tru.</li>
+                  <li>• Hoàn toàn không có cạnh và không có góc.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Mẹo đếm hình ghép (ví dụ cửa sổ ngôi nhà) */}
+            <div className="rounded-2xl border-2 border-amber-300 bg-amber-50/80 p-4 text-xs font-semibold text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+              <p className="font-black text-sm text-amber-900 dark:text-amber-300 mb-1">
+                ⭐ Bí quyết đếm hình ghép (không bao giờ sót):
+              </p>
+              <p>
+                Khi đếm số hình vuông trong ngôi nhà: Cửa sổ gồm <b>4 ô vuông nhỏ</b> ghép lại tạo thành <b>1 ô vuông lớn bao ngoài</b>. Vì vậy có tất cả: <b>4 + 1 = 5 hình vuông</b>! Luôn nhớ đếm cả hình đơn lẫn hình ghép to bên ngoài nhé!
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowCheatSheet(false)}
+              className="mt-5 w-full rounded-2xl bg-emerald-600 py-3.5 font-black text-white shadow-md transition hover:bg-emerald-700 active:translate-y-0.5"
+            >
+              Đã hiểu, tiếp tục làm bài →
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -328,8 +328,8 @@ export function visualHtml(question: PrintableQuestion) {
   if (type === 'odd-shape') return `<div class="shape-row">${(q.shapes as unknown[] ?? []).map((shape, index) => `<div><b>${index + 1}</b>${shapeSvg(String(shape))}</div>`).join('')}</div>`;
   if (type === 'classify-shape') return `<div class="shape-row">${(q.shapes as Record<string, unknown>[] ?? []).map((item) => shapeSvg(String(item.shape))).join('')}</div>`;
   if (type === 'life-shape') return `<div class="object-icon">${escapeHtml(q.objectIcon)}<small>${escapeHtml(q.objectName)}</small></div>`;
-  if (type === 'compose-shape') {
-    const icons: Record<string, string> = { house: '🏠', robot: '🤖', boat: '⛵', train: '🚂' };
+  if (type === 'compose-shape' || type === 'count-in-composite') {
+    const icons: Record<string, string> = { house: '🏠', robot: '🤖', boat: '⛵', train: '🚂', 'ice-cream': '🍦' };
     return `<div class="object-icon">${icons[String(q.composite)] ?? '🧩'}<small>${escapeHtml(q.compositeName)}</small></div>`;
   }
   if (type === 'fraction') return `<div class="fraction"><span>${escapeHtml(q.numerator)}</span><span>${escapeHtml(q.denominator)}</span></div>${q.caption ? `<small>${escapeHtml(q.caption)}</small>` : ''}`;

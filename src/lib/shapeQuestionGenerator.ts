@@ -71,13 +71,21 @@ export type ComposeShapeQuestion = BaseQuestion & {
   compositeName: string;
 };
 
+export type CountInCompositeQuestion = BaseQuestion & {
+  type: 'count-in-composite';
+  composite: CompositeId;
+  compositeName: string;
+  targetShape: ShapeId;
+};
+
 export type ShapeQuestion =
   | IdentifyShapeQuestion
   | ChooseShapeQuestion
   | ClassifyShapeQuestion
   | OddShapeQuestion
   | LifeShapeQuestion
-  | ComposeShapeQuestion;
+  | ComposeShapeQuestion
+  | CountInCompositeQuestion;
 
 const SHAPES = Object.keys(SHAPE_LABELS) as ShapeId[];
 const COLORS = ['violet', 'sky', 'emerald', 'orange', 'rose'] as const;
@@ -103,7 +111,7 @@ const COMPOSITES = [
     name: 'ngôi nhà',
     answer: 'Hình vuông, hình chữ nhật và hình tam giác',
     explanation:
-      'Mái nhà là hình tam giác; thân nhà và cửa ra vào là hình chữ nhật; cửa sổ gồm các ô hình vuông.',
+      'Mái nhà là hình tam giác; thân nhà và cửa ra vào là hình chữ nhật; cửa sổ gồm 4 ô vuông nhỏ ghép thành 1 ô vuông lớn.',
   },
   {
     id: 'robot',
@@ -132,6 +140,108 @@ const COMPOSITES = [
   answer: string;
   explanation: string;
 }>;
+
+const COUNT_COMPOSITE_TASKS = [
+  {
+    composite: 'house' as CompositeId,
+    compositeName: 'ngôi nhà',
+    targetShape: 'square' as ShapeId,
+    instruction: 'Hình ngôi nhà có tất cả bao nhiêu hình vuông?',
+    correctAnswer: 5,
+    answers: [3, 4, 5, 6],
+    hintSteps: [
+      'Quan sát kỹ phần ô cửa sổ của ngôi nhà.',
+      'Đếm 4 ô vuông nhỏ bên trong trước.',
+      'Cả 4 ô vuông nhỏ cùng ghép lại thành 1 ô vuông lớn bao bên ngoài. Tất cả là: 4 + 1 = 5 hình vuông!',
+    ] as [string, string, string],
+    explanation:
+      'Cửa sổ gồm 4 ô vuông nhỏ và 1 ô vuông lớn bao quanh 4 ô vuông đó. Như vậy có tất cả: 4 + 1 = 5 hình vuông!',
+  },
+  {
+    composite: 'house' as CompositeId,
+    compositeName: 'ngôi nhà',
+    targetShape: 'triangle' as ShapeId,
+    instruction: 'Hình ngôi nhà có bao nhiêu hình tam giác?',
+    correctAnswer: 1,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Quan sát từ trên xuống dưới của ngôi nhà.',
+      'Mái nhà có 3 cạnh nhọn thẳng.',
+      'Chỉ có đúng 1 hình tam giác làm mái nhà.',
+    ] as [string, string, string],
+    explanation: 'Ngôi nhà có đúng 1 hình tam giác là phần mái nhà.',
+  },
+  {
+    composite: 'house' as CompositeId,
+    compositeName: 'ngôi nhà',
+    targetShape: 'rectangle' as ShapeId,
+    instruction: 'Hình ngôi nhà có bao nhiêu hình chữ nhật?',
+    correctAnswer: 2,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Tìm các hình có 2 cạnh dài và 2 cạnh ngắn.',
+      'Thân ngôi nhà là 1 hình chữ nhật lớn.',
+      'Cánh cửa chính ra vào là 1 hình chữ nhật nữa. Tổng cộng có 2 hình chữ nhật!',
+    ] as [string, string, string],
+    explanation: 'Có 2 hình chữ nhật gồm: 1 thân ngôi nhà và 1 cánh cửa ra vào.',
+  },
+  {
+    composite: 'robot' as CompositeId,
+    compositeName: 'chú rô-bốt',
+    targetShape: 'circle' as ShapeId,
+    instruction: 'Chú rô-bốt có bao nhiêu hình tròn?',
+    correctAnswer: 2,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Tìm các hình có đường cong khép kín, không có cạnh.',
+      'Quan sát kỹ khuôn mặt của chú rô-bốt.',
+      'Hai con mắt của chú rô-bốt là 2 hình tròn!',
+    ] as [string, string, string],
+    explanation: 'Chú rô-bốt có 2 con mắt hình tròn.',
+  },
+  {
+    composite: 'robot' as CompositeId,
+    compositeName: 'chú rô-bốt',
+    targetShape: 'square' as ShapeId,
+    instruction: 'Chú rô-bốt có bao nhiêu hình vuông?',
+    correctAnswer: 1,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Tìm hình có 4 cạnh bằng nhau hoàn hảo.',
+      'Quan sát phần đầu của chú rô-bốt.',
+      'Đầu chú rô-bốt là 1 hình vuông!',
+    ] as [string, string, string],
+    explanation: 'Chú rô-bốt có 1 hình vuông chính là phần đầu.',
+  },
+  {
+    composite: 'boat' as CompositeId,
+    compositeName: 'chiếc thuyền',
+    targetShape: 'triangle' as ShapeId,
+    instruction: 'Chiếc thuyền có bao nhiêu hình tam giác?',
+    correctAnswer: 2,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Tìm các hình có 3 cạnh khép kín.',
+      'Quan sát hai cánh buồm của chiếc thuyền.',
+      'Có 1 cánh buồm lớn và 1 cánh buồm nhỏ, tất cả là 2 hình tam giác!',
+    ] as [string, string, string],
+    explanation: 'Chiếc thuyền có 2 hình tam giác chính là 2 cánh buồm đón gió.',
+  },
+  {
+    composite: 'ice-cream' as CompositeId,
+    compositeName: 'cây kem',
+    targetShape: 'circle' as ShapeId,
+    instruction: 'Cây kem có bao nhiêu hình tròn?',
+    correctAnswer: 1,
+    answers: [1, 2, 3, 4],
+    hintSteps: [
+      'Tìm hình có đường cong tròn đều.',
+      'Quan sát viên kem mát lạnh ở phía trên.',
+      'Viên kem là 1 hình tròn!',
+    ] as [string, string, string],
+    explanation: 'Cây kem có 1 hình tròn chính là viên kem ngọt ngào phía trên.',
+  },
+];
 
 const COMPOSITION_ANSWERS = [
   'Hình vuông, hình chữ nhật và hình tam giác',
@@ -321,6 +431,23 @@ function composeQuestion(): ComposeShapeQuestion {
   };
 }
 
+function countCompositeQuestion(): CountInCompositeQuestion {
+  const task = randomItem(COUNT_COMPOSITE_TASKS);
+  return {
+    id: id('count-composite'),
+    type: 'count-in-composite',
+    skillId: 'compose-shapes',
+    instruction: task.instruction,
+    composite: task.composite,
+    compositeName: task.compositeName,
+    targetShape: task.targetShape,
+    answers: shuffle([...task.answers]),
+    correctAnswer: task.correctAnswer,
+    hintSteps: task.hintSteps,
+    explanation: task.explanation,
+  };
+}
+
 function questionForSkill(skill: ShapeSkillId): ShapeQuestion {
   if (skill === 'recognize-shapes') {
     return Math.random() < 0.5 ? identifyQuestion() : chooseQuestion();
@@ -329,7 +456,7 @@ function questionForSkill(skill: ShapeSkillId): ShapeQuestion {
     return Math.random() < 0.55 ? classifyQuestion() : oddQuestion();
   }
   if (skill === 'shapes-in-life') return lifeQuestion();
-  return composeQuestion();
+  return Math.random() < 0.5 ? composeQuestion() : countCompositeQuestion();
 }
 
 function skillPlan(total: number): ShapeSkillId[] {
@@ -366,6 +493,9 @@ function signature(question: ShapeQuestion) {
   }
   if (question.type === 'odd-shape') return `${question.type}-${question.shapes.join('-')}`;
   if (question.type === 'life-shape') return `${question.type}-${question.objectName}`;
+  if (question.type === 'count-in-composite') {
+    return `${question.type}-${question.composite}-${question.targetShape}`;
+  }
   return `${question.type}-${question.composite}`;
 }
 

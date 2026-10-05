@@ -1,13 +1,217 @@
 ---
 import PracticeLayout from '../../../layouts/PracticeLayout.astro';
 import ShapesGame from '../../../components/ShapesGame';
+
+const pageTitle = "Làm quen với hình phẳng – Toán lớp 1: Hình vuông, tròn, tam giác, chữ nhật";
+const pageDescription = "Bài tập trực quan nhận biết, phân loại và đếm hình vuông, hình chữ nhật, hình tam giác, hình tròn bám sát SGK Toán lớp 1. Có hướng dẫn đếm hình ghép chi tiết.";
+const canonical = "/luyen-tap/lop-1/lam-quen-voi-hinh-phang";
+
+const quizSchema = {
+  "@context": "https://schema.org",
+  "@type": "Quiz",
+  "name": "Bài tập Làm quen với hình phẳng – Toán Lớp 1",
+  "description": "Luyện tập nhận biết hình vuông, hình tròn, hình tam giác, hình chữ nhật và kỹ năng đếm hình ghép chuẩn SGK mới.",
+  "educationalLevel": "Lớp 1",
+  "teaches": "Nhận biết 4 hình phẳng cơ bản, đếm số lượng hình phẳng, đếm hình ghép",
+  "hasPart": [
+    {
+      "@type": "Question",
+      "name": "Hình vuông có những đặc điểm nào?",
+      "suggestedAnswer": [
+        { "@type": "Answer", "text": "Có 4 cạnh bằng nhau và 4 góc vuông", "correctAnswer": true },
+        { "@type": "Answer", "text": "Có 3 cạnh thẳng", "correctAnswer": false },
+        { "@type": "Answer", "text": "Có đường cong khép kín", "correctAnswer": false }
+      ]
+    },
+    {
+      "@type": "Question",
+      "name": "Hình ngôi nhà có cửa sổ gồm 4 ô vuông nhỏ ghép lại có tất cả bao nhiêu hình vuông?",
+      "suggestedAnswer": [
+        { "@type": "Answer", "text": "5 hình vuông (4 ô vuông nhỏ + 1 ô vuông lớn bao ngoài)", "correctAnswer": true },
+        { "@type": "Answer", "text": "4 hình vuông", "correctAnswer": false },
+        { "@type": "Answer", "text": "1 hình vuông", "correctAnswer": false }
+      ]
+    },
+    {
+      "@type": "Question",
+      "name": "Hình nào sau đây không có cạnh và không có góc?",
+      "suggestedAnswer": [
+        { "@type": "Answer", "text": "Hình tròn", "correctAnswer": true },
+        { "@type": "Answer", "text": "Hình tam giác", "correctAnswer": false },
+        { "@type": "Answer", "text": "Hình chữ nhật", "correctAnswer": false }
+      ]
+    }
+  ]
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Làm thế nào để phân biệt hình vuông và hình chữ nhật trong Toán lớp 1?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hình vuông có 4 cạnh thẳng dài bằng nhau hoàn hảo và 4 góc vuông. Trong khi đó, hình chữ nhật có 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau. Cả hai hình đều có 4 góc vuông và các cạnh thẳng tắp, không bao giờ bo tròn."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Tại sao cửa sổ gồm 4 ô vuông nhỏ ghép lại lại được đếm là 5 hình vuông?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Đây là bài toán đếm hình ghép tư duy kinh điển trong chương trình tiểu học. Khi đếm, học sinh cần đếm: 1. Bốn ô vuông nhỏ đơn lẻ ở 4 góc; 2. Một ô vuông lớn bên ngoài do 4 ô nhỏ ghép lại. Tổng số hình vuông là: 4 + 1 = 5 hình vuông."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hình tam giác có mấy cạnh và mấy đỉnh?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hình tam giác có đúng 3 cạnh thẳng khép kín và 3 đỉnh nhọn."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hình tròn có cạnh và góc không?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hình tròn là đường cong khép kín tròn đều, hoàn toàn không có cạnh và không có góc."
+      }
+    }
+  ]
+};
 ---
 
 <PracticeLayout
-  title="Làm quen với hình phẳng – Toán lớp 1 – Trạng Toán"
-  description="Luyện nhận biết, phân loại và ghép hình vuông, hình tròn, hình tam giác, hình chữ nhật dành cho học sinh lớp 1."
-  canonical="/luyen-tap/lop-1/lam-quen-voi-hinh-phang"
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
   bodyClass="bg-gradient-to-br from-emerald-100 via-white to-cyan-100 text-slate-800"
 >
+  {/* Schema.org Structured Data cho Google Rich Snippets & AI Search */}
+  <script type="application/ld+json" set:html={JSON.stringify(quizSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
   <ShapesGame client:load />
+
+  {/* Phần Nội dung Tối ưu SEO Google & SEO AI: Cẩm nang Hình học phẳng Lớp 1 */}
+  <article className="mx-auto max-w-5xl px-4 py-12 md:py-16">
+    <header className="mb-10 text-center">
+      <p className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+        📚 Kiến thức chuẩn SGK Toán Lớp 1
+      </p>
+      <h2 className="mt-3 text-2xl font-black text-slate-900 dark:text-white md:text-4xl">
+        Cẩm nang nhận biết & phân biệt 4 hình phẳng cơ bản
+      </h2>
+      <p className="mt-2 text-base font-medium text-slate-600 dark:text-slate-300">
+        Phương pháp sư phạm giúp học sinh lớp 1 ghi nhớ nhanh, phân loại chính xác và không bao giờ sót hình khi đếm.
+      </p>
+    </header>
+
+    {/* Bảng so sánh 4 hình phẳng */}
+    <div className="overflow-hidden rounded-3xl border-2 border-slate-200/80 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-900">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm md:text-base">
+          <thead className="border-b border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-800 dark:bg-slate-800 dark:text-white font-black">
+            <tr>
+              <th className="p-4">Hình</th>
+              <th className="p-4">Tên gọi</th>
+              <th className="p-4">Số cạnh</th>
+              <th className="p-4">Số góc</th>
+              <th className="p-4">Đặc điểm nhận biết then chốt</th>
+              <th className="p-4">Đồ vật thực tế</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td className="p-4 text-2xl">🟩</td>
+              <td className="p-4 font-black text-emerald-700 dark:text-emerald-400">Hình vuông</td>
+              <td className="p-4">4 cạnh thẳng</td>
+              <td className="p-4">4 góc vuông</td>
+              <td className="p-4">4 cạnh dài bằng nhau hoàn hảo, góc vuông 90° sắc nét.</td>
+              <td className="p-4">Mặt Rubik, ô cửa sổ vuông, viên gạch lát nền.</td>
+            </tr>
+            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td className="p-4 text-2xl">🟦</td>
+              <td className="p-4 font-black text-sky-700 dark:text-sky-400">Hình chữ nhật</td>
+              <td className="p-4">4 cạnh thẳng</td>
+              <td className="p-4">4 góc vuông</td>
+              <td className="p-4">Có 2 cạnh dài bằng nhau và 2 cạnh ngắn bằng nhau.</td>
+              <td className="p-4">Cánh cửa ra vào, màn hình tivi, quyển vở.</td>
+            </tr>
+            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td className="p-4 text-2xl">🔺</td>
+              <td className="p-4 font-black text-violet-700 dark:text-violet-400">Hình tam giác</td>
+              <td className="p-4">3 cạnh thẳng</td>
+              <td className="p-4">3 góc, 3 đỉnh</td>
+              <td className="p-4">Đường bao khép kín gồm đúng 3 đoạn thẳng nối với nhau.</td>
+              <td className="p-4">Biển báo giao thông, mái nhà, miếng bánh pizza.</td>
+            </tr>
+            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td className="p-4 text-2xl">🟡</td>
+              <td className="p-4 font-black text-amber-600 dark:text-amber-400">Hình tròn</td>
+              <td className="p-4">0 cạnh</td>
+              <td className="p-4">0 góc</td>
+              <td className="p-4">Đường cong khép kín tròn đều, lăn được dễ dàng.</td>
+              <td className="p-4">Mặt đồng hồ, đồng xu, chiếc bánh quy tròn.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* Chuyên đề: Kỹ thuật giải bài toán đếm hình ghép */}
+    <section className="mt-10 rounded-3xl border-2 border-emerald-200 bg-emerald-50/60 p-6 md:p-8 dark:border-emerald-900/60 dark:bg-emerald-950/20">
+      <div className="flex items-start gap-4">
+        <span className="text-3xl">🧩</span>
+        <div>
+          <h3 className="text-xl font-black text-emerald-900 dark:text-emerald-300">
+            Kỹ thuật đếm hình ghép chuẩn tư duy tiểu học (Bài toán Ngôi nhà)
+          </h3>
+          <p className="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+            Trong các bài thi Toán lớp 1 và lớp 2, dạng toán <b>đếm số hình vuông</b> trong hình ghép là bài toán phân loại học sinh giỏi. Học sinh thường mắc lỗi đếm thiếu hình do chỉ nhìn thấy các hình nhỏ bên trong mà bỏ quên hình lớn bên ngoài.
+          </p>
+          <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-850 border border-emerald-100 dark:border-emerald-800/50">
+            <h4 className="font-black text-slate-900 dark:text-white">
+              Ví dụ: Ngôi nhà có ô cửa sổ gồm 4 ô vuông nhỏ – Có tất cả bao nhiêu hình vuông?
+            </h4>
+            <div className="mt-3 space-y-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <p>• <b>Bước 1: Đếm hình vuông đơn</b> → Có 4 ô vuông nhỏ (trên-trái, trên-phải, dưới-trái, dưới-phải).</p>
+              <p>• <b>Bước 2: Đếm hình vuông ghép</b> → Cả 4 ô vuông nhỏ cùng ghép lại tạo thành 1 ô vuông lớn bao bọc xung quanh.</p>
+              <p className="font-black text-emerald-700 dark:text-emerald-400 text-base">
+                ➔ Kết luận: 4 + 1 = 5 hình vuông! (Đáp án chính xác là 5).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* FAQ Trả lời thắc mắc (Tối ưu AI Search & Google Snippets) */}
+    <section className="mt-10 space-y-4">
+      <h3 className="text-xl font-black text-slate-900 dark:text-white">
+        Câu hỏi thường gặp về Hình phẳng Lớp 1
+      </h3>
+
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <h4 className="font-black text-slate-900 dark:text-white">
+          Làm thế nào để trẻ không nhầm giữa hình vuông và hình chữ nhật?
+        </h4>
+        <p className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          Cho trẻ so sánh độ dài các cạnh bằng thước kẻ hoặc que tính: hình vuông có 4 cạnh dài đều bằng nhau (xoay hướng nào cũng như nhau), còn hình chữ nhật luôn có 2 cạnh dài và 2 cạnh ngắn phân biệt.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <h4 className="font-black text-slate-900 dark:text-white">
+          Chương trình GDPT mới lớp 1 gồm những bộ sách nào?
+        </h4>
+        <p className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+          Nội dung luyện tập hình phẳng trên Trạng Toán được thiết kế chuẩn mực, đồng bộ hoàn toàn với cả 3 bộ sách giáo khoa hiện hành: <i>Kết nối tri thức với cuộc sống</i>, <i>Chân trời sáng tạo</i> và <i>Cánh diều</i>.
+        </p>
+      </div>
+    </section>
+  </article>
 </PracticeLayout>
