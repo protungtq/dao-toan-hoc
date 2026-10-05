@@ -461,14 +461,7 @@ export default function AddSubtractGame() {
         <div className="mb-6 flex items-center gap-4">
           <img src={`/models/mascots/${questionIndex % 2 === 0 ? 'squirrel' : 'bear'}-poster.webp`} alt={questionIndex % 2 === 0 ? 'Sóc Nâu' : 'Gấu Mật'} className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20" />
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="font-black text-violet-700">{questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}</p>
-              {question.bookRef && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-300/80">
-                  <span>📖</span> {question.bookRef}
-                </span>
-              )}
-            </div>
+            <p className="font-black text-violet-700">{questionIndex % 2 === 0 ? 'Sóc Nâu hỏi' : 'Gấu Mật hỏi'}</p>
             <h1 className="mt-1 text-2xl font-black text-slate-900 md:text-3xl">{question.instruction}</h1>
           </div>
         </div>

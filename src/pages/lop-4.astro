@@ -12,7 +12,7 @@ const sections = [
 ];
 ---
 
-<BaseLayout title="Toán lớp 4 – Trạng Toán" description="Mười ba nhóm luyện tập Toán lớp 4 bám sát bộ sách Kết nối tri thức với cuộc sống, từ số có nhiều chữ số đến phân số, hình học và dữ liệu.">
+<BaseLayout title="Toán lớp 4 – Trạng Toán" description="Mười ba nhóm luyện tập Toán lớp 4 trực quan sinh động, từ số có nhiều chữ số đến phân số, hình học và dữ liệu.">
   <SiteHeader compact />
   <main>
     <section class="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50">
@@ -21,8 +21,8 @@ const sections = [
         <div>
           <div class="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-black text-orange-700 shadow-sm"><img src="/models/grade-mascots/4-compact.webp" alt="" aria-hidden="true" width="32" height="32" class="h-8 w-8 object-contain drop-shadow-md" />Chương trình luyện tập lớp 4</div>
           <h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-slate-950 md:text-6xl">Hiểu số lớn, <span class="text-orange-600">vững tư duy Toán</span></h1>
-          <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">Nội dung lớp 4 được gom thành 13 chủ đề theo tiến trình sách giáo khoa, từ ôn tập đầu năm đến phân số và tổng kết cuối năm.</p>
-          <div class="mt-7 flex flex-wrap gap-3"><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ {grade4PracticeModules.length} chủ đề trọng tâm</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ 73 bài trong sách</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ Hai học kỳ</span></div>
+          <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">Nội dung lớp 4 được gom thành 13 chủ đề theo tiến trình học tập, từ ôn tập đầu năm đến phân số và tổng kết cuối năm.</p>
+          <div class="mt-7 flex flex-wrap gap-3"><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ {grade4PracticeModules.length} chủ đề trọng tâm</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ 73 bài học toàn diện</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ Hai học kỳ</span></div>
           <a href="#hoc-ky-1" class="mt-8 inline-flex items-center gap-3 rounded-2xl bg-orange-600 px-6 py-4 font-black text-white shadow-xl shadow-orange-200 transition hover:-translate-y-1 hover:bg-orange-700">Xem chương trình <span>↓</span></a>
         </div>
         <div class="hidden lg:block"><div class="rounded-[2rem] border-4 border-white bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><div><p class="text-sm font-black text-orange-700">Toán lớp 4</p><p class="mt-1 text-xl font-black text-slate-900">Mỗi lượt học vừa sức</p></div><img src="/models/grade-mascots/4-compact.webp" alt="" aria-hidden="true" width="88" height="88" class="h-[5.5rem] w-[5.5rem] object-contain drop-shadow-xl" /></div><div class="mt-5 grid grid-cols-2 gap-3">{grade4PracticeModes.map((mode) => <div class="rounded-2xl bg-slate-50 p-4"><span class="text-2xl">{mode.icon}</span><p class="mt-2 text-sm font-black text-slate-800">{mode.title}</p><p class="mt-1 text-xs font-semibold text-slate-500">{mode.questionCount} câu · {mode.estimatedMinutes} phút</p></div>)}</div></div></div>

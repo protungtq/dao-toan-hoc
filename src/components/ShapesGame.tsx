@@ -776,7 +776,7 @@ export default function ShapesGame() {
           <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 p-8 text-white md:p-12">
             <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
             <p className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-md">
-              <span>📐</span> Mục 2 · Bài 7–9 SGK Toán Lớp 1
+              <span>📐</span> Lớp 1 · Hình học trực quan
             </p>
             <h1 className="mt-4 text-3xl font-black md:text-5xl">
               Làm quen với hình phẳng
@@ -831,7 +831,7 @@ export default function ShapesGame() {
             </h2>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               {[
-                [5, 'Luyện nhanh', 'Ôn đủ 4 dạng hình phẳng chuẩn SGK'],
+                [5, 'Luyện nhanh', 'Ôn đủ 4 dạng hình phẳng cơ bản'],
                 [10, 'Luyện chuẩn', 'Cân bằng nhận biết, phân loại và đồ vật thực tế'],
                 [15, 'Thử thách', 'Rèn phản xạ nhanh và tư duy hình ghép sâu hơn'],
               ].map(([size, title, description]) => (
@@ -1115,7 +1115,7 @@ export default function ShapesGame() {
             type="button"
             onClick={() => setShowCheatSheet(true)}
             className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-white/90 px-3.5 py-2.5 text-xs sm:text-sm font-black text-emerald-800 shadow-sm transition hover:bg-emerald-50 dark:border-emerald-800 dark:bg-slate-800 dark:text-emerald-300"
-            title="Mở cẩm nang 4 hình phẳng chuẩn SGK"
+            title="Mở cẩm nang 4 hình phẳng"
           >
             <span>📖</span> <span className="hidden xs:inline">Cẩm nang</span> 4 hình
           </button>
@@ -1153,16 +1153,9 @@ export default function ShapesGame() {
             className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="font-black text-emerald-700 dark:text-emerald-400">
-                {questionIndex % 2 === 0 ? 'Gấu Mật hỏi bé' : 'Sóc Nâu hỏi bé'}
-              </p>
-              {question.bookRef && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-300/80 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-700/80">
-                  <span>📖</span> {question.bookRef}
-                </span>
-              )}
-            </div>
+            <p className="font-black text-emerald-700 dark:text-emerald-400">
+              {questionIndex % 2 === 0 ? 'Gấu Mật hỏi bé' : 'Sóc Nâu hỏi bé'}
+            </p>
             <h1 className="mt-1 text-2xl font-black text-slate-900 dark:text-white md:text-3xl">
               {question.instruction}
             </h1>
@@ -1230,7 +1223,7 @@ export default function ShapesGame() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
-          aria-label="Cẩm nang 4 hình phẳng chuẩn SGK"
+          aria-label="Cẩm nang 4 hình phẳng"
         >
           <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-white bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 md:p-8">
             <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 dark:border-slate-800">
@@ -1238,7 +1231,7 @@ export default function ShapesGame() {
                 <span className="text-3xl">📐</span>
                 <div>
                   <h2 className="text-xl font-black text-slate-900 dark:text-white md:text-2xl">
-                    Cẩm nang 4 hình phẳng chuẩn SGK
+                    Cẩm nang 4 hình phẳng cơ bản
                   </h2>
                   <p className="text-xs font-bold text-slate-500">Ghi nhớ nhanh để làm đúng 100%</p>
                 </div>
