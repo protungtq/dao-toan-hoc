@@ -56,12 +56,10 @@ function GeometricShapePiece({
   shape,
   color = 'violet',
   small = false,
-  showInspector = false,
 }: {
   shape: ShapeId;
   color?: string;
   small?: boolean;
-  showInspector?: boolean;
 }) {
   const palette = COLOR_PALETTES[color] || COLOR_PALETTES.violet;
 
@@ -70,7 +68,7 @@ function GeometricShapePiece({
     const r = small ? 30 : 58;
     const center = size / 2;
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center justify-center">
         <svg
           viewBox={`0 0 ${size} ${size}`}
           className={small ? 'h-18 w-18 drop-shadow-sm' : 'h-36 w-36 drop-shadow-md'}
@@ -85,47 +83,25 @@ function GeometricShapePiece({
             stroke={palette.stroke}
             strokeWidth={small ? 4 : 6}
           />
-          {showInspector && (
-            <g>
-              <circle cx={center} cy={center} r={small ? 3 : 5} fill={palette.accent} />
-              <text
-                x={center}
-                y={center - (small ? 6 : 10)}
-                textAnchor="middle"
-                fontSize={small ? 10 : 13}
-                fontWeight="900"
-                fill={palette.accent}
-              >
-                Tâm O
-              </text>
-            </g>
-          )}
         </svg>
-        {showInspector && !small && (
-          <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-            ⭕ Đường cong khép kín · Không có góc
-          </span>
-        )}
       </div>
     );
   }
 
   if (shape === 'square') {
-    // 100% SQUARE: Aspect ratio 1:1, rx=0 (sharp 90-degree corners, tuyệt đối không bo góc)
+    // 100% SQUARE: Aspect ratio 1:1, rx=0 (sharp 90-degree corners, cạnh thẳng tuyệt đối không bo góc)
     const viewSize = small ? 72 : 136;
     const side = small ? 58 : 110;
     const offset = (viewSize - side) / 2;
-    const corner = small ? 10 : 18;
 
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center justify-center">
         <svg
           viewBox={`0 0 ${viewSize} ${viewSize}`}
           className={small ? 'h-18 w-18 drop-shadow-sm' : 'h-36 w-36 drop-shadow-md'}
           role="img"
           aria-label="Hình vuông có bốn cạnh bằng nhau và bốn góc vuông"
         >
-          {/* Cạnh thẳng sắc nét, không bo tròn góc (rx=0, strokeLinejoin=miter) */}
           <rect
             x={offset}
             y={offset}
@@ -137,58 +113,27 @@ function GeometricShapePiece({
             stroke={palette.stroke}
             strokeWidth={small ? 4 : 6}
           />
-
-          {/* Ký hiệu 4 góc vuông 90° chuẩn sách giáo khoa toán */}
-          <g stroke={palette.accent} strokeWidth={small ? 2 : 2.5} fill="none">
-            {/* Góc trên trái */}
-            <path d={`M${offset} ${offset + corner} H${offset + corner} V${offset}`} />
-            {/* Góc trên phải */}
-            <path d={`M${offset + side - corner} ${offset} V${offset + corner} H${offset + side}`} />
-            {/* Góc dưới phải */}
-            <path d={`M${offset + side} ${offset + side - corner} H${offset + side - corner} V${offset + side}`} />
-            {/* Góc dưới trái */}
-            <path d={`M${offset + corner} ${offset + side} V${offset + side - corner} H${offset}`} />
-          </g>
-
-          {/* Vạch đánh dấu 4 cạnh bằng nhau (Equality ticks) */}
-          <g stroke={palette.accent} strokeWidth={small ? 2 : 3}>
-            {/* Cạnh trên */}
-            <line x1={offset + side / 2} y1={offset - 4} x2={offset + side / 2} y2={offset + 5} />
-            {/* Cạnh dưới */}
-            <line x1={offset + side / 2} y1={offset + side - 5} x2={offset + side / 2} y2={offset + side + 4} />
-            {/* Cạnh trái */}
-            <line x1={offset - 4} y1={offset + side / 2} x2={offset + 5} y2={offset + side / 2} />
-            {/* Cạnh phải */}
-            <line x1={offset + side - 5} y1={offset + side / 2} x2={offset + side + 4} y2={offset + side / 2} />
-          </g>
         </svg>
-
-        {showInspector && !small && (
-          <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-            📐 4 cạnh bằng nhau · 4 góc vuông 90°
-          </span>
-        )}
       </div>
     );
   }
 
   if (shape === 'rectangle') {
-    // 100% RECTANGLE: 2 cạnh dài bằng nhau, 2 cạnh ngắn bằng nhau, rx=0 (sharp 90-degree corners)
+    // 100% RECTANGLE: 2 cạnh dài bằng nhau, 2 cạnh ngắn bằng nhau, rx=0 (sharp 90-degree corners, không bo góc)
     const viewW = small ? 96 : 180;
     const viewH = small ? 64 : 116;
     const w = small ? 82 : 156;
     const h = small ? 48 : 92;
     const ox = (viewW - w) / 2;
     const oy = (viewH - h) / 2;
-    const corner = small ? 9 : 16;
 
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center justify-center">
         <svg
           viewBox={`0 0 ${viewW} ${viewH}`}
           className={small ? 'h-16 w-24 drop-shadow-sm' : 'h-32 w-48 drop-shadow-md'}
           role="img"
-          aria-label="Hình chữ nhật có hai cạnh dài bằng nhau, hai cạnh ngắn bằng nhau và bốn góc vuông"
+          aria-label="Hình chữ nhật"
         >
           <rect
             x={ox}
@@ -201,39 +146,12 @@ function GeometricShapePiece({
             stroke={palette.stroke}
             strokeWidth={small ? 4 : 6}
           />
-
-          {/* 4 góc vuông 90° */}
-          <g stroke={palette.accent} strokeWidth={small ? 2 : 2.5} fill="none">
-            <path d={`M${ox} ${oy + corner} H${ox + corner} V${oy}`} />
-            <path d={`M${ox + w - corner} ${oy} V${oy + corner} H${ox + w}`} />
-            <path d={`M${ox + w} ${oy + h - corner} H${ox + w - corner} V${oy + h}`} />
-            <path d={`M${ox + corner} ${oy + h} V${oy + h - corner} H${ox}`} />
-          </g>
-
-          {/* Vạch phân biệt: 2 vạch ở chiều dài, 1 vạch ở chiều rộng */}
-          <g stroke={palette.accent} strokeWidth={small ? 1.8 : 2.5}>
-            {/* Chiều dài: 2 vạch song song */}
-            <line x1={ox + w / 2 - 4} y1={oy - 4} x2={ox + w / 2 - 4} y2={oy + 5} />
-            <line x1={ox + w / 2 + 4} y1={oy - 4} x2={ox + w / 2 + 4} y2={oy + 5} />
-            <line x1={ox + w / 2 - 4} y1={oy + h - 5} x2={ox + w / 2 - 4} y2={oy + h + 4} />
-            <line x1={ox + w / 2 + 4} y1={oy + h - 5} x2={ox + w / 2 + 4} y2={oy + h + 4} />
-
-            {/* Chiều rộng: 1 vạch */}
-            <line x1={ox - 4} y1={oy + h / 2} x2={ox + 5} y2={oy + h / 2} />
-            <line x1={ox + w - 5} y1={oy + h / 2} x2={ox + w + 4} y2={oy + h / 2} />
-          </g>
         </svg>
-
-        {showInspector && !small && (
-          <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-800 dark:bg-sky-900/40 dark:text-sky-300">
-            📏 2 cạnh dài = nhau · 2 cạnh ngắn = nhau · 4 góc vuông
-          </span>
-        )}
       </div>
     );
   }
 
-  // TRIANGLE: 3 cạnh thẳng, 3 đỉnh sắc nét
+  // TRIANGLE: 3 cạnh thẳng, 3 đỉnh nhọn
   const viewW = small ? 80 : 144;
   const viewH = small ? 72 : 130;
   const topX = viewW / 2;
@@ -244,12 +162,12 @@ function GeometricShapePiece({
   const rightY = leftY;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center">
       <svg
         viewBox={`0 0 ${viewW} ${viewH}`}
         className={small ? 'h-18 w-20 drop-shadow-sm' : 'h-36 w-40 drop-shadow-md'}
         role="img"
-        aria-label="Hình tam giác có ba cạnh và ba đỉnh"
+        aria-label="Hình tam giác"
       >
         <polygon
           points={`${topX},${topY} ${leftX},${leftY} ${rightX},${rightY}`}
@@ -258,22 +176,7 @@ function GeometricShapePiece({
           strokeWidth={small ? 4 : 6}
           strokeLinejoin="miter"
         />
-        {showInspector && (
-          <g fill={palette.accent} fontSize={small ? 10 : 13} fontWeight="900" textAnchor="middle">
-            <circle cx={topX} cy={topY} r={small ? 2.5 : 4} />
-            <text x={topX} y={topY - 3}>A</text>
-            <circle cx={leftX} cy={leftY} r={small ? 2.5 : 4} />
-            <text x={leftX - 4} y={leftY + 2}>B</text>
-            <circle cx={rightX} cy={rightY} r={small ? 2.5 : 4} />
-            <text x={rightX + 4} y={rightY + 2}>C</text>
-          </g>
-        )}
       </svg>
-      {showInspector && !small && (
-        <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-violet-100 px-3 py-1 text-xs font-black text-violet-800 dark:bg-violet-900/40 dark:text-violet-300">
-          🔺 3 cạnh thẳng · 3 đỉnh
-        </span>
-      )}
     </div>
   );
 }
@@ -342,8 +245,6 @@ export default function ShapesGame() {
   const [results, setResults] = useState<QuestionResult[]>([]);
   const [bestResult, setBestResult] = useState<SavedBest | null>(null);
   const [reviewMode, setReviewMode] = useState(false);
-  // Feature mới: Soi góc vuông & kích thước hình học tương tác
-  const [inspectMode, setInspectMode] = useState(true);
 
   useEffect(() => {
     setQuestions(generateShapeQuestions(10));
@@ -498,10 +399,14 @@ export default function ShapesGame() {
             onClick={() => chooseAnswer(answer)}
             className={`group relative flex min-h-20 items-center justify-center rounded-2xl border-3 px-4 py-3 text-lg font-black transition-all ${answerClass(answer)}`}
           >
-            <span className="absolute left-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-700 dark:bg-slate-700 dark:text-slate-300">
-              {i + 1}
+            {/* Phím tắt hiển thị rất mờ và nhỏ dạng [1], [2] chỉ trên desktop để tuyệt đối không nhầm lẫn với số đáp án */}
+            <span
+              className="absolute left-2.5 top-2 hidden text-[10px] font-mono font-medium text-slate-400/35 select-none dark:text-slate-500/35 sm:inline-block"
+              title={`Phím tắt [${i + 1}]`}
+            >
+              [{i + 1}]
             </span>
-            <span className="text-center">{answer}</span>
+            <span className="text-center text-2xl font-black">{answer}</span>
           </button>
         ))}
       </div>
@@ -518,7 +423,6 @@ export default function ShapesGame() {
             <GeometricShapePiece
               shape={question.shape}
               color={question.color}
-              showInspector={inspectMode}
             />
           </div>
           <AnswerButtons answers={question.answers} />
@@ -538,14 +442,10 @@ export default function ShapesGame() {
               className={`math-notebook-grid group relative flex min-h-48 flex-col items-center justify-center rounded-3xl border-3 p-4 transition-all hover:-translate-y-1 active:translate-y-0.5 ${answerClass(shape)}`}
               aria-label={SHAPE_LABELS[shape]}
             >
-              <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs font-black text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                {index + 1}
-              </span>
               <GeometricShapePiece
                 shape={shape}
                 color={['violet', 'sky', 'emerald', 'orange'][index % 4]}
                 small
-                showInspector={inspectMode}
               />
               <span className="mt-3 text-sm font-black text-slate-700 dark:text-slate-200">
                 {SHAPE_LABELS[shape]}
@@ -569,7 +469,6 @@ export default function ShapesGame() {
                   shape={item.shape}
                   color={item.color}
                   small
-                  showInspector={inspectMode}
                 />
               </div>
             ))}
@@ -590,12 +489,9 @@ export default function ShapesGame() {
               onClick={() => chooseAnswer(index)}
               className={`math-notebook-grid group relative flex min-h-48 flex-col items-center justify-center rounded-3xl border-3 p-4 transition-all hover:-translate-y-1 active:translate-y-0.5 ${answerClass(index)}`}
             >
-              <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs font-black text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                {index + 1}
-              </span>
-              <GeometricShapePiece shape={shape} color="rose" small showInspector={inspectMode} />
+              <GeometricShapePiece shape={shape} color="rose" small />
               <span className="mt-3 text-sm font-black text-slate-700 dark:text-slate-200">
-                Hình số {index + 1}
+                Hình {index + 1}
               </span>
             </button>
           ))}
@@ -609,17 +505,12 @@ export default function ShapesGame() {
           <div className="math-notebook-grid flex min-h-64 flex-col items-center justify-center rounded-3xl border-2 border-slate-200/80 p-8 text-center shadow-inner dark:border-slate-700">
             <div>
               {question.objectName === 'ô cửa sổ vuông' ? (
-                <div className="relative mx-auto flex h-32 w-32 items-center justify-center rounded-none border-6 border-amber-900 bg-amber-50 shadow-md dark:border-amber-800 dark:bg-slate-800">
+                <div className="relative mx-auto flex h-32 w-32 items-center justify-center rounded-none border-4 border-amber-900 bg-amber-50 shadow-md dark:border-amber-700 dark:bg-slate-800">
                   {/* Ô cửa sổ vuông sắc cạnh 1:1 chuẩn SGK, rx=0 */}
                   <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="Ô cửa sổ hình vuông bốn cạnh bằng nhau">
                     <rect x="0" y="0" width="100" height="100" rx="0" fill="#bae6fd" stroke="#78350f" strokeWidth="8" strokeLinejoin="miter" />
                     <line x1="50" y1="0" x2="50" y2="100" stroke="#78350f" strokeWidth="6" />
                     <line x1="0" y1="50" x2="100" y2="50" stroke="#78350f" strokeWidth="6" />
-                    {/* Ký hiệu 4 góc vuông */}
-                    <path d="M0 16 H16 V0" fill="none" stroke="#0369a1" strokeWidth="2.5" />
-                    <path d="M84 0 V16 H100" fill="none" stroke="#0369a1" strokeWidth="2.5" />
-                    <path d="M100 84 H84 V100" fill="none" stroke="#0369a1" strokeWidth="2.5" />
-                    <path d="M16 100 V84 H0" fill="none" stroke="#0369a1" strokeWidth="2.5" />
                   </svg>
                 </div>
               ) : (
@@ -1007,21 +898,6 @@ export default function ShapesGame() {
           className="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 font-black text-slate-600 shadow-sm transition hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200"
         >
           <span>←</span> Thoát
-        </button>
-
-        {/* Nút bật/tắt Soi góc vuông & cạnh */}
-        <button
-          type="button"
-          onClick={() => setInspectMode(!inspectMode)}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition-all ${
-            inspectMode
-              ? 'border-2 border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm dark:bg-emerald-950/40 dark:text-emerald-300'
-              : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-          }`}
-          title="Bật/Tắt hiển thị 4 góc vuông 90° và vạch bằng nhau trên các cạnh"
-        >
-          <span>📐</span>
-          <span>{inspectMode ? 'Đang soi góc vuông & cạnh' : 'Soi góc vuông & cạnh'}</span>
         </button>
 
         <div className="text-right">
