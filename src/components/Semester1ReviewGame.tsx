@@ -86,12 +86,33 @@ function ObjectGroup({
 }
 
 function FlatShape({ shape, color }: { shape: FlatShapeId; color: string }) {
-  if (shape === 'circle') return <div className={`h-28 w-28 rounded-full ${COLOR_CLASSES[color]}`} />;
-  if (shape === 'square') return <div className={`h-28 w-28 rounded-xl ${COLOR_CLASSES[color]}`} />;
-  if (shape === 'rectangle') return <div className={`h-24 w-40 rounded-xl ${COLOR_CLASSES[color]}`} />;
+  const hex = COLOR_HEX[color] || '#8b5cf6';
+  if (shape === 'circle') return <div className={`h-28 w-28 rounded-full ${COLOR_CLASSES[color]} shadow-md`} />;
+  if (shape === 'square') {
+    return (
+      <svg viewBox="0 0 120 120" className="h-28 w-28 drop-shadow-md" role="img" aria-label="Hình vuông">
+        <rect x="8" y="8" width="104" height="104" rx="0" fill={hex} stroke="#1e1b4b" strokeWidth="4" strokeLinejoin="miter" />
+        <path d="M8 24 H24 V8" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M96 8 V24 H112" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M112 96 H96 V112" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M24 112 V96 H8" fill="none" stroke="white" strokeWidth="2.5" />
+      </svg>
+    );
+  }
+  if (shape === 'rectangle') {
+    return (
+      <svg viewBox="0 0 170 110" className="h-24 w-40 drop-shadow-md" role="img" aria-label="Hình chữ nhật">
+        <rect x="8" y="8" width="154" height="94" rx="0" fill={hex} stroke="#1e1b4b" strokeWidth="4" strokeLinejoin="miter" />
+        <path d="M8 24 H24 V8" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M146 8 V24 H162" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M162 86 H146 V102" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M24 102 V86 H8" fill="none" stroke="white" strokeWidth="2.5" />
+      </svg>
+    );
+  }
   return (
     <div
-      className="h-0 w-0"
+      className="h-0 w-0 drop-shadow-md"
       style={{
         borderLeft: '58px solid transparent',
         borderRight: '58px solid transparent',

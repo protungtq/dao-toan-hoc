@@ -124,9 +124,9 @@ function shapeSvg(shape: string) {
   if (shape === 'circle') return `<svg viewBox="0 0 120 90"><circle cx="60" cy="45" r="32" ${common}/></svg>`;
   if (shape === 'triangle') return `<svg viewBox="0 0 120 90"><path d="M60 10 L108 80 H12 Z" ${common}/></svg>`;
   if (shape === 'cuboid') return `<svg viewBox="0 0 120 90"><path d="M12 29 L35 15 H108 V65 L85 79 H12 Z M12 29 H85 L108 15 M85 29 V79 M85 29 L108 15" ${common}/></svg>`;
-  if (shape === 'rectangle') return `<svg viewBox="0 0 120 90"><rect x="16" y="20" width="88" height="54" rx="3" ${common}/></svg>`;
+  if (shape === 'rectangle') return `<svg viewBox="0 0 120 90"><rect x="16" y="20" width="88" height="54" rx="0" stroke-linejoin="miter" ${common}/></svg>`;
   if (shape === 'cube') return `<svg viewBox="0 0 120 90"><path d="M22 26 L43 12 H100 V66 L79 80 H22 Z M22 26 H79 L100 12 M79 26 V80" ${common}/></svg>`;
-  if (shape === 'square') return `<svg viewBox="0 0 120 90"><rect x="28" y="12" width="64" height="64" rx="3" ${common}/></svg>`;
+  if (shape === 'square') return `<svg viewBox="0 0 120 90"><rect x="28" y="12" width="64" height="64" rx="0" stroke-linejoin="miter" ${common}/></svg>`;
   if (shape === 'trapezoid') return `<svg viewBox="0 0 120 90"><path d="M34 14 H86 L108 78 H12 Z" ${common}/></svg>`;
   if (shape === 'cylinder') return `<svg viewBox="0 0 120 90"><ellipse cx="60" cy="20" rx="34" ry="11" ${common}/><path d="M26 20 V68 M94 20 V68" ${common}/><ellipse cx="60" cy="68" rx="34" ry="11" ${common}/></svg>`;
   return `<span class="data-pill">${escapeHtml(shape)}</span>`;

@@ -13,8 +13,28 @@ const STORAGE_KEY = 'dao-toan-hoc:lop-1:on-tap-cuoi-nam:best-v1';
 function starsFor(score: number) { return score >= 90 ? 3 : score >= 70 ? 2 : 1; }
 
 function Shape({ shape }: { shape: 'circle' | 'square' | 'triangle' | 'rectangle' }) {
-  if (shape === 'triangle') return <div className="h-0 w-0 border-x-[90px] border-b-[150px] border-x-transparent border-b-fuchsia-500" />;
-  return <div className={`bg-fuchsia-500 shadow-lg ${shape === 'circle' ? 'h-40 w-40 rounded-full' : shape === 'square' ? 'h-40 w-40' : 'h-32 w-56'}`} />;
+  if (shape === 'triangle') return <div className="h-0 w-0 border-x-[90px] border-b-[150px] border-x-transparent border-b-fuchsia-500 drop-shadow-md" />;
+  if (shape === 'circle') return <div className="h-40 w-40 rounded-full bg-fuchsia-500 shadow-md" />;
+  if (shape === 'square') {
+    return (
+      <svg viewBox="0 0 140 140" className="h-40 w-40 drop-shadow-md" role="img" aria-label="Hình vuông">
+        <rect x="6" y="6" width="128" height="128" rx="0" fill="#d946ef" stroke="#701a75" strokeWidth="5" strokeLinejoin="miter" />
+        <path d="M6 26 H26 V6" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M114 6 V26 H134" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M134 114 H114 V134" fill="none" stroke="white" strokeWidth="2.5" />
+        <path d="M26 134 V114 H6" fill="none" stroke="white" strokeWidth="2.5" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 200 120" className="h-32 w-56 drop-shadow-md" role="img" aria-label="Hình chữ nhật">
+      <rect x="6" y="6" width="188" height="108" rx="0" fill="#d946ef" stroke="#701a75" strokeWidth="5" strokeLinejoin="miter" />
+      <path d="M6 26 H26 V6" fill="none" stroke="white" strokeWidth="2.5" />
+      <path d="M174 6 V26 H194" fill="none" stroke="white" strokeWidth="2.5" />
+      <path d="M194 94 H174 V114" fill="none" stroke="white" strokeWidth="2.5" />
+      <path d="M26 114 V94 H6" fill="none" stroke="white" strokeWidth="2.5" />
+    </svg>
+  );
 }
 function Solid({ solid }: { solid: 'cube' | 'cuboid' }) {
   const wide = solid === 'cuboid';

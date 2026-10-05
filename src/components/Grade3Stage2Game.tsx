@@ -37,7 +37,59 @@ function QuestionVisual({ question, tone }: { question: Grade3Stage2Question; to
 
   if (question.type === 'angle') { const endpoint = question.degrees === 90 ? [90, 35] : question.degrees === 45 ? [205, 65] : [20, 55]; return <div className={`rounded-3xl p-6 ${tone.pale}`}><svg viewBox="0 0 340 240" className="mx-auto min-h-56 w-full max-w-md" role="img" aria-label="Hình vẽ một góc"><line x1="90" y1="180" x2="290" y2="180" stroke="#334155" strokeWidth="12" strokeLinecap="round" /><line x1="90" y1="180" x2={endpoint[0]} y2={endpoint[1]} stroke="#334155" strokeWidth="12" strokeLinecap="round" /><circle cx="90" cy="180" r="10" fill="#f59e0b" />{question.degrees === 90 && <path d="M90 145 L125 145 L125 180" fill="none" stroke="#f59e0b" strokeWidth="6" />}</svg></div>; }
 
-  if (question.type === 'shape') { const points = question.shape === 'triangle' ? '250,45 90,220 410,220' : question.shape === 'quadrilateral' ? '110,65 400,45 350,220 70,190' : undefined; return <div className={`grid min-h-64 place-items-center rounded-3xl p-6 ${tone.pale}`}><svg viewBox="0 0 500 270" className="w-full max-w-xl" role="img" aria-label="Hình phẳng">{points ? <polygon points={points} fill="#bfdbfe" stroke="#2563eb" strokeWidth="8" /> : <rect x={(500 - question.width) / 2} y={(270 - question.height) / 2} width={question.width} height={question.height} rx="3" fill="#bbf7d0" stroke="#059669" strokeWidth="8" />}</svg></div>; }
+  if (question.type === 'shape') {
+    const points =
+      question.shape === 'triangle'
+        ? '250,45 90,220 410,220'
+        : question.shape === 'quadrilateral'
+          ? '110,65 400,45 350,220 70,190'
+          : undefined;
+    const isSquare = question.shape === 'square';
+    const isRect = question.shape === 'rectangle';
+    const rx = (500 - question.width) / 2;
+    const ry = (270 - question.height) / 2;
+    const w = question.width;
+    const h = question.height;
+    return (
+      <div className={`grid min-h-64 place-items-center rounded-3xl p-6 ${tone.pale}`}>
+        <svg viewBox="0 0 500 270" className="w-full max-w-xl" role="img" aria-label="Hình phẳng">
+          {points ? (
+            <polygon points={points} fill="#bfdbfe" stroke="#2563eb" strokeWidth="8" strokeLinejoin="miter" />
+          ) : (
+            <g>
+              <rect
+                x={rx}
+                y={ry}
+                width={w}
+                height={h}
+                rx="0"
+                strokeLinejoin="miter"
+                fill="#bbf7d0"
+                stroke="#059669"
+                strokeWidth="8"
+              />
+              {(isSquare || isRect) && (
+                <g stroke="#059669" strokeWidth="2.5" fill="none">
+                  <path d={`M${rx} ${ry + 16} H${rx + 16} V${ry}`} />
+                  <path d={`M${rx + w - 16} ${ry} V${ry + 16} H${rx + w}`} />
+                  <path d={`M${rx + w} ${ry + h - 16} H${rx + w - 16} V${ry + h}`} />
+                  <path d={`M${rx + 16} ${ry + h} V${ry + h - 16} H${rx}`} />
+                </g>
+              )}
+              {isSquare && (
+                <g stroke="#059669" strokeWidth="2.5">
+                  <line x1={rx + w / 2} y1={ry - 6} x2={rx + w / 2} y2={ry + 6} />
+                  <line x1={rx + w / 2} y1={ry + h - 6} x2={rx + w / 2} y2={ry + h + 6} />
+                  <line x1={rx - 6} y1={ry + h / 2} x2={rx + 6} y2={ry + h / 2} />
+                  <line x1={rx + w - 6} y1={ry + h / 2} x2={rx + w + 6} y2={ry + h / 2} />
+                </g>
+              )}
+            </g>
+          )}
+        </svg>
+      </div>
+    );
+  }
 
   if (question.type === 'solid') return <div className={`grid min-h-64 place-items-center rounded-3xl p-6 text-center ${tone.pale}`}><div><div className="text-9xl">{question.objectIcon}</div><p className="mt-4 text-2xl font-black">{question.objectName}</p><p className="mt-2 font-bold opacity-70">Quan sát dạng hình khối của đồ vật</p></div></div>;
 

@@ -67,10 +67,78 @@ function NumberVisual({ question }: { question: Extract<Grade3Stage6Question, { 
 }
 
 function GeometryVisual({ question }: { question: Extract<Grade3Stage6Question, { type: 'geometry' }> }) {
-  const viewWidth = question.shape === 'square' ? 260 : 370;
-  const rectWidth = question.shape === 'square' ? 170 : 270;
-  const rectHeight = question.shape === 'square' ? 170 : 145;
-  return <div className="grid min-h-64 place-items-center rounded-3xl bg-white/70 p-4"><svg viewBox={`0 0 ${viewWidth} 250`} className="w-full max-w-lg" role="img" aria-label={question.shape === 'square' ? 'Hình vuông có ghi độ dài cạnh' : 'Hình chữ nhật có ghi chiều dài và chiều rộng'}><rect x="50" y="35" width={rectWidth} height={rectHeight} rx="8" fill="#e0f2fe" stroke="#7c3aed" strokeWidth="8" /><text x={50 + rectWidth / 2} y={25} textAnchor="middle" fontSize="22" fontWeight="900">{question.width} cm</text><text x={35} y={35 + rectHeight / 2} textAnchor="middle" fontSize="22" fontWeight="900" transform={`rotate(-90 35 ${35 + rectHeight / 2})`}>{question.height} cm</text>{question.task === 'area' && <><path d={`M70 55 H${30 + rectWidth} V${15 + rectHeight} H70 Z`} fill="none" stroke="#a78bfa" strokeWidth="2" strokeDasharray="8 6" /><text x={50 + rectWidth / 2} y={45 + rectHeight / 2} textAnchor="middle" fontSize="22" fontWeight="900" fill="#6d28d9">Diện tích?</text></>}</svg></div>;
+  const isSquare = question.shape === 'square';
+  const viewWidth = isSquare ? 270 : 370;
+  const rectWidth = isSquare ? 170 : 270;
+  const rectHeight = isSquare ? 170 : 145;
+  const strokeColor = '#7c3aed';
+  return (
+    <div className="grid min-h-64 place-items-center rounded-3xl bg-white/70 p-4">
+      <svg
+        viewBox={`0 0 ${viewWidth} 250`}
+        className="w-full max-w-lg"
+        role="img"
+        aria-label={isSquare ? 'Hình vuông có ghi độ dài cạnh' : 'Hình chữ nhật có ghi chiều dài và chiều rộng'}
+      >
+        {/* Exact sharp rectangle/square: rx=0, strokeLinejoin=miter */}
+        <rect
+          x="50"
+          y="35"
+          width={rectWidth}
+          height={rectHeight}
+          rx="0"
+          strokeLinejoin="miter"
+          fill="#e0f2fe"
+          stroke={strokeColor}
+          strokeWidth="7"
+        />
+        {/* 4 right-angle corner markers */}
+        <path d="M50 51 H66 V35" fill="none" stroke={strokeColor} strokeWidth="2.5" />
+        <path d={`M${50 + rectWidth - 16} 35 V51 H${50 + rectWidth}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+        <path d={`M${50 + rectWidth} ${35 + rectHeight - 16} H${50 + rectWidth - 16} V${35 + rectHeight}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+        <path d={`M66 ${35 + rectHeight} V${35 + rectHeight - 16} H50`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+
+        {/* Square side ticks */}
+        {isSquare && (
+          <g stroke={strokeColor} strokeWidth="2.5">
+            <line x1={50 + rectWidth / 2} y1="29" x2={50 + rectWidth / 2} y2="41" />
+            <line x1={50 + rectWidth / 2} y1={35 + rectHeight - 6} x2={50 + rectWidth / 2} y2={35 + rectHeight + 6} />
+            <line x1="44" y1={35 + rectHeight / 2} x2="56" y2={35 + rectHeight / 2} />
+            <line x1={50 + rectWidth - 6} y1={35 + rectHeight / 2} x2={50 + rectWidth + 6} y2={35 + rectHeight / 2} />
+          </g>
+        )}
+
+        <text x={50 + rectWidth / 2} y={23} textAnchor="middle" fontSize="22" fontWeight="900" fill="#1e1b4b">
+          {question.width} cm
+        </text>
+        <text
+          x={33}
+          y={35 + rectHeight / 2}
+          textAnchor="middle"
+          fontSize="22"
+          fontWeight="900"
+          fill="#1e1b4b"
+          transform={`rotate(-90 33 ${35 + rectHeight / 2})`}
+        >
+          {question.height} cm
+        </text>
+        {question.task === 'area' && (
+          <>
+            <path
+              d={`M70 55 H${30 + rectWidth} V${15 + rectHeight} H70 Z`}
+              fill="none"
+              stroke="#a78bfa"
+              strokeWidth="2"
+              strokeDasharray="8 6"
+            />
+            <text x={50 + rectWidth / 2} y={45 + rectHeight / 2} textAnchor="middle" fontSize="22" fontWeight="900" fill="#6d28d9">
+              Diện tích?
+            </text>
+          </>
+        )}
+      </svg>
+    </div>
+  );
 }
 
 function QuestionVisual({ question, pale }: { question: Grade3Stage6Question; pale: string }) {

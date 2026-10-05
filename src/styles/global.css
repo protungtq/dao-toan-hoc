@@ -552,3 +552,19 @@ html.dark .poster-grade-panel { box-shadow:0 6px 0 #144d52,0 18px 32px rgb(0 0 0
   }
 }
 @media print { .practice-tools { display:none !important; } }
+
+/* Vở ô ly toán học thanh lịch cho hình học */
+.math-notebook-grid {
+  background-color: #fafbfd;
+  background-image:
+    linear-gradient(to right, rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+html.dark .math-notebook-grid {
+  background-color: #0f172a;
+  background-image:
+    linear-gradient(to right, rgba(56, 189, 248, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.09) 1px, transparent 1px);
+  background-size: 20px 20px;
+}

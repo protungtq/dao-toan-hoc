@@ -75,13 +75,104 @@ function PlaceValueCard({ value, highlight }: { value: number; highlight?: 'thou
 }
 
 function ShapeVisual({ question }: { question: Extract<Grade3Stage4Question, { type: 'shape' }> }) {
-  const label = (x: number, y: number, value: number) => <text x={x} y={y} textAnchor="middle" fontSize="22" fontWeight="900" fill="#334155">{value} cm</text>;
-  if (question.shape === 'triangle') return <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Tam giác có các cạnh ${question.sides.join(', ')} xăng-ti-mét`}><polygon points="250,35 70,245 430,245" fill="#fde68a" stroke="#d97706" strokeWidth="8" strokeLinejoin="round" />{label(145, 130, question.sides[0])}{label(355, 130, question.sides[1])}{label(250, 280, question.sides[2])}</svg>;
-  if (question.shape === 'quadrilateral') return <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Tứ giác có các cạnh ${question.sides.join(', ')} xăng-ti-mét`}><polygon points="105,55 405,40 440,235 65,245" fill="#bfdbfe" stroke="#2563eb" strokeWidth="8" strokeLinejoin="round" />{label(250, 28, question.sides[0])}{label(465, 145, question.sides[1])}{label(250, 282, question.sides[2])}{label(35, 150, question.sides[3])}</svg>;
-  const width = question.width ?? question.sides[0];
-  const height = question.height ?? question.sides[1];
+  const label = (x: number, y: number, value: number) => (
+    <text x={x} y={y} textAnchor="middle" fontSize="22" fontWeight="900" fill="#334155">
+      {value} cm
+    </text>
+  );
+  if (question.shape === 'triangle')
+    return (
+      <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Tam giác có các cạnh ${question.sides.join(', ')} xăng-ti-mét`}>
+        <polygon points="250,35 70,245 430,245" fill="#fde68a" stroke="#d97706" strokeWidth="8" strokeLinejoin="round" />
+        {label(145, 130, question.sides[0])}
+        {label(355, 130, question.sides[1])}
+        {label(250, 280, question.sides[2])}
+      </svg>
+    );
+  if (question.shape === 'quadrilateral')
+    return (
+      <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Tứ giác có các cạnh ${question.sides.join(', ')} xăng-ti-mét`}>
+        <polygon points="105,55 405,40 440,235 65,245" fill="#bfdbfe" stroke="#2563eb" strokeWidth="8" strokeLinejoin="round" />
+        {label(250, 28, question.sides[0])}
+        {label(465, 145, question.sides[1])}
+        {label(250, 282, question.sides[2])}
+        {label(35, 150, question.sides[3])}
+      </svg>
+    );
+
   const square = question.shape === 'square';
-  return <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Hình ${square ? 'vuông' : 'chữ nhật'} dài ${width} xăng-ti-mét, rộng ${height} xăng-ti-mét`}><rect x={square ? 135 : 75} y="45" width={square ? 230 : 350} height="200" rx="4" fill={square ? '#fef08a' : '#bbf7d0'} stroke={square ? '#ca8a04' : '#059669'} strokeWidth="8" />{label(250, 30, width)}{label(square ? 395 : 460, 150, height)}{question.task === 'area' && <text x="250" y="160" textAnchor="middle" fontSize="26" fontWeight="900" fill="#475569">S = ? cm²</text>}</svg>;
+  const width = question.width ?? question.sides[0];
+  const height = question.height ?? (square ? width : question.sides[1]);
+
+  // Exact 1:1 square: 190x190. Rectangle: 330x170. Sharp 90-degree corners (rx=0, strokeLinejoin=miter).
+  const rectW = square ? 190 : 330;
+  const rectH = square ? 190 : 170;
+  const rx = (500 - rectW) / 2;
+  const ry = (300 - rectH) / 2 - 5;
+  const strokeColor = square ? '#ca8a04' : '#059669';
+  const fillColor = square ? '#fef08a' : '#bbf7d0';
+
+  return (
+    <svg viewBox="0 0 500 300" className="w-full max-w-xl" role="img" aria-label={`Hình ${square ? 'vuông' : 'chữ nhật'} dài ${width} cm, rộng ${height} cm`}>
+      {/* Pristine geometric rectangle/square: 0px border radius, sharp right angles */}
+      <rect
+        x={rx}
+        y={ry}
+        width={rectW}
+        height={rectH}
+        rx="0"
+        strokeLinejoin="miter"
+        fill={fillColor}
+        stroke={strokeColor}
+        strokeWidth="7"
+      />
+      {/* 4 right-angle corner markers (∟) */}
+      <path d={`M${rx} ${ry + 18} H${rx + 18} V${ry}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+      <path d={`M${rx + rectW - 18} ${ry} V${ry + 18} H${rx + rectW}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+      <path d={`M${rx + rectW} ${ry + rectH - 18} H${rx + rectW - 18} V${ry + rectH}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+      <path d={`M${rx + 18} ${ry + rectH} V${ry + rectH - 18} H${rx}`} fill="none" stroke={strokeColor} strokeWidth="2.5" />
+
+      {/* Side equality ticks for square */}
+      {square && (
+        <g stroke={strokeColor} strokeWidth="2.5">
+          <line x1={rx + rectW / 2} y1={ry - 6} x2={rx + rectW / 2} y2={ry + 6} />
+          <line x1={rx + rectW / 2} y1={ry + rectH - 6} x2={rx + rectW / 2} y2={ry + rectH + 6} />
+          <line x1={rx - 6} y1={ry + rectH / 2} x2={rx + 6} y2={ry + rectH / 2} />
+          <line x1={rx + rectW - 6} y1={ry + rectH / 2} x2={rx + rectW + 6} y2={ry + rectH / 2} />
+        </g>
+      )}
+
+      {/* Dimension labels */}
+      {label(250, ry - 14, width)}
+      {label(rx + rectW + 48, ry + rectH / 2 + 7, height)}
+
+      {/* Task area indicator */}
+      {question.task === 'area' && (
+        <g>
+          <rect
+            x={rx + 14}
+            y={ry + 14}
+            width={rectW - 28}
+            height={rectH - 28}
+            fill="none"
+            stroke={square ? '#eab308' : '#10b981'}
+            strokeWidth="1.5"
+            strokeDasharray="6 4"
+          />
+          <text
+            x="250"
+            y={ry + rectH / 2 + 8}
+            textAnchor="middle"
+            fontSize="24"
+            fontWeight="900"
+            fill={square ? '#854d0e' : '#166534'}
+          >
+            S = ? cm²
+          </text>
+        </g>
+      )}
+    </svg>
+  );
 }
 
 function QuestionVisual({ question, tone }: { question: Grade3Stage4Question; tone: (typeof TONES)[keyof typeof TONES] }) {
