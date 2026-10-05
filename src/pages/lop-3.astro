@@ -6,28 +6,82 @@ import PracticeModuleCard from '../components/PracticeModuleCard.astro';
 import { grade3PracticeModes, grade3PracticeModules, getGrade3ModulesBySemester } from '../data/grade3Curriculum';
 
 const sections = [
-  { eyebrow: 'Học kỳ I', title: 'Củng cố nền tảng và mở rộng phép nhân chia', description: 'Ôn số đến 1 000, hoàn thiện bảng nhân chia, hình học và các đại lượng đo.', modules: getGrade3ModulesBySemester(1), accent: 'text-emerald-700', dot: 'bg-emerald-500', background: 'bg-white', hover: 'group-hover:bg-emerald-600' },
-  { eyebrow: 'Học kỳ II', title: 'Khám phá số đến 100 000 và vận dụng thực tế', description: 'Số lớn, bốn phép tính, chu vi, diện tích, thời gian, tiền, thống kê và xác suất.', modules: getGrade3ModulesBySemester(2), accent: 'text-teal-700', dot: 'bg-teal-500', background: 'bg-slate-50', hover: 'group-hover:bg-teal-600' },
+  { eyebrow: 'Học kỳ I', title: 'Củng cố nền tảng và mở rộng phép nhân chia', description: 'Ôn số đến 1 000, hoàn thiện bảng nhân chia, hình học và các đại lượng đo.', modules: getGrade3ModulesBySemester(1), accent: 'text-emerald-700 dark:text-emerald-400', dot: 'bg-emerald-500', background: 'bg-white dark:bg-slate-950', hover: 'group-hover:bg-emerald-600' },
+  { eyebrow: 'Học kỳ II', title: 'Khám phá số đến 100 000 và vận dụng thực tế', description: 'Số lớn, bốn phép tính, chu vi, diện tích, thời gian, tiền, thống kê và xác suất.', modules: getGrade3ModulesBySemester(2), accent: 'text-teal-700 dark:text-teal-400', dot: 'bg-teal-500', background: 'bg-slate-50/80 dark:bg-slate-900/40', hover: 'group-hover:bg-teal-600' },
 ];
 ---
 
 <BaseLayout title="Toán lớp 3 – Trạng Toán" description="Mười sáu nhóm luyện tập Toán lớp 3 trực quan sinh động, từ số đến 100 000 đến hình học, đo lường và dữ liệu.">
   <SiteHeader compact />
   <main>
-    <section class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      <div class="absolute inset-0 opacity-35 [background-image:radial-gradient(#34d399_1px,transparent_1px)] [background-size:28px_28px]"></div>
-      <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:px-8 lg:grid-cols-[1fr_380px] lg:py-20">
+    <section class="relative overflow-hidden bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/70 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+      <div class="absolute inset-0 opacity-25 [background-image:radial-gradient(#10b981_1px,transparent_1px)] [background-size:28px_28px] dark:opacity-10"></div>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:px-8 lg:grid-cols-[1fr_380px] lg:py-16">
         <div>
-          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-black text-emerald-700 shadow-sm"><img src="/models/grade-mascots/3-compact.webp" alt="" aria-hidden="true" width="32" height="32" class="h-8 w-8 object-contain drop-shadow-md" />Chương trình luyện tập lớp 3</div>
-          <h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-slate-950 md:text-6xl">Hiểu chắc từng bước, <span class="text-emerald-600">vận dụng tự tin</span></h1>
-          <p class="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">Toàn bộ nội dung lớp 3 được gom thành 16 chủ đề theo tiến trình học tập, từ ôn tập đầu năm đến tổng kết cuối năm.</p>
-          <div class="mt-7 flex flex-wrap gap-3"><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ {grade3PracticeModules.length} chủ đề trọng tâm</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ 81 bài học toàn diện</span><span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm">✓ Hai học kỳ</span></div>
-          <a href="#hoc-ky-1" class="mt-8 inline-flex items-center gap-3 rounded-2xl bg-emerald-600 px-6 py-4 font-black text-white shadow-xl shadow-emerald-200 transition hover:-translate-y-1 hover:bg-emerald-700">Xem chương trình <span>↓</span></a>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/90 px-4 py-1.5 text-xs sm:text-sm font-black text-emerald-700 shadow-xs backdrop-blur dark:border-emerald-500/20 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <img src="/models/grade-mascots/3-compact.webp" alt="" aria-hidden="true" width="28" height="28" class="h-7 w-7 object-contain drop-shadow-sm" />
+            Chương trình luyện tập lớp 3
+          </div>
+          <h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-slate-950 dark:text-white md:text-6xl">
+            Hiểu chắc từng bước, <span class="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400">vận dụng tự tin</span>
+          </h1>
+          <p class="mt-5 max-w-3xl text-base sm:text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-300">
+            Toàn bộ nội dung lớp 3 được gom thành 16 chủ đề theo tiến trình học tập, từ ôn tập đầu năm đến tổng kết cuối năm.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-2.5">
+            <span class="rounded-xl bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200/80 dark:border-slate-700">✓ {grade3PracticeModules.length} chủ đề trọng tâm</span>
+            <span class="rounded-xl bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200/80 dark:border-slate-700">✓ 81 bài học toàn diện</span>
+            <span class="rounded-xl bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200/80 dark:border-slate-700">✓ Hai học kỳ</span>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a href="#hoc-ky-1" class="inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5 hover:from-emerald-500 hover:to-teal-500 active:scale-98">
+              <span>Xem chương trình</span>
+              <span>↓</span>
+            </a>
+          </div>
         </div>
-        <div class="hidden lg:block"><div class="rounded-[2rem] border-4 border-white bg-white p-5 shadow-2xl"><div class="flex items-center justify-between"><div><p class="text-sm font-black text-emerald-700">Toán lớp 3</p><p class="mt-1 text-xl font-black text-slate-900">Mỗi lượt học vừa sức</p></div><img src="/models/grade-mascots/3-compact.webp" alt="" aria-hidden="true" width="88" height="88" class="h-[5.5rem] w-[5.5rem] object-contain drop-shadow-xl" /></div><div class="mt-5 grid grid-cols-2 gap-3">{grade3PracticeModes.map((mode) => <div class="rounded-2xl bg-slate-50 p-4"><span class="text-2xl">{mode.icon}</span><p class="mt-2 text-sm font-black text-slate-800">{mode.title}</p><p class="mt-1 text-xs font-semibold text-slate-500">{mode.questionCount} câu · {mode.estimatedMinutes} phút</p></div>)}</div></div></div>
+        <div class="hidden lg:block">
+          <div class="rounded-[2.25rem] border border-slate-200/80 bg-white/90 p-6 shadow-xl backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/90">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Toán lớp 3</p>
+                <p class="mt-1 text-lg font-black text-slate-900 dark:text-white">Mỗi lượt học vừa sức</p>
+              </div>
+              <img src="/models/grade-mascots/3-compact.webp" alt="" aria-hidden="true" width="88" height="88" class="h-20 w-20 object-contain drop-shadow-md" />
+            </div>
+            <div class="mt-5 grid grid-cols-2 gap-2.5">
+              {grade3PracticeModes.map((mode) => (
+                <div class="rounded-2xl border border-slate-200/70 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/50">
+                  <span class="text-2xl">{mode.icon}</span>
+                  <p class="mt-2 text-sm font-black text-slate-900 dark:text-white">{mode.title}</p>
+                  <p class="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">{mode.questionCount} câu · {mode.estimatedMinutes} phút</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-    {sections.map((section, index) => <section id={index === 0 ? 'hoc-ky-1' : 'hoc-ky-2'} class={`py-14 ${section.background}`}><div class="mx-auto max-w-7xl px-4 md:px-8"><div class="flex items-start gap-4"><span class={`mt-2 h-12 w-1.5 rounded-full ${section.dot}`}></span><div><p class={`text-sm font-extrabold tracking-[0.14em] ${section.accent}`}>{section.eyebrow}</p><h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">{section.title}</h2><p class="mt-2 font-medium text-slate-500">{section.description}</p></div></div><div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{section.modules.map((practiceModule) => <PracticeModuleCard practiceModule={practiceModule} grade={3} accent={section.hover} />)}</div></div></section>)}
+    {sections.map((section, index) => (
+      <section id={index === 0 ? 'hoc-ky-1' : 'hoc-ky-2'} class={`py-14 ${section.background} transition-colors`}>
+        <div class="mx-auto max-w-7xl px-4 md:px-8">
+          <div class="flex items-start gap-4">
+            <span class={`mt-2 h-12 w-1.5 rounded-full ${section.dot}`}></span>
+            <div>
+              <p class={`text-xs font-black uppercase tracking-[0.16em] ${section.accent}`}>{section.eyebrow}</p>
+              <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-4xl">{section.title}</h2>
+              <p class="mt-2 text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400">{section.description}</p>
+            </div>
+          </div>
+          <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {section.modules.map((practiceModule) => (
+              <PracticeModuleCard practiceModule={practiceModule} grade={3} accent={section.hover} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
   </main>
   <SiteFooter />
 </BaseLayout>
+

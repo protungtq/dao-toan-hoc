@@ -3,8 +3,10 @@
     <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
       {/* Brand & Purpose */}
       <div class="lg:col-span-1">
-        <a href="/" class="flex items-center gap-3" aria-label="Về trang chủ Trạng Toán">
-          <img src="/icon/android-chrome-192x192.png" alt="" width="40" height="40" class="h-10 w-10 rounded-2xl shadow-md" />
+        <a href="/" class="group flex items-center gap-3" aria-label="Về trang chủ Trạng Toán">
+          <div class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-sky-400 p-0.5 shadow-md shadow-indigo-500/15 transition-transform group-hover:scale-105">
+            <img src="/icon/android-chrome-192x192.png" alt="" width="40" height="40" class="h-full w-full rounded-[0.875rem] object-cover" />
+          </div>
           <span class="poster-brand text-xl font-black tracking-tight text-slate-900 dark:text-white">Trạng Toán</span>
         </a>
         <p class="mt-4 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400">
@@ -29,7 +31,7 @@
             <li>
               <a
                 href={`/lop-${item.grade}`}
-                class="group flex items-center justify-between text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors"
+                class="group flex items-center justify-between text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
               >
                 <span>{item.title}</span>
                 <span class="text-xs text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
@@ -44,7 +46,7 @@
         <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Góc học tập & Thư giãn</h3>
         <ul class="mt-4 space-y-2.5 text-sm font-semibold">
           <li>
-            <a href="/minigame" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+            <a href="/minigame" class="flex items-center gap-2 text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
               <span>🎟️</span>
               <span>Đảo Minigame giải trí</span>
             </a>
@@ -56,13 +58,13 @@
             </a>
           </li>
           <li>
-            <a href="/#hoc-ngay" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+            <a href="/#hoc-ngay" class="flex items-center gap-2 text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
               <span>⚡</span>
               <span>Bắt đầu bài luyện nhanh</span>
             </a>
           </li>
           <li>
-            <a href="/#chon-lop" class="flex items-center gap-2 text-slate-600 hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300 transition-colors">
+            <a href="/#chon-lop" class="flex items-center gap-2 text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
               <span>🎒</span>
               <span>Lộ trình bài học theo khối</span>
             </a>

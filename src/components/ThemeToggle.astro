@@ -13,9 +13,9 @@ const { floating = false, compact = false } = Astro.props;
   aria-label="Chuyển sang chế độ tối"
   title="Đổi chế độ sáng hoặc tối"
   class:list={[
-    'theme-toggle inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200/80 bg-white/85 font-extrabold text-slate-600 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-violet-300 hover:text-violet-700 dark:border-slate-700 dark:bg-slate-900/85 dark:text-slate-200 dark:hover:border-violet-500 dark:hover:text-violet-300',
+    'theme-toggle inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200/80 bg-white/85 font-extrabold text-slate-600 shadow-sm backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/85 dark:text-slate-200 dark:hover:border-indigo-500 dark:hover:text-indigo-300',
     floating
-      ? 'fixed right-4 top-[4.75rem] z-50 h-12 w-12 shadow-lg md:right-6 md:top-[5.25rem]'
+      ? 'fixed right-4 top-[4.25rem] z-50 h-11 w-11 shadow-md shadow-slate-300/30 dark:shadow-black/40 md:right-6 md:top-[4.75rem]'
       : compact
         ? 'h-10 w-10'
         : 'h-10 px-3',
