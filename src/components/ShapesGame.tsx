@@ -1,5 +1,6 @@
 import ResultShare from './ResultShare';
 import SolutionExplanation from './SolutionExplanation';
+import LifeObjectIllustration from './LifeObjectIllustration';
 import { buildAdaptiveQuestionSet } from '../lib/learningProfile';
 import { playCorrectSound, playFinalSound, playWrongSound } from '../lib/gameAudio';
 import { useEffect, useMemo, useState } from 'react';
@@ -192,30 +193,30 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
       >
         {/* Mái nhà: hình tam giác cân sắc nét */}
         <polygon
-          points="120,15 25,95 215,95"
+          points="120,12 18,92 222,92"
           fill="#f97316"
           stroke="#c2410c"
           strokeWidth="4"
           strokeLinejoin="miter"
         />
-        {/* Thân nhà: hình chữ nhật */}
+        {/* Thân nhà: hình chữ nhật nằm ngang rõ ràng (rộng 176px, cao 96px, tỉ lệ gần 2:1) */}
         <rect
-          x="48"
-          y="95"
-          width="144"
-          height="100"
+          x="32"
+          y="92"
+          width="176"
+          height="96"
           rx="0"
           fill="#38bdf8"
           stroke="#0284c7"
           strokeWidth="4"
           strokeLinejoin="miter"
         />
-        {/* Cửa ra vào: hình chữ nhật */}
+        {/* Cửa ra vào: hình chữ nhật đứng (rộng 44px, cao 63px) */}
         <rect
-          x="112"
-          y="130"
-          width="42"
-          height="65"
+          x="132"
+          y="125"
+          width="44"
+          height="63"
           rx="0"
           fill="#8b5cf6"
           stroke="#6d28d9"
@@ -223,24 +224,24 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
           strokeLinejoin="miter"
         />
         {/* Tay nắm cửa tròn */}
-        <circle cx="146" cy="162" r="3" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+        <circle cx="168" cy="156" r="3.5" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
 
-        {/* Cửa sổ: 1 khung vuông lớn (38x38 px) chia thành 4 ô vuông nhỏ (19x19 px mỗi ô) */}
+        {/* Cửa sổ: 1 khung vuông lớn (44x44 px) chia thành 4 ô vuông nhỏ (22x22 px mỗi ô) */}
         <g stroke="#b45309" strokeWidth="2.5" strokeLinejoin="miter">
-          {/* Ô vuông lớn bao ngoài */}
+          {/* Ô vuông lớn bao ngoài: 44x44 px chuẩn tỉ lệ 1:1 */}
           <rect
-            x="58"
-            y="115"
-            width="38"
-            height="38"
+            x="54"
+            y="118"
+            width="44"
+            height="44"
             rx="0"
             fill="#fef08a"
             stroke="#b45309"
             strokeWidth="3.5"
           />
           {/* Đường chia thành 4 ô vuông nhỏ đều nhau bên trong */}
-          <line x1="77" y1="115" x2="77" y2="153" stroke="#b45309" strokeWidth="2.5" />
-          <line x1="58" y1="134" x2="96" y2="134" stroke="#b45309" strokeWidth="2.5" />
+          <line x1="76" y1="118" x2="76" y2="162" stroke="#b45309" strokeWidth="2.5" />
+          <line x1="54" y1="140" x2="98" y2="140" stroke="#b45309" strokeWidth="2.5" />
         </g>
       </svg>
     );
@@ -248,19 +249,19 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
   if (composite === 'robot') {
     return (
       <svg
-        viewBox="0 0 240 225"
-        className="h-56 w-64 drop-shadow-md"
+        viewBox="0 0 240 245"
+        className="h-60 w-64 drop-shadow-md"
         role="img"
-        aria-label="Chú rô-bốt ghép từ hình vuông, hình chữ nhật và hình tròn"
+        aria-label="Chú rô-bốt ghép từ hình vuông (đầu), hình chữ nhật (thân, tay, chân) và hình tròn (mắt)"
       >
-        <line x1="120" y1="12" x2="120" y2="28" stroke="#059669" strokeWidth="3" />
-        <circle cx="120" cy="10" r="5" fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
-        {/* Đầu rô-bốt: hình vuông hoàn hảo 60x60 px */}
+        <line x1="120" y1="10" x2="120" y2="24" stroke="#059669" strokeWidth="3" />
+        <circle cx="120" cy="8" r="5" fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
+        {/* Đầu rô-bốt: hình vuông hoàn hảo 56x56 px (duy nhất 1 hình vuông) */}
         <rect
-          x="90"
-          y="28"
-          width="60"
-          height="60"
+          x="92"
+          y="24"
+          width="56"
+          height="56"
           rx="0"
           fill="#34d399"
           stroke="#059669"
@@ -268,18 +269,18 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
           strokeLinejoin="miter"
         />
         {/* 2 mắt tròn */}
-        <circle cx="106" cy="52" r="8" fill="white" stroke="#059669" strokeWidth="2" />
-        <circle cx="134" cy="52" r="8" fill="white" stroke="#059669" strokeWidth="2" />
-        <circle cx="106" cy="52" r="3.5" fill="#065f46" />
-        <circle cx="134" cy="52" r="3.5" fill="#065f46" />
+        <circle cx="108" cy="48" r="7" fill="white" stroke="#059669" strokeWidth="2" />
+        <circle cx="132" cy="48" r="7" fill="white" stroke="#059669" strokeWidth="2" />
+        <circle cx="108" cy="48" r="3" fill="#065f46" />
+        <circle cx="132" cy="48" r="3" fill="#065f46" />
         {/* Miệng chữ nhật */}
-        <rect x="105" y="68" width="30" height="8" rx="0" fill="#f43f5e" stroke="#be123c" strokeWidth="1.5" />
-        {/* Thân chữ nhật */}
+        <rect x="105" y="64" width="30" height="7" rx="0" fill="#f43f5e" stroke="#be123c" strokeWidth="1.5" />
+        {/* Thân rô-bốt: hình chữ nhật đứng RÕ RÀNG (rộng 76px, cao 114px, chiều cao gấp rưỡi chiều rộng, tuyệt đối không bị nhầm thành hình vuông) */}
         <rect
-          x="75"
-          y="92"
-          width="90"
-          height="80"
+          x="82"
+          y="86"
+          width="76"
+          height="114"
           rx="0"
           fill="#38bdf8"
           stroke="#0284c7"
@@ -288,10 +289,10 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
         />
         {/* Tay chữ nhật */}
         <rect
-          x="44"
-          y="98"
+          x="48"
+          y="92"
           width="24"
-          height="58"
+          height="68"
           rx="0"
           fill="#a78bfa"
           stroke="#7c3aed"
@@ -299,10 +300,10 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
           strokeLinejoin="miter"
         />
         <rect
-          x="172"
-          y="98"
+          x="168"
+          y="92"
           width="24"
-          height="58"
+          height="68"
           rx="0"
           fill="#a78bfa"
           stroke="#7c3aed"
@@ -311,8 +312,8 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
         />
         {/* Chân chữ nhật */}
         <rect
-          x="88"
-          y="176"
+          x="90"
+          y="204"
           width="26"
           height="38"
           rx="0"
@@ -322,8 +323,8 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
           strokeLinejoin="miter"
         />
         <rect
-          x="126"
-          y="176"
+          x="124"
+          y="204"
           width="26"
           height="38"
           rx="0"
@@ -363,7 +364,9 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
       role="img"
       aria-label="Chiếc thuyền gồm cánh buồm hình tam giác, thân thuyền và cột buồm hình chữ nhật"
     >
-      <rect x="126" y="20" width="8" height="110" rx="0" fill="#78350f" stroke="#451a03" strokeWidth="1.5" />
+      {/* Cột buồm hình chữ nhật đứng */}
+      <rect x="126" y="20" width="8" height="115" rx="0" fill="#78350f" stroke="#451a03" strokeWidth="1.5" />
+      {/* Cánh buồm trái hình tam giác */}
       <polygon
         points="126,25 45,125 126,125"
         fill="#38bdf8"
@@ -371,6 +374,7 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
         strokeWidth="3.5"
         strokeLinejoin="miter"
       />
+      {/* Cánh buồm phải hình tam giác */}
       <polygon
         points="134,45 210,125 134,125"
         fill="#fbbf24"
@@ -378,8 +382,13 @@ function CompositePicture({ composite }: { composite: CompositeId }) {
         strokeWidth="3.5"
         strokeLinejoin="miter"
       />
-      <polygon
-        points="30,135 225,135 195,178 60,178"
+      {/* Thân thuyền hình chữ nhật nằm ngang chuẩn 4 hình phẳng lớp 1 */}
+      <rect
+        x="36"
+        y="135"
+        width="188"
+        height="42"
+        rx="0"
         fill="#f97316"
         stroke="#c2410c"
         strokeWidth="4"
@@ -560,7 +569,7 @@ export default function ShapesGame() {
     return 'border-slate-200 bg-white text-slate-800 hover:-translate-y-1 hover:border-emerald-400 hover:shadow-lg active:translate-y-0.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-emerald-500';
   }
 
-  function AnswerButtons({ answers }: { answers: ShapeAnswer[] }) {
+  function renderAnswerButtons(answers: ShapeAnswer[]) {
     const letters = ['A', 'B', 'C', 'D'];
     return (
       <div className={`grid gap-3 sm:gap-4 ${answers.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}>
@@ -598,7 +607,7 @@ export default function ShapesGame() {
               color={question.color}
             />
           </div>
-          <AnswerButtons answers={question.answers} />
+          {renderAnswerButtons(question.answers)}
         </div>
       );
     }
@@ -650,7 +659,7 @@ export default function ShapesGame() {
               </div>
             ))}
           </div>
-          <AnswerButtons answers={question.answers} />
+          {renderAnswerButtons(question.answers)}
         </div>
       );
     }
@@ -685,18 +694,9 @@ export default function ShapesGame() {
         <div className="space-y-6">
           <div className="math-notebook-grid flex min-h-64 flex-col items-center justify-center rounded-3xl border-2 border-slate-200/80 p-8 text-center shadow-inner dark:border-slate-700">
             <div>
-              {question.objectName === 'ô cửa sổ vuông' ? (
-                <div className="relative mx-auto flex h-32 w-32 items-center justify-center rounded-none border-4 border-amber-900 bg-amber-50 shadow-md dark:border-amber-700 dark:bg-slate-800">
-                  {/* Ô cửa sổ vuông sắc cạnh 1:1 chuẩn SGK, rx=0 */}
-                  <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="Ô cửa sổ hình vuông bốn cạnh bằng nhau">
-                    <rect x="0" y="0" width="100" height="100" rx="0" fill="#bae6fd" stroke="#78350f" strokeWidth="8" strokeLinejoin="miter" />
-                    <line x1="50" y1="0" x2="50" y2="100" stroke="#78350f" strokeWidth="6" />
-                    <line x1="0" y1="50" x2="100" y2="50" stroke="#78350f" strokeWidth="6" />
-                  </svg>
-                </div>
-              ) : (
-                <div className="text-8xl drop-shadow-md">{question.objectIcon}</div>
-              )}
+              <div className="flex items-center justify-center">
+                <LifeObjectIllustration name={question.objectName} />
+              </div>
               <p className="mt-4 text-2xl font-black text-slate-800 dark:text-slate-100">
                 {question.objectName}
               </p>
@@ -705,7 +705,7 @@ export default function ShapesGame() {
               </p>
             </div>
           </div>
-          <AnswerButtons answers={question.answers} />
+          {renderAnswerButtons(question.answers)}
         </div>
       );
     }
@@ -735,7 +735,7 @@ export default function ShapesGame() {
               </span>
             </div>
           </div>
-          <AnswerButtons answers={question.answers} />
+          {renderAnswerButtons(question.answers)}
         </div>
       );
     }
@@ -745,7 +745,7 @@ export default function ShapesGame() {
         <div className="math-notebook-grid grid min-h-64 place-items-center rounded-3xl border-2 border-slate-200/80 p-6 shadow-inner dark:border-slate-700">
           <CompositePicture composite={question.composite} />
         </div>
-        <AnswerButtons answers={question.answers} />
+        {renderAnswerButtons(question.answers)}
       </div>
     );
   }

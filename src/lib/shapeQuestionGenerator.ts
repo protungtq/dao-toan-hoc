@@ -200,10 +200,10 @@ const COUNT_COMPOSITE_TASKS = [
     bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–55 (Bài 7: Hình chữ nhật thân nhà & cửa)',
     hintSteps: [
       'Tìm các hình có 2 cạnh dài và 2 cạnh ngắn.',
-      'Thân ngôi nhà là 1 hình chữ nhật lớn.',
-      'Cánh cửa chính ra vào là 1 hình chữ nhật nữa. Tổng cộng có 2 hình chữ nhật!',
+      'Thân ngôi nhà là 1 hình chữ nhật lớn nằm ngang.',
+      'Cánh cửa chính ra vào là 1 hình chữ nhật đứng. Tổng cộng có 2 hình chữ nhật!',
     ] as [string, string, string],
-    explanation: 'Có 2 hình chữ nhật gồm: 1 thân ngôi nhà và 1 cánh cửa ra vào.',
+    explanation: 'Có 2 hình chữ nhật gồm: 1 thân ngôi nhà (hình chữ nhật nằm ngang) và 1 cánh cửa ra vào (hình chữ nhật đứng).',
   },
   {
     composite: 'robot' as CompositeId,
@@ -229,11 +229,12 @@ const COUNT_COMPOSITE_TASKS = [
     answers: [1, 2, 3, 4],
     bookRef: 'SGK Toán 1 KNTT Tập 2 – Trang 100 (Bài 40: Hình vuông đầu rô-bốt)',
     hintSteps: [
-      'Tìm hình có 4 cạnh bằng nhau hoàn hảo.',
-      'Quan sát phần đầu của chú rô-bốt.',
-      'Đầu chú rô-bốt là 1 hình vuông!',
+      'Tìm hình có 4 cạnh thẳng dài bằng nhau hoàn hảo.',
+      'Quan sát phần đầu của chú rô-bốt: đầu có 4 cạnh bằng nhau.',
+      'Đầu rô-bốt là 1 hình vuông duy nhất (phần thân, tay và chân đều là hình chữ nhật).',
     ] as [string, string, string],
-    explanation: 'Chú rô-bốt có 1 hình vuông chính là phần đầu.',
+    explanation:
+      'Chú rô-bốt có đúng 1 hình vuông là phần đầu. Thân chú rô-bốt là hình chữ nhật đứng (chiều cao dài hơn chiều rộng), tay và chân cũng là hình chữ nhật.',
   },
   {
     composite: 'boat' as CompositeId,

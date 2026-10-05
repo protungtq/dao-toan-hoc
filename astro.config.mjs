@@ -23,6 +23,12 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ['react', 'react-dom']
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react-dom/client']
+    }
   }
 });
