@@ -710,6 +710,36 @@ export default function ShapesGame() {
       );
     }
 
+    if (question.type === 'pattern-shape') {
+      return (
+        <div className="space-y-6">
+          <div className="math-notebook-grid flex min-h-64 flex-wrap items-center justify-center gap-3 sm:gap-4 rounded-3xl border-2 border-slate-200/80 p-6 shadow-inner dark:border-slate-700">
+            {question.patternShapes.map((shape, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center rounded-2xl bg-white/90 p-2.5 shadow-sm ring-1 ring-slate-200/60 dark:bg-slate-800/90 dark:ring-slate-700"
+              >
+                <GeometricShapePiece shape={shape} small />
+                <span className="mt-1 text-[11px] font-bold text-slate-400">
+                  {index + 1}
+                </span>
+              </div>
+            ))}
+            {/* Ô còn thiếu có dấu ? */}
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/80 p-2.5 shadow-sm ring-2 ring-amber-300 dark:border-amber-600 dark:bg-amber-950/50 dark:ring-amber-800">
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center text-3xl font-black text-amber-600 dark:text-amber-400 animate-pulse">
+                ?
+              </div>
+              <span className="mt-1 text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                {question.patternShapes.length + 1}
+              </span>
+            </div>
+          </div>
+          <AnswerButtons answers={question.answers} />
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6">
         <div className="math-notebook-grid grid min-h-64 place-items-center rounded-3xl border-2 border-slate-200/80 p-6 shadow-inner dark:border-slate-700">
@@ -1122,10 +1152,17 @@ export default function ShapesGame() {
             aria-hidden="true"
             className="h-16 w-16 shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20"
           />
-          <div>
-            <p className="font-black text-emerald-700 dark:text-emerald-400">
-              {questionIndex % 2 === 0 ? 'Gấu Mật hỏi bé' : 'Sóc Nâu hỏi bé'}
-            </p>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-black text-emerald-700 dark:text-emerald-400">
+                {questionIndex % 2 === 0 ? 'Gấu Mật hỏi bé' : 'Sóc Nâu hỏi bé'}
+              </p>
+              {question.bookRef && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-300/80 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-700/80">
+                  <span>📖</span> {question.bookRef}
+                </span>
+              )}
+            </div>
             <h1 className="mt-1 text-2xl font-black text-slate-900 dark:text-white md:text-3xl">
               {question.instruction}
             </h1>

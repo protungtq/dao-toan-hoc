@@ -3,6 +3,9 @@ interface Skill { icon: string; title: string }
 interface Module {
   number: number; title: string; slug: string; description: string; icon: string;
   color: string; developmentStatus: string; textbookLessons: number[]; skills: Skill[];
+  textbookMapping?: {
+    kntt: { pages: string; lessons: string };
+  };
 }
 interface Props { practiceModule: Module; grade: number; accent?: string; surface?: string }
 const { practiceModule, grade, surface = 'bg-white' } = Astro.props;
@@ -17,9 +20,17 @@ const lastLesson = practiceModule.textbookLessons[practiceModule.textbookLessons
     <div class={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${practiceModule.color}`}></div>
     <div class="flex items-start justify-between gap-4">
       <span class={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-2xl text-white shadow-lg transition group-hover:rotate-3 group-hover:scale-105 ${practiceModule.color}`}>{practiceModule.icon}</span>
-      <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">⭐ Chuẩn SGK</span>
+      <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">⭐ Chuẩn SGK KNTT</span>
     </div>
-    <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Chủ đề {practiceModule.number} · Bài {firstLesson}–{lastLesson} SGK</p>
+    {practiceModule.textbookMapping ? (
+      <div class="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+        <span class="rounded-md bg-sky-50 px-2 py-0.5 text-sky-800 font-extrabold border border-sky-200/80 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800">
+          📖 SGK KNTT: {practiceModule.textbookMapping.kntt.pages}
+        </span>
+      </div>
+    ) : (
+      <p class="mt-5 text-xs font-extrabold tracking-wider text-slate-400">Chủ đề {practiceModule.number} · Bài {firstLesson}–{lastLesson} SGK</p>
+    )}
     <h3 class="mt-2 text-xl font-black leading-snug text-slate-950 transition group-hover:text-violet-700 dark:text-slate-50 dark:group-hover:text-violet-300">{practiceModule.title}</h3>
     <p class="mt-3 flex-1 font-medium leading-7 text-slate-500 dark:text-slate-400">{practiceModule.description}</p>
     <div class="mt-5 flex flex-wrap gap-2">

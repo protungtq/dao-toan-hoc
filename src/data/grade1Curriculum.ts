@@ -31,6 +31,21 @@ export type PracticeSkill = {
   defaultWeight: number;
 };
 
+export type TextbookBookDetail = {
+  seriesName: string;
+  shortName: string;
+  volume: 1 | 2;
+  lessons: string;
+  lessonTitle: string;
+  pages: string;
+};
+
+export type ModuleTextbookMapping = {
+  kntt: TextbookBookDetail;
+  pedagogicalFocus: string;
+  sgkExerciseForms: string[];
+};
+
 export type PracticeModule = {
   id: string;
   grade: 1;
@@ -44,6 +59,11 @@ export type PracticeModule = {
   icon: string;
   color: string;
   backgroundColor: string;
+
+  /**
+   * Chi tiết đối chiếu SGK Toán 1: Kết nối tri thức với cuộc sống
+   */
+  textbookMapping?: ModuleTextbookMapping;
 
   /**
    * Trạng thái phát triển tính năng, không phải trạng thái
@@ -930,3 +950,274 @@ export const grade1Statistics = {
       practiceModule.semester === 2
   ).length,
 };
+
+export type TextbookComparisonItem = {
+  moduleId: string;
+  moduleTitle: string;
+  shortTitle: string;
+  slug: string;
+  icon: string;
+  semester: Semester;
+  kntt: {
+    volume: 1 | 2;
+    lesson: string;
+    lessonTitle: string;
+    pages: string;
+    description: string;
+  };
+  pedagogicalFocus: string;
+  sgkExerciseForms: string[];
+};
+
+export const grade1TextbookComparison: TextbookComparisonItem[] = [
+  {
+    moduleId: 'grade-1-numbers-to-10',
+    moduleTitle: 'Các số từ 0 đến 10',
+    shortTitle: 'Số đến 10',
+    slug: 'cac-so-tu-0-den-10',
+    icon: '🔢',
+    semester: 1,
+    kntt: {
+      volume: 1,
+      lesson: 'Bài 1 đến Bài 5',
+      lessonTitle: 'Các số 0–10; Nhiều hơn, ít hơn; So sánh số; Tách – gộp số',
+      pages: 'Trang 6 – 41',
+      description: 'Đếm lượng đồ vật thực tế, lập số từ 1 đến 10, học số 0, so sánh lớn bé bằng, sơ đồ tách – gộp mấy và mấy.',
+    },
+    pedagogicalFocus: 'Hình thành biểu tượng số qua đồ vật quen thuộc (ngón tay, que tính, khối vuông), rèn tư duy so sánh và tách gộp làm tiền đề cho phép cộng trừ.',
+    sgkExerciseForms: [
+      'Đếm mẫu vật trực quan (chấm tròn xúc xắc, que tính, con vật)',
+      'Nối cặp 1-1 so sánh nhiều hơn – ít hơn – bằng nhau',
+      'Điền dấu >, <, = vào ô tròn giữa hai số',
+      'Sơ đồ tách – gộp số kinh điển (ví dụ: 5 gồm 3 và mấy?)',
+      'Điền số còn thiếu vào toa tàu số và trục số tự nhiên',
+    ],
+  },
+  {
+    moduleId: 'grade-1-flat-shapes',
+    moduleTitle: 'Làm quen với hình phẳng',
+    shortTitle: 'Hình phẳng',
+    slug: 'lam-quen-voi-hinh-phang',
+    icon: '🔺',
+    semester: 1,
+    kntt: {
+      volume: 1,
+      lesson: 'Bài 7 & Bài 8 (và T2 Bài 40-41)',
+      lessonTitle: 'Hình vuông, hình tròn, hình tam giác, hình chữ nhật; Thực hành lắp ghép',
+      pages: 'Tập 1 Tr. 48–61 & Tập 2 Tr. 100–105',
+      description: 'Nhận biết 4 hình phẳng cơ bản qua đường bao và cạnh góc, thực hành lắp ghép tranh hình học và đếm hình ghép.',
+    },
+    pedagogicalFocus: 'Quan sát trực quan nhận biết đặc điểm hình học, phân biệt rõ hình vuông (4 cạnh bằng nhau) và hình chữ nhật, đếm hình phẳng đơn và hình ghép phức hợp.',
+    sgkExerciseForms: [
+      'Chọn hình phẳng đúng tên gọi (hình vuông, tròn, tam giác, chữ nhật)',
+      'Phân loại hình theo màu sắc và hình dạng',
+      'Tìm hình phẳng ẩn trong đồ vật đời sống (biển báo, đồng hồ, bánh chưng)',
+      'Đếm số lượng hình phẳng ghép trong tranh (ngôi nhà cửa sổ 4 ô vuông nhỏ + 1 ô vuông lớn bao ngoài = 5 ô vuông)',
+      'Tìm hình thích hợp tiếp theo trong dãy hình có quy luật',
+    ],
+  },
+  {
+    moduleId: 'grade-1-add-subtract-to-10',
+    moduleTitle: 'Phép cộng, phép trừ trong phạm vi 10',
+    shortTitle: 'Cộng, trừ đến 10',
+    slug: 'cong-tru-trong-pham-vi-10',
+    icon: '➕',
+    semester: 1,
+    kntt: {
+      volume: 1,
+      lesson: 'Bài 9, 10, 11',
+      lessonTitle: 'Phép cộng trong phạm vi 10; Phép trừ trong phạm vi 10; Luyện tập chung',
+      pages: 'Trang 62 – 105',
+      description: 'Gộp lại là phép cộng (+), bớt đi là phép trừ (-), xây dựng bảng cộng và bảng trừ trong phạm vi 10, giải bài toán bằng tranh.',
+    },
+    pedagogicalFocus: 'Nắm vững bản chất của phép cộng (gộp) và phép trừ (bớt), rèn kỹ năng tính nhẩm nhanh và vận dụng giải quyết tình huống thực tế.',
+    sgkExerciseForms: [
+      'Viết phép tính thích hợp theo tranh vẽ (ví dụ: 3 chú chim thêm 2 chú chim)',
+      'Tính nhẩm phép cộng, phép trừ trong phạm vi 10',
+      'Điền số thích hợp vào ô trống [?] (ví dụ: 4 + [?] = 7)',
+      'Nối phép tính với kết quả thích hợp',
+      'Bài toán có lời văn tóm tắt bằng tranh vẽ một bước tính',
+    ],
+  },
+  {
+    moduleId: 'grade-1-solids-and-position',
+    moduleTitle: 'Hình khối và vị trí',
+    shortTitle: 'Hình khối, vị trí',
+    slug: 'hinh-khoi-va-vi-tri',
+    icon: '🧊',
+    semester: 1,
+    kntt: {
+      volume: 1,
+      lesson: 'Bài 6 & Bài 12',
+      lessonTitle: 'Vị trí và định hướng không gian; Khối lập phương, khối hộp chữ nhật',
+      pages: 'Trang 42–47 & Trang 106–113',
+      description: 'Xác định vị trí trên – dưới, phải – trái, trước – sau, ở giữa; Nhận biết khối lập phương và khối hộp chữ nhật trong đời sống.',
+    },
+    pedagogicalFocus: 'Phát triển năng lực không gian hình học thực tế, phân biệt giữa hình phẳng 2D và hình khối 3D trong không gian sống.',
+    sgkExerciseForms: [
+      'Xác định vị trí của đồ vật và nhân vật (ở trên bàn, dưới gầm ghế, bên trái, bên phải)',
+      'Nhận biết đồ vật có dạng khối lập phương (hộp quà, súc sắc)',
+      'Nhận biết đồ vật có dạng khối hộp chữ nhật (hộp sữa, cuốn sách, viên gạch)',
+      'Đếm số lượng khối gỗ xếp chồng trong mô hình xây dựng',
+    ],
+  },
+  {
+    moduleId: 'grade-1-semester-1-review',
+    moduleTitle: 'Ôn tập học kỳ I',
+    shortTitle: 'Ôn tập kỳ I',
+    slug: 'on-tap-hoc-ky-1',
+    icon: '📚',
+    semester: 1,
+    kntt: {
+      volume: 1,
+      lesson: 'Bài 13 & Bài 14',
+      lessonTitle: 'Ôn tập các số đến 10, phép tính và hình học học kì 1',
+      pages: 'Trang 114 – 124',
+      description: 'Ôn tập toàn diện các mạch kiến thức: Số học đến 10, cộng trừ 10, hình phẳng và hình khối, chuẩn bị kiểm tra học kỳ 1.',
+    },
+    pedagogicalFocus: 'Hệ thống hóa toàn bộ kiến thức kỳ 1, rèn phản xạ tính toán nhanh, giải quyết các dạng bài tổng hợp chuẩn ma trận đề thi.',
+    sgkExerciseForms: [
+      'Đếm số và so sánh số lượng',
+      'Tính nhẩm nhanh các phép cộng trừ trong phạm vi 10',
+      'Điền dấu >, <, = vào ô so sánh hai vế',
+      'Nhận diện phân loại hình phẳng và hình khối',
+    ],
+  },
+  {
+    moduleId: 'grade-1-numbers-to-100',
+    moduleTitle: 'Các số trong phạm vi 100',
+    shortTitle: 'Số đến 100',
+    slug: 'cac-so-den-100',
+    icon: '💯',
+    semester: 2,
+    kntt: {
+      volume: 2,
+      lesson: 'Bài 15 đến Bài 18',
+      lessonTitle: 'Các số từ 10 đến 20; Các số tròn chục; Các số đến 100; So sánh số phạm vi 100',
+      pages: 'Trang 6 – 49',
+      description: 'Học đếm bó chục và que tính rời, cấu tạo chục và đơn vị, đọc viết các số từ 1 đến 100, so sánh số có hai chữ số.',
+    },
+    pedagogicalFocus: 'Nắm vững nguyên lý hệ đếm thập phân, phân tích cấu tạo số thành các chục và đơn vị, thành thạo bảng 100 số.',
+    sgkExerciseForms: [
+      'Đếm số lượng bó chục và que tính rời để viết số',
+      'Phân tích cấu tạo số (ví dụ: Số 47 gồm 4 chục và 7 đơn vị)',
+      'Tìm số liền trước, số liền sau trong bảng các số từ 1 đến 100',
+      'So sánh hai số có hai chữ số (so sánh chữ số hàng chục trước, nếu bằng nhau so chữ số hàng đơn vị)',
+      'Sắp xếp dãy số theo thứ tự từ bé đến lớn và ngược lại',
+    ],
+  },
+  {
+    moduleId: 'grade-1-length',
+    moduleTitle: 'Độ dài và đo độ dài',
+    shortTitle: 'Đo độ dài',
+    slug: 'do-dai-va-do-do-dai',
+    icon: '📏',
+    semester: 2,
+    kntt: {
+      volume: 2,
+      lesson: 'Bài 19 & Bài 20',
+      lessonTitle: 'Dài hơn – ngắn hơn; Đơn vị đo độ dài cm (xăng-ti-mét); Thước kẻ vạch cm',
+      pages: 'Trang 50 – 65',
+      description: 'So sánh độ dài trực tiếp; Làm quen với đơn vị xăng-ti-mét (cm); Đặt thước kẻ từ vạch 0 cm để đo và đọc số đo.',
+    },
+    pedagogicalFocus: 'Hình thành biểu tượng đại lượng độ dài chuẩn (cm), rèn kỹ năng thao tác chuẩn xác khi đặt thước đo và cộng trừ kèm đơn vị.',
+    sgkExerciseForms: [
+      'So sánh độ dài trực quan: Bút nào dài hơn, băng giấy nào ngắn hơn',
+      'Đọc số đo độ dài của đồ vật trên thước kẻ có vạch chia xăng-ti-mét',
+      'Thực hiện phép tính cộng, trừ kèm đơn vị đo (ví dụ: 6 cm + 3 cm = 9 cm)',
+      'Ước lượng độ dài của một số đồ vật quen thuộc trong lớp học',
+    ],
+  },
+  {
+    moduleId: 'grade-1-add-subtract-to-100',
+    moduleTitle: 'Phép cộng, phép trừ trong phạm vi 100',
+    shortTitle: 'Cộng, trừ đến 100',
+    slug: 'cong-tru-trong-pham-vi-100',
+    icon: '➖',
+    semester: 2,
+    kntt: {
+      volume: 2,
+      lesson: 'Bài 21 đến Bài 23',
+      lessonTitle: 'Phép cộng không nhớ trong phạm vi 100; Phép trừ không nhớ; Luyện tập chung',
+      pages: 'Trang 66 – 99',
+      description: 'Cộng trừ số tròn chục; Cộng trừ số có 2 chữ số với số có 1 hoặc 2 chữ số không nhớ (dạng 25 + 14, 48 - 12); Bài toán có lời văn.',
+    },
+    pedagogicalFocus: 'Thành thạo thuật toán đặt tính và tính từ phải sang trái (hàng đơn vị trước, hàng chục sau), trình bày bài giải toán có lời văn chuẩn mực.',
+    sgkExerciseForms: [
+      'Tính nhẩm số tròn chục (ví dụ: 30 + 20 = 50, 70 - 40 = 30)',
+      'Đặt tính rồi tính theo cột dọc (thẳng hàng chục và hàng đơn vị)',
+      'Tính giá trị biểu thức gồm hai phép tính liên tiếp (ví dụ: 12 + 3 + 4)',
+      'Giải bài toán có lời văn một bước tính kèm câu lời giải, phép tính và đáp số',
+    ],
+  },
+  {
+    moduleId: 'grade-1-time-calendar',
+    moduleTitle: 'Thời gian – Giờ và lịch',
+    shortTitle: 'Giờ và lịch',
+    slug: 'thoi-gian-gio-va-lich',
+    icon: '⏰',
+    semester: 2,
+    kntt: {
+      volume: 2,
+      lesson: 'Bài 24 & Bài 25',
+      lessonTitle: 'Xem đồng hồ, xem giờ đúng; Ngày trong tuần, đọc tờ lịch',
+      pages: 'Trang 100 – 115',
+      description: 'Xem giờ đúng trên mặt đồng hồ kim (kim ngắn chỉ số giờ, kim dài chỉ số 12); Học 7 ngày trong tuần từ Thứ Hai đến Chủ nhật.',
+    },
+    pedagogicalFocus: 'Hình thành khái niệm thời gian thực tế, biết sắp xếp thời gian biểu sinh hoạt và học tập khoa học, định hướng ngày tháng trong tuần.',
+    sgkExerciseForms: [
+      'Đọc giờ đúng trên mặt đồng hồ kim (ví dụ: Đồng hồ chỉ 8 giờ)',
+      'Nối đồng hồ với hoạt động thích hợp (ví dụ: 7 giờ sáng em đi học, 9 giờ tối em đi ngủ)',
+      'Kể tên lần lượt 7 ngày trong tuần từ Thứ Hai đến Chủ nhật',
+      'Đọc thứ và ngày trên bloc lịch và lịch tháng',
+    ],
+  },
+  {
+    moduleId: 'grade-1-final-review',
+    moduleTitle: 'Ôn tập cuối năm',
+    shortTitle: 'Ôn tập cuối năm',
+    slug: 'on-tap-cuoi-nam',
+    icon: '🎓',
+    semester: 2,
+    kntt: {
+      volume: 2,
+      lesson: 'Bài 26, 27, 28',
+      lessonTitle: 'Ôn tập số và phép tính trong phạm vi 100; Ôn tập hình học và đo lường',
+      pages: 'Trang 116 – 128',
+      description: 'Tổng kết toàn bộ chương trình Toán lớp 1: Số học 100, cộng trừ 100, đo độ dài cm, xem đồng hồ và phân loại hình học.',
+    },
+    pedagogicalFocus: 'Đánh giá toàn diện năng lực tư duy toán học, kỹ năng tính toán, giải quyết vấn đề và vận dụng kiến thức lớp 1 vào cuộc sống.',
+    sgkExerciseForms: [
+      'Tính nhẩm và đặt tính cộng trừ số có hai chữ số',
+      'Giải bài toán có lời văn một bước tính kèm lời giải',
+      'Đo và ghi số đo độ dài bằng thước kẻ cm',
+      'Xem đồng hồ chỉ giờ đúng và đọc tờ lịch',
+      'Đếm và phân loại các hình phẳng, hình khối trong tranh',
+    ],
+  },
+];
+
+export function getModuleTextbookComparison(moduleId: string) {
+  return grade1TextbookComparison.find((item) => item.moduleId === moduleId);
+}
+
+// Gắn tự động textbookMapping chi tiết SGK Kết nối tri thức vào từng module của grade1PracticeModules
+grade1PracticeModules.forEach((mod) => {
+  const comp = grade1TextbookComparison.find((c) => c.moduleId === mod.id);
+  if (comp) {
+    mod.textbookMapping = {
+      kntt: {
+        seriesName: 'Kết nối tri thức với cuộc sống',
+        shortName: 'KNTT',
+        volume: comp.kntt.volume,
+        lessons: comp.kntt.lesson,
+        lessonTitle: comp.kntt.lessonTitle,
+        pages: comp.kntt.pages,
+      },
+      pedagogicalFocus: comp.pedagogicalFocus,
+      sgkExerciseForms: comp.sgkExerciseForms,
+    };
+  }
+});
+
+

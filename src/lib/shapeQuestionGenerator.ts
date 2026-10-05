@@ -30,6 +30,7 @@ type BaseQuestion = {
   correctAnswer: ShapeAnswer;
   hintSteps: [string, string, string];
   explanation: string;
+  bookRef: string;
 };
 
 export type IdentifyShapeQuestion = BaseQuestion & {
@@ -78,6 +79,12 @@ export type CountInCompositeQuestion = BaseQuestion & {
   targetShape: ShapeId;
 };
 
+export type PatternShapeQuestion = BaseQuestion & {
+  type: 'pattern-shape';
+  patternShapes: ShapeId[];
+  missingIndex: number;
+};
+
 export type ShapeQuestion =
   | IdentifyShapeQuestion
   | ChooseShapeQuestion
@@ -85,20 +92,30 @@ export type ShapeQuestion =
   | OddShapeQuestion
   | LifeShapeQuestion
   | ComposeShapeQuestion
-  | CountInCompositeQuestion;
+  | CountInCompositeQuestion
+  | PatternShapeQuestion;
 
 const SHAPES = Object.keys(SHAPE_LABELS) as ShapeId[];
 const COLORS = ['violet', 'sky', 'emerald', 'orange', 'rose'] as const;
 
+// Các đồ vật chuẩn xác từ SGK Toán 1 Kết nối tri thức (Trang 46, 54 Tập 1 & Trang 100 Tập 2)
 const LIFE_OBJECTS = [
-  { icon: '🕐', name: 'mặt đồng hồ', shape: 'circle' },
+  { icon: '🪟', name: 'khung cửa sổ vuông', shape: 'square' },
+  { icon: '🧱', name: 'viên gạch lát hoa', shape: 'square' },
+  { icon: '🧊', name: 'mặt khối Rubik', shape: 'square' },
+  { icon: '🕐', name: 'mặt đồng hồ tròn', shape: 'circle' },
+  { icon: '💿', name: 'chiếc đĩa DVD', shape: 'circle' },
+  { icon: '🚲', name: 'bánh xe đạp', shape: 'circle' },
+  { icon: '🍕', name: 'chiếc bánh pizza tròn', shape: 'circle' },
   { icon: '🍪', name: 'chiếc bánh quy tròn', shape: 'circle' },
-  { icon: '🪟', name: 'ô cửa sổ vuông', shape: 'square' },
-  { icon: '🧊', name: 'mặt trước của khối Rubik', shape: 'square' },
-  { icon: '🚪', name: 'cánh cửa', shape: 'rectangle' },
-  { icon: '📱', name: 'màn hình điện thoại', shape: 'rectangle' },
-  { icon: '⚠️', name: 'biển cảnh báo', shape: 'triangle' },
-  { icon: '🍕', name: 'miếng bánh pizza', shape: 'triangle' },
+  { icon: '🖼️', name: 'khung tranh ảnh', shape: 'rectangle' },
+  { icon: '🚪', name: 'cánh cửa ra vào', shape: 'rectangle' },
+  { icon: '🟩', name: 'chiếc bảng lớp học', shape: 'rectangle' },
+  { icon: '📘', name: 'bìa sách Toán 1', shape: 'rectangle' },
+  { icon: '✉️', name: 'con tem thư', shape: 'rectangle' },
+  { icon: '⚠️', name: 'biển báo giao thông', shape: 'triangle' },
+  { icon: '📐', name: 'chiếc thước ê-ke', shape: 'triangle' },
+  { icon: '⛺', name: 'chiếc lều cắm trại', shape: 'triangle' },
 ] as const satisfies ReadonlyArray<{
   icon: string;
   name: string;
@@ -149,6 +166,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Hình ngôi nhà có tất cả bao nhiêu hình vuông?',
     correctAnswer: 5,
     answers: [3, 4, 5, 6],
+    bookRef: 'SGK Toán 1 KNTT Tập 2 – Trang 105 (Bài 41: Đếm hình ghép trong tranh)',
     hintSteps: [
       'Quan sát kỹ phần ô cửa sổ của ngôi nhà.',
       'Đếm 4 ô vuông nhỏ bên trong trước.',
@@ -164,6 +182,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Hình ngôi nhà có bao nhiêu hình tam giác?',
     correctAnswer: 1,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–55 (Bài 7: Hình tam giác mái nhà)',
     hintSteps: [
       'Quan sát từ trên xuống dưới của ngôi nhà.',
       'Mái nhà có 3 cạnh nhọn thẳng.',
@@ -178,6 +197,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Hình ngôi nhà có bao nhiêu hình chữ nhật?',
     correctAnswer: 2,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–55 (Bài 7: Hình chữ nhật thân nhà & cửa)',
     hintSteps: [
       'Tìm các hình có 2 cạnh dài và 2 cạnh ngắn.',
       'Thân ngôi nhà là 1 hình chữ nhật lớn.',
@@ -192,6 +212,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Chú rô-bốt có bao nhiêu hình tròn?',
     correctAnswer: 2,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 2 – Trang 100 (Bài 40: Hình tròn trong mô hình rô-bốt)',
     hintSteps: [
       'Tìm các hình có đường cong khép kín, không có cạnh.',
       'Quan sát kỹ khuôn mặt của chú rô-bốt.',
@@ -206,6 +227,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Chú rô-bốt có bao nhiêu hình vuông?',
     correctAnswer: 1,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 2 – Trang 100 (Bài 40: Hình vuông đầu rô-bốt)',
     hintSteps: [
       'Tìm hình có 4 cạnh bằng nhau hoàn hảo.',
       'Quan sát phần đầu của chú rô-bốt.',
@@ -220,6 +242,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Chiếc thuyền có bao nhiêu hình tam giác?',
     correctAnswer: 2,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 56–61 (Bài 8: Lắp ghép cánh buồm thuyền)',
     hintSteps: [
       'Tìm các hình có 3 cạnh khép kín.',
       'Quan sát hai cánh buồm của chiếc thuyền.',
@@ -234,6 +257,7 @@ const COUNT_COMPOSITE_TASKS = [
     instruction: 'Cây kem có bao nhiêu hình tròn?',
     correctAnswer: 1,
     answers: [1, 2, 3, 4],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–50 (Bài 7: Hình tròn viên kem)',
     hintSteps: [
       'Tìm hình có đường cong tròn đều.',
       'Quan sát viên kem mát lạnh ở phía trên.',
@@ -296,6 +320,7 @@ function identifyQuestion(): IdentifyShapeQuestion {
     color: randomItem(COLORS),
     answers: shuffle(SHAPES.map((item) => SHAPE_LABELS[item])),
     correctAnswer: SHAPE_LABELS[shape],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–55 (Bài 7: Nhận biết 4 hình phẳng)',
     hintSteps: [
       'Quan sát đường bao và số cạnh của hình.',
       shape === 'circle'
@@ -318,6 +343,7 @@ function chooseQuestion(): ChooseShapeQuestion {
     shapeOptions: shuffle(SHAPES),
     answers: [],
     correctAnswer: targetShape,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 48–55 (Bài 7: Chọn hình đúng tên gọi)',
     hintSteps: [
       'Đọc tên hình rồi quan sát từng đường bao.',
       targetShape === 'circle'
@@ -355,6 +381,7 @@ function classifyQuestion(): ClassifyShapeQuestion {
     shapes: shuffle(shapes),
     answers: numberAnswers(targetCount),
     correctAnswer: targetCount,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 51–53 (Bài 7: Đếm số lượng hình phẳng)',
     hintSteps: [
       `Chỉ tìm ${SHAPE_LABELS[targetShape].toLowerCase()}, chưa cần đếm các hình khác.`,
       'Chạm mắt vào từng hình đúng loại rồi đếm lần lượt.',
@@ -379,12 +406,67 @@ function oddQuestion(): OddShapeQuestion {
     differentIndex,
     answers: [],
     correctAnswer: differentIndex,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 54–55 (Bài 7: Tìm hình khác loại)',
     hintSteps: [
       'So sánh đường bao của từng hình.',
       `Có ba ${SHAPE_LABELS[common].toLowerCase()} giống nhau.`,
       `Hình khác là ${SHAPE_LABELS[different].toLowerCase()}.`,
     ],
     explanation: `${SHAPE_LABELS[different]} khác với ba hình còn lại.`,
+  };
+}
+
+const PATTERNS: Array<{
+  pattern: ShapeId[];
+  answer: ShapeId;
+  ruleExplanation: string;
+}> = [
+  {
+    pattern: ['circle', 'square', 'triangle', 'circle', 'square', 'triangle', 'circle', 'square'],
+    answer: 'triangle',
+    ruleExplanation: 'Dãy lặp lại theo nhóm 3 hình: Hình tròn → Hình vuông → Hình tam giác. Sau hình vuông là hình tam giác.',
+  },
+  {
+    pattern: ['square', 'circle', 'square', 'circle', 'square', 'circle'],
+    answer: 'square',
+    ruleExplanation: 'Dãy lặp lại xen kẽ: Hình vuông → Hình tròn. Sau hình tròn tiếp tục là hình vuông.',
+  },
+  {
+    pattern: ['triangle', 'rectangle', 'triangle', 'rectangle', 'triangle', 'rectangle'],
+    answer: 'triangle',
+    ruleExplanation: 'Dãy lặp lại xen kẽ: Hình tam giác → Hình chữ nhật. Hình tiếp theo là hình tam giác.',
+  },
+  {
+    pattern: ['circle', 'rectangle', 'circle', 'rectangle', 'circle', 'rectangle'],
+    answer: 'circle',
+    ruleExplanation: 'Dãy lặp lại xen kẽ: Hình tròn → Hình chữ nhật. Hình tiếp theo là hình tròn.',
+  },
+  {
+    pattern: ['square', 'square', 'circle', 'square', 'square', 'circle', 'square', 'square'],
+    answer: 'circle',
+    ruleExplanation: 'Dãy lặp lại theo quy luật: 2 hình vuông rồi đến 1 hình tròn. Sau 2 hình vuông là hình tròn.',
+  },
+];
+
+function patternQuestion(): PatternShapeQuestion {
+  const item = randomItem(PATTERNS);
+  const patternShapes = [...item.pattern];
+  return {
+    id: id('pattern'),
+    type: 'pattern-shape',
+    skillId: 'classify-shapes',
+    instruction: "Hình thích hợp đặt vào dấu '?' là hình nào?",
+    patternShapes,
+    missingIndex: item.pattern.length,
+    answers: shuffle(SHAPES.map((shape) => SHAPE_LABELS[shape])),
+    correctAnswer: SHAPE_LABELS[item.answer],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 56–58 (Bài 8: Quy luật sắp xếp hình)',
+    hintSteps: [
+      'Quan sát thứ tự các hình từ trái sang phải.',
+      'Tìm quy luật lặp lại của các hình trong dãy.',
+      item.ruleExplanation,
+    ],
+    explanation: item.ruleExplanation,
   };
 }
 
@@ -400,6 +482,7 @@ function lifeQuestion(): LifeShapeQuestion {
     shape: item.shape,
     answers: shuffle(SHAPES.map((shape) => SHAPE_LABELS[shape])),
     correctAnswer: SHAPE_LABELS[item.shape],
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 52–55 (Bài 7: Hình phẳng trong đời sống)',
     hintSteps: [
       'Quan sát đường viền bên ngoài của đồ vật.',
       `So sánh đường viền đó với bốn hình đã học.`,
@@ -422,6 +505,7 @@ function composeQuestion(): ComposeShapeQuestion {
     compositeName: item.name,
     answers: shuffle([item.answer, ...shuffle(wrongAnswers).slice(0, 3)]),
     correctAnswer: item.answer,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 56–61 (Bài 8: Thực hành lắp ghép hình)',
     hintSteps: [
       'Nhìn từng bộ phận riêng thay vì nhìn cả hình.',
       'Quan sát kỹ các chi tiết như mái, thân, cửa chính, cửa sổ...',
@@ -443,6 +527,7 @@ function countCompositeQuestion(): CountInCompositeQuestion {
     targetShape: task.targetShape,
     answers: shuffle([...task.answers]),
     correctAnswer: task.correctAnswer,
+    bookRef: task.bookRef,
     hintSteps: task.hintSteps,
     explanation: task.explanation,
   };
@@ -453,7 +538,10 @@ function questionForSkill(skill: ShapeSkillId): ShapeQuestion {
     return Math.random() < 0.5 ? identifyQuestion() : chooseQuestion();
   }
   if (skill === 'classify-shapes') {
-    return Math.random() < 0.55 ? classifyQuestion() : oddQuestion();
+    const r = Math.random();
+    if (r < 0.4) return classifyQuestion();
+    if (r < 0.7) return oddQuestion();
+    return patternQuestion();
   }
   if (skill === 'shapes-in-life') return lifeQuestion();
   return Math.random() < 0.5 ? composeQuestion() : countCompositeQuestion();
@@ -495,6 +583,9 @@ function signature(question: ShapeQuestion) {
   if (question.type === 'life-shape') return `${question.type}-${question.objectName}`;
   if (question.type === 'count-in-composite') {
     return `${question.type}-${question.composite}-${question.targetShape}`;
+  }
+  if (question.type === 'pattern-shape') {
+    return `${question.type}-${question.correctAnswer}-${question.patternShapes.length}`;
   }
   return `${question.type}-${question.composite}`;
 }

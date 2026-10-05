@@ -25,6 +25,7 @@ type BaseQuestion = {
   correctAnswer: ArithmeticAnswer;
   hintSteps: [string, string, string];
   explanation: string;
+  bookRef: string;
 };
 
 export type AdditionQuestion = BaseQuestion & {
@@ -137,6 +138,7 @@ function additionQuestion(): AdditionQuestion {
     visual,
     answers: numberAnswers(result),
     correctAnswer: result,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 62–79 (Bài 9: Phép cộng trong phạm vi 10)',
     hintSteps: [
       visual
         ? 'Đếm nhóm thứ nhất, rồi đếm tiếp các đồ vật ở nhóm thứ hai.'
@@ -167,6 +169,7 @@ function subtractionQuestion(): SubtractionQuestion {
     visual,
     answers: numberAnswers(result),
     correctAnswer: result,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 80–97 (Bài 10: Phép trừ trong phạm vi 10)',
     hintSteps: [
       visual
         ? `Gạch đi ${removed} đồ vật rồi đếm những đồ vật chưa bị gạch.`
@@ -203,6 +206,7 @@ function missingQuestion(): MissingQuestion {
           : `${first} + ? = ${whole}`,
       answers: numberAnswers(correct),
       correctAnswer: correct,
+      bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 98–105 (Bài 11: Luyện tập chung phép cộng trừ 10)',
       hintSteps: [
         `Tìm phần còn thiếu để hai phần gộp lại được ${whole}.`,
         `${whole} bớt phần đã biết sẽ ra phần còn thiếu.`,
@@ -235,6 +239,7 @@ function missingQuestion(): MissingQuestion {
         : `${whole} − ? = ${result}`,
     answers: numberAnswers(correct),
     correctAnswer: correct,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 98–105 (Bài 11: Luyện tập chung phép cộng trừ 10)',
     hintSteps: [
       missingPosition === 'first'
         ? `Số ban đầu gồm phần bớt đi và phần còn lại.`
@@ -268,6 +273,7 @@ function factFamilyQuestion(): FactFamilyQuestion {
     whole,
     answers: shuffle([correct, ...wrong]),
     correctAnswer: correct,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 98–105 (Bài 11: Mối quan hệ giữa phép cộng và trừ)',
     hintSteps: [
       'Phép trừ bắt đầu từ số chỉ toàn bộ.',
       `Lấy ${whole} bớt một phần sẽ còn phần kia.`,
@@ -299,6 +305,7 @@ function wordProblemQuestion(): WordProblemQuestion {
       instruction: 'Đọc tình huống và chọn kết quả.',
       answers: numberAnswers(result),
       correctAnswer: result,
+      bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 78 & 96 (Bài 9 & 10: Bài toán bằng tranh vẽ)',
       hintSteps: [
         `Các từ “${context.clue}” cho biết cần dùng phép cộng.`,
         `Gộp ${first} với ${change}.`,
@@ -325,6 +332,7 @@ function wordProblemQuestion(): WordProblemQuestion {
     instruction: 'Đọc tình huống và chọn kết quả.',
     answers: numberAnswers(result),
     correctAnswer: result,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 78 & 96 (Bài 9 & 10: Bài toán bằng tranh vẽ)',
     hintSteps: [
       `Các từ “${context.clue}” cho biết cần dùng phép trừ.`,
       `Lấy ${first} bớt ${change}.`,

@@ -33,6 +33,7 @@ type BaseQuestion = {
   answers: AnswerValue[];
   hintSteps: [string, string, string];
   explanation: string;
+  bookRef: string;
 };
 
 export type CountQuestion = BaseQuestion & {
@@ -155,6 +156,10 @@ function createCountQuestion(): CountQuestion {
     count,
     correctAnswer: count,
     answers: createNumberAnswers(count),
+    bookRef:
+      count <= 5
+        ? 'SGK Toán 1 KNTT Tập 1 – Trang 6–13 (Bài 1: Các số 1, 2, 3, 4, 5)'
+        : 'SGK Toán 1 KNTT Tập 1 – Trang 14–17 (Bài 2: Các số 6, 7, 8, 9, 10)',
     hintSteps: [
       count === 0
         ? 'Quan sát xem trong khung có đồ vật nào không.'
@@ -182,6 +187,10 @@ function createRecognizeQuestion(): RecognizeNumberQuestion {
     numberWord: NUMBER_WORDS[number],
     correctAnswer: number,
     answers: createNumberAnswers(number),
+    bookRef:
+      number <= 5
+        ? 'SGK Toán 1 KNTT Tập 1 – Trang 6–13 (Bài 1: Nhận biết chữ số 1 đến 5)'
+        : 'SGK Toán 1 KNTT Tập 1 – Trang 14–17 (Bài 2: Nhận biết chữ số 6 đến 10)',
     hintSteps: [
       `Đọc chậm tiếng “${NUMBER_WORDS[number]}” rồi nhớ lại mặt số.`,
       'Số cần tìm nằm trong phạm vi từ 0 đến 10.',
@@ -230,6 +239,7 @@ function createCompareGroupsQuestion(): CompareGroupsQuestion {
     rightCount,
     task,
     correctAnswer,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 26–31 (Bài 4: Nhiều hơn, ít hơn, bằng nhau)',
     answers:
       task === 'relation'
         ? shuffle(['Bên trái nhiều hơn', 'Bằng nhau', 'Bên phải nhiều hơn'])
@@ -256,6 +266,7 @@ function createCompareNumberQuestion(): CompareNumberQuestion {
     left,
     right,
     correctAnswer,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 18–25 (Bài 3: Lớn hơn, bé hơn, dấu >, <, =)',
     answers: shuffle(['<', '=', '>']),
     hintSteps: [
       'Có thể hình dung mỗi số bằng một nhóm chấm tròn.',
@@ -281,6 +292,7 @@ function createNumberBondQuestion(): NumberBondQuestion {
     missingPart,
     object: selected.icon,
     correctAnswer: missingPart,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 36–41 (Bài 5: Sơ đồ tách – gộp mấy và mấy)',
     answers: createNumberAnswers(missingPart),
     hintSteps: [
       `Lấy đủ ${whole} đồ vật rồi tách riêng ${knownPart} đồ vật.`,
@@ -308,6 +320,7 @@ function createMissingNumberQuestion(): MissingNumberQuestion {
     instruction: 'Số nào còn thiếu trong dãy?',
     sequence,
     correctAnswer,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 13 & 16 (Bài 1–2: Điền số còn thiếu vào dãy)',
     answers: createNumberAnswers(correctAnswer),
     hintSteps: [
       'Đọc dãy từ trái sang phải, mỗi số tăng thêm 1.',
@@ -333,6 +346,7 @@ function createBeforeAfterQuestion(): BeforeAfterQuestion {
     referenceNumber,
     direction,
     correctAnswer,
+    bookRef: 'SGK Toán 1 KNTT Tập 1 – Trang 24–25 (Bài 3: Số đứng liền trước, liền sau)',
     answers: createNumberAnswers(correctAnswer),
     hintSteps: [
       'Nhẩm dãy số từ 0 đến 10 quanh số đã cho.',
