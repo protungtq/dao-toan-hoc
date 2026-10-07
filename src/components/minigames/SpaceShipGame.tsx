@@ -641,14 +641,26 @@ export const SpaceShipGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =>
   return (
     <div className="flex flex-col items-center justify-center p-2 sm:p-4 max-w-xl mx-auto w-full select-none text-slate-800 dark:text-slate-100">
       {/* HUD Header */}
-      <div className="w-full flex items-center justify-between mb-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 shadow-xs">
+      <div className="w-full flex flex-wrap items-center justify-between gap-2 mb-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 shadow-xs">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl animate-pulse">🚀</span>
+          <div>
+            <h3 className="text-sm sm:text-base font-black text-cyan-600 dark:text-cyan-400 tracking-wide">
+              PHI THUYỀN VƯỢT KHÔNG GIAN
+            </h3>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-bold">
+              Cấp độ {level} • Tốc độ Warp
+            </span>
+          </div>
+        </div>
+
         <div className="flex items-center gap-4">
           <div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM VŨ TRỤ</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM SỐ</div>
             <div className="text-2xl font-black font-mono text-cyan-600 dark:text-cyan-400 tabular-nums">{score}</div>
           </div>
-          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-          <div>
+          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
+          <div className="hidden sm:block">
             <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">KỶ LỤC</div>
             <div className="text-xl font-bold font-mono text-slate-700 dark:text-slate-300 tabular-nums">
               {Math.max(score, highScore)}

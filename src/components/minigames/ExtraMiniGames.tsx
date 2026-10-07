@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { playMiniGameSound } from '../../lib/minigameSounds';
 
-type ExtraId = 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
+type ExtraId = 'snake' | 'match3' | '2048';
 type Props = { game: ExtraId; onScore: (score: number) => void };
 type DirectionKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
@@ -281,107 +281,8 @@ function Twenty48({ onScore }: { onScore: (score: number) => void }) {
   </div>;
 }
 
-function Flappy({ onScore }: { onScore: (score: number) => void }) {
-  const [y,setY] = useState(50);
-  const vy = useRef(0);
-  const [pipes,setPipes] = useState([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
-  const [score,setScore] = useState(0);
-
-  const flap = useCallback(() => { vy.current = -5.0; playMiniGameSound('flap'); }, []);
-  useEffect(() => {
-    const k=(e:KeyboardEvent)=>{
-      if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}
-    };
-    window.addEventListener('keydown',k);
-    return()=>window.removeEventListener('keydown',k);
-  },[flap]);
-
-  useEffect(() => {
-    const t=setInterval(()=>{
-      vy.current += 0.32;
-      setY(v => Math.max(4, Math.min(94, v + vy.current)));
-      setPipes(ps => ps.map(p => {
-        let next = { ...p, x:p.x-1.35 };
-        if (!next.passed && next.x < 18) {
-          next.passed = true;
-          setScore(s => { const n=s+1; onScore(n); playMiniGameSound('collect'); return n; });
-        }
-        if (next.x < -12) next = {id:p.id+2,x:118,gap:34+Math.random()*32,passed:false};
-        return next;
-      }));
-    }, 70);
-    return()=>clearInterval(t);
-  }, [onScore]);
-
-  const hit = y < 4 || y > 94 || pipes.some(p=>p.x>12&&p.x<27&&(y<p.gap-19||y>p.gap+19));
-  useEffect(()=>{
-    if(!hit) return;
-    playMiniGameSound('miss');
-    setY(50);
-    vy.current=0;
-    setPipes([{id:1,x:88,gap:50,passed:false},{id:2,x:156,gap:40,passed:false}]);
-  },[hit]);
-
-  return <div className="extra-game-wrap">
-    <div className="minigame-mini-status">Cổng đã vượt: <strong>{score}</strong></div>
-    <div className="flappy-board touch-game-board" onPointerDown={(e)=>{ e.preventDefault(); flap(); }} role="button" tabIndex={0} aria-label="Chạm để chim bay">
-      <div className="flappy-bird" style={{top:`${y}%`}} aria-label="Chim"><span className="flappy-wing"/><span className="flappy-eye"/><span className="flappy-beak"/></div>
-      {pipes.map(p=><div key={p.id} className="pipe" style={{left:`${p.x}%`}}><span style={{height:`${Math.max(0,p.gap-19)}%`}}/><span style={{top:`${Math.min(100,p.gap+19)}%`,bottom:0}}/></div>)}
-      <span className="flappy-tap-hint">CHẠM ĐỂ BAY</span>
-    </div>
-    <button type="button" className="flappy-touch-button" onPointerDown={(e)=>{e.preventDefault();flap();}}>↑ Bay lên</button>
-    <p>Chạm vào vùng chơi hoặc nút Bay lên.</p>
-  </div>;
-}
-
-const PUZZLE = [
-  5,3,0,0,7,0,0,0,0,
-  6,0,0,1,9,5,0,0,0,
-  0,9,8,0,0,0,0,6,0,
-  8,0,0,0,6,0,0,0,3,
-  4,0,0,8,0,3,0,0,1,
-  7,0,0,0,2,0,0,0,6,
-  0,6,0,0,0,0,2,8,0,
-  0,0,0,4,1,9,0,0,5,
-  0,0,0,0,8,0,0,7,9,
-];
-const SOLUTION = [5,3,4,6,7,8,9,1,2,6,7,2,1,9,5,3,4,8,1,9,8,3,4,2,5,6,7,8,5,9,7,6,1,4,2,3,4,2,6,8,5,3,7,9,1,7,1,3,9,2,4,8,5,6,9,6,1,5,3,7,2,8,4,2,8,7,4,1,9,6,3,5,3,4,5,2,8,6,1,7,9];
-
-function Sudoku({ onScore }: { onScore:(score:number)=>void }) {
-  const [grid,setGrid]=useState([...PUZZLE]);
-  const [sel,setSel]=useState<number|null>(null);
-  const filled=grid.filter((v,i)=>PUZZLE[i]===0&&v===SOLUTION[i]).length;
-  useEffect(()=>onScore(filled),[filled,onScore]);
-
-  const put = (n:number) => {
-    if (sel === null || PUZZLE[sel]) return;
-    const g=[...grid];
-    g[sel]=n;
-    setGrid(g);
-    if (n === 0) return;
-    playMiniGameSound(n === SOLUTION[sel] ? 'collect' : 'miss');
-  };
-
-  return <div className="extra-game-wrap">
-    <div className="minigame-mini-status">{sel === null ? 'Chạm một ô trống để bắt đầu' : `Ô đang chọn: hàng ${Math.floor(sel/9)+1}, cột ${sel%9+1}`}</div>
-    <div className="sudoku-board">
-      {grid.map((v,i)=>{
-        const wrong = PUZZLE[i]===0 && v!==0 && v!==SOLUTION[i];
-        return <button type="button" key={i} onClick={()=>PUZZLE[i]===0&&setSel(i)} className={`${PUZZLE[i]?'fixed':''} ${sel===i?'selected':''} ${wrong?'wrong':''}`} aria-label={PUZZLE[i] ? `Số cho sẵn ${v}` : `Ô trống hàng ${Math.floor(i/9)+1} cột ${i%9+1}`}>{v||''}</button>;
-      })}
-    </div>
-    <div className="sudoku-nums">
-      {[1,2,3,4,5,6,7,8,9].map(n=><button type="button" key={n} onClick={()=>put(n)}>{n}</button>)}
-      <button type="button" className="sudoku-erase" onClick={()=>put(0)} aria-label="Xóa số">⌫</button>
-    </div>
-    <p>Chọn ô trống rồi điền số. Ô sai sẽ được đánh dấu.</p>
-  </div>;
-}
-
 export default function ExtraMiniGames({ game, onScore }: Props) {
   if (game === 'snake') return <Snake onScore={onScore}/>;
   if (game === 'match3') return <Match3 onScore={onScore}/>;
-  if (game === 'sudoku') return <Sudoku onScore={onScore}/>;
-  if (game === '2048') return <Twenty48 onScore={onScore}/>;
-  return <Flappy onScore={onScore}/>;
+  return <Twenty48 onScore={onScore}/>;
 }

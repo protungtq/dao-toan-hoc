@@ -20,11 +20,13 @@ import { BubbleMathGame } from './minigames/BubbleMathGame';
 import { MathRacerGame } from './minigames/MathRacerGame';
 import { WhackMathGame } from './minigames/WhackMathGame';
 import { BalanceScaleGame } from './minigames/BalanceScaleGame';
+import PenaltyKickGame from './minigames/PenaltyKickGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import './MiniGameArcade.css';
 
 type GameId =
   | 'space-ship'
+  | 'penalty-kick'
   | 'bubble-math'
   | 'brick-breaker'
   | 'math-racer'
@@ -40,12 +42,10 @@ type GameId =
   | 'snake-canvas'
   | 'snake'
   | 'match3'
-  | 'sudoku'
-  | '2048'
-  | 'flappy';
+  | '2048';
 
-type ExtraGameId = 'snake' | 'match3' | 'sudoku' | '2048' | 'flappy';
-const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', 'sudoku', '2048', 'flappy'];
+type ExtraGameId = 'snake' | 'match3' | '2048';
+const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', '2048'];
 
 const GAME_KEY = 'trang-toan:minigame-active:v1';
 
@@ -53,21 +53,22 @@ const GAME_CATEGORIES: { id: string; name: string; icon: string }[] = [
   { id: 'all', name: 'Tất cả trò chơi', icon: '🎮' },
   { id: 'mascots', name: 'Sóc & Gấu', icon: '🐿️' },
   { id: 'math-brain', name: 'Trí tuệ & Toán', icon: '🧠' },
-  { id: 'arcade', name: 'Arcade vũ trụ & hành động', icon: '🚀' },
+  { id: 'arcade', name: 'Arcade thể thao & vũ trụ', icon: '🚀' },
 ];
 
 function getCategoryForGame(id: GameId): string {
   if (['squirrel-catch', 'bear-catch', 'squirrel-maze', 'bear-climb', 'maze-2d'].includes(id)) {
     return 'mascots';
   }
-  if (['reflex-math', 'memory-card', 'sudoku', '2048', 'bubble-math', 'whack-math', 'balance-scale'].includes(id)) {
+  if (['reflex-math', 'memory-card', '2048', 'bubble-math', 'whack-math', 'balance-scale'].includes(id)) {
     return 'math-brain';
   }
   return 'arcade';
 }
 
 const GAMES: { id: GameId; name: string; icon: string; description: string; controls: string[] }[] = [
-  { id: 'space-ship', name: 'Phi thuyền không gian', icon: '🚀', description: 'Lái tàu vũ trụ lượn qua ngân hà, bắn thiên thạch, nhặt sao và khiên bảo vệ.', controls: ['🎮 TV / Remote', '⌨️ Phím', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'space-ship', name: 'Phi thuyền vượt không gian', icon: '🚀', description: 'Lái tàu vũ trụ lượn qua ngân hà vô tận, bắn thiên thạch, kích hoạt Warp và bảo vệ vũ trụ.', controls: ['🎮 TV / Remote', '⌨️ Phím ← → & Space', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'penalty-kick', name: 'Đá penalty siêu cúp', icon: '⚽', description: 'Chọn góc sút hiểm hóc, vượt qua thủ môn tài ba để ghi bàn thắng vàng rực rỡ.', controls: ['⚽ Chọn 5 góc sút', '⌨️ Phím 1–5 / Mũi tên', '📱 Chạm góc khung thành', '🖱️ Chuột'] },
   { id: 'math-racer', name: 'Đua xe tính nhanh', icon: '🏎️', description: 'Lái siêu xe vượt 3 làn cao tốc, lao qua đúng cổng đáp án để bứt tốc Turbo Nitro.', controls: ['🎮 TV / Remote', '⌨️ Phím ← → hoặc 1–3', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'whack-math', name: 'Chuột chũi số học', icon: '🐹', description: 'Đập nhanh các chú chuột chũi mang số đúng quy tắc toán học (chẵn, lẻ, bội số) và né bom.', controls: ['🎮 Phím số TV 1–9', '⌨️ Phím số 1–9', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'balance-scale', name: 'Cân thăng bằng khối lượng', icon: '⚖️', description: 'Cân đo vật phẩm bằng cách chọn và đặt đúng các quả cân để đĩa cân thăng bằng tuyệt đối.', controls: ['🎮 TV / Phím 1–5', '⌨️ Phím số 1–5', '📱 Chạm', '🖱️ Chuột'] },
@@ -83,9 +84,7 @@ const GAMES: { id: GameId; name: string; icon: string; description: string; cont
   { id: 'snake-canvas', name: 'Rắn săn mồi cổ điển', icon: '🐍', description: 'Ăn táo đỏ, săn sao vàng và thiết lập kỷ lục điểm.', controls: ['🎮 TV', '⌨️ Mũi tên', '📱 D-pad'] },
   { id: 'snake', name: 'Rắn săn mồi mượt mà', icon: '🍏', description: 'Điều khiển rắn ăn táo và đừng tự cắn mình.', controls: ['🎮 TV', '⌨️ Mũi tên', '📱 D-pad'] },
   { id: 'match3', name: 'Vườn trái cây Match-3', icon: '💎', description: 'Đổi chỗ để ghép ít nhất 3 viên kim cương giống nhau.', controls: ['📱 Chạm', '🖱️ Chuột', '🎮 TV'] },
-  { id: 'sudoku', name: 'Sudoku thông minh', icon: '🔢', description: 'Điền số còn thiếu vào các ô trống của bảng Sudoku.', controls: ['📱 Chạm', '🖱️ Chuột', '⌨️ Phím'] },
   { id: '2048', name: 'Ghép số 2048', icon: '🧩', description: 'Ghép các ô số giống nhau để tạo số lớn hơn.', controls: ['🎮 TV', '⌨️ Mũi tên', '📱 Vuốt'] },
-  { id: 'flappy', name: 'Chim bay lượn', icon: '🐦', description: 'Giữ chú chim bay qua các khe chướng ngại vật.', controls: ['🎮 Phím OK', '⌨️ Phím Space', '📱 Chạm'] },
 ];
 
 const MAZE = [
@@ -699,10 +698,17 @@ export default function MiniGameArcade() {
             </div>
           )}
 
-          {/* Phi thuyền không gian */}
+          {/* Phi thuyền vượt không gian */}
           {game === 'space-ship' && (
             <div className="mt-4">
               <SpaceShipGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Đá penalty siêu cúp */}
+          {game === 'penalty-kick' && (
+            <div className="mt-4">
+              <PenaltyKickGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
             </div>
           )}
 
