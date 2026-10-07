@@ -18,13 +18,19 @@ const players = new Map<SoundName, HTMLAudioElement>();
 
 export function isSoundEnabled() {
   if (typeof window === 'undefined') return true;
-  return window.localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
+  try {
+    return window.localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
+  } catch {
+    return true;
+  }
 }
 
 export function setSoundEnabled(enabled: boolean) {
   if (typeof window === 'undefined') return;
 
-  window.localStorage.setItem(SOUND_ENABLED_KEY, String(enabled));
+  try {
+    window.localStorage.setItem(SOUND_ENABLED_KEY, String(enabled));
+  } catch {}
   if (!enabled) {
     players.forEach((player) => {
       player.pause();
@@ -32,9 +38,11 @@ export function setSoundEnabled(enabled: boolean) {
     });
   }
 
-  window.dispatchEvent(
-    new CustomEvent<boolean>(SOUND_CHANGED_EVENT, { detail: enabled }),
-  );
+  try {
+    window.dispatchEvent(
+      new CustomEvent<boolean>(SOUND_CHANGED_EVENT, { detail: enabled }),
+    );
+  } catch {}
 }
 
 export function subscribeToSoundSetting(listener: (enabled: boolean) => void) {

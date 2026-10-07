@@ -20,8 +20,12 @@ export function readTickets(): TicketState {
 }
 
 function writeTickets(state: TicketState) {
-  localStorage.setItem(TICKET_KEY, JSON.stringify(state));
-  window.dispatchEvent(new Event('trang-toan:tickets-updated'));
+  try {
+    localStorage.setItem(TICKET_KEY, JSON.stringify(state));
+  } catch {}
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('trang-toan:tickets-updated'));
+  }
   return state;
 }
 
@@ -39,13 +43,19 @@ export function countSuccessfulSession(id: string, score: number) {
 
 export function readAdminPlayMode() {
   if (typeof window === 'undefined') return false;
-  return sessionStorage.getItem(ADMIN_PLAY_KEY) === '1';
+  try {
+    return sessionStorage.getItem(ADMIN_PLAY_KEY) === '1';
+  } catch {
+    return false;
+  }
 }
 
 export function setAdminPlayMode(enabled: boolean) {
   if (typeof window === 'undefined') return;
-  if (enabled) sessionStorage.setItem(ADMIN_PLAY_KEY, '1');
-  else sessionStorage.removeItem(ADMIN_PLAY_KEY);
+  try {
+    if (enabled) sessionStorage.setItem(ADMIN_PLAY_KEY, '1');
+    else sessionStorage.removeItem(ADMIN_PLAY_KEY);
+  } catch {}
   window.dispatchEvent(new Event('trang-toan:admin-play-updated'));
 }
 

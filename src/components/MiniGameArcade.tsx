@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { Component, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import {
   endTicketGame,
   readAdminPlayMode,
@@ -131,7 +131,58 @@ function mazeStart(rows: string[]) {
   return [rows[y]?.indexOf('S') ?? 1, y >= 0 ? y : 1];
 }
 
-export default function MiniGameArcade() {
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ArcadeErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error('Arcade error caught:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <section className="mx-auto max-w-2xl px-4 py-12 text-center" aria-label="Lỗi tải minigame">
+          <div className="rounded-3xl border border-amber-200 bg-amber-50/70 p-8 dark:border-slate-800 dark:bg-slate-900">
+            <span className="text-5xl">🎮</span>
+            <h2 className="mt-4 text-xl font-black text-slate-900 dark:text-white">
+              Đang làm mới khu vui chơi minigame...
+            </h2>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              Khu trò chơi gặp chút gián đoạn nhỏ. Bé hãy bấm nút bên dưới để tải lại nhé!
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                this.setState({ hasError: false });
+                if (typeof window !== 'undefined') window.location.reload();
+              }}
+              className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3 font-bold text-white shadow-md hover:bg-violet-500 transition cursor-pointer"
+            >
+              🔄 Tải lại khu trò chơi
+            </button>
+          </div>
+        </section>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function MiniGameArcadeInner() {
   const [mounted, setMounted] = useState(false);
   const [wallet, setWallet] = useState<TicketState>({ tickets: 3, progress: 0, activeUntil: 0 });
   const [adminPlay, setAdminPlay] = useState(false);
@@ -423,10 +474,6 @@ export default function MiniGameArcade() {
     window.addEventListener('keydown', keydown);
     return () => window.removeEventListener('keydown', keydown);
   }, []);
-
-  if (!mounted) {
-    return <div className="p-12 text-center text-slate-500 font-bold">Đang tải khu vui chơi...</div>;
-  }
 
   const title = GAMES.find((entry) => entry.id === game)?.name;
   const filteredGames = selectedCategory === 'all'
@@ -1130,5 +1177,13 @@ export default function MiniGameArcade() {
         💡 Mỗi bài luyện tập đạt điểm giỏi sẽ tích lũy thêm vé vui chơi giải trí lành mạnh. Chúc bé học tốt và thư giãn thật vui cùng bạn Sóc & Gấu!
       </p>
     </section>
+  );
+}
+
+export default function MiniGameArcade() {
+  return (
+    <ArcadeErrorBoundary>
+      <MiniGameArcadeInner />
+    </ArcadeErrorBoundary>
   );
 }

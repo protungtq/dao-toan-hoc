@@ -82,6 +82,8 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
   isNitroRef.current = isNitroActive;
   const scoreRef = useRef(0);
   scoreRef.current = score;
+  const distanceRef = useRef(0);
+  distanceRef.current = distance;
 
   // Load HighScore
   useEffect(() => {
@@ -216,7 +218,7 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
           y: -height - 20,
           width,
           height,
-          speed: type === 'truck' ? 1.5 : type === 'bus' ? 2 : type === 'barrier' || type === 'oil' ? 0 : 2.8,
+          speed: type === 'truck' ? 0.8 : type === 'bus' ? 1.0 : type === 'barrier' || type === 'oil' ? 0 : 1.4,
           type,
           color,
         });
@@ -224,9 +226,13 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
     };
 
     const loop = () => {
-      // Highway Speed calculation
-      const currentSpeed = isNitroRef.current ? 12 : 6.5;
-      setSpeedKmh(isNitroRef.current ? 180 : 95 + Math.min(50, Math.floor(scoreRef.current / 30)));
+      // Highway Speed: Bắt đầu êm ái ở mức 2.6 (~45 km/h), tăng tốc dần theo quãng đường (tối đa 5.2 ~85 km/h)
+      const dist = distanceRef.current;
+      const speedFactor = Math.min(1, dist / 800);
+      const normalSpeed = 2.6 + speedFactor * 2.4;
+      const currentSpeed = isNitroRef.current ? 7.2 : normalSpeed;
+      const displayKmh = isNitroRef.current ? 140 : Math.floor(45 + speedFactor * 40);
+      setSpeedKmh(displayKmh);
 
       // 1. DRAW HIGHWAY (Mặt đường nhựa)
       ctx.fillStyle = '#0f172a';
@@ -236,20 +242,20 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(ROAD_LEFT, 0, ROAD_WIDTH, HEIGHT);
 
-      // Rumble strips (Viền đỏ trắng lề đường)
-      const curbSegHeight = 24;
+      // Rumble strips (Viền lề đường thể thao dịu mắt, dải rộng 56px tránh chớp nháy gây chóng mặt)
+      const curbSegHeight = 56;
       const curbOffset = roadOffset.current % (curbSegHeight * 2);
       for (let y = -curbSegHeight * 2; y < HEIGHT + curbSegHeight * 2; y += curbSegHeight) {
         const isRed = Math.floor((y - curbOffset) / curbSegHeight) % 2 === 0;
-        ctx.fillStyle = isRed ? '#ef4444' : '#ffffff';
-        ctx.fillRect(ROAD_LEFT - 12, y + curbOffset, 12, curbSegHeight);
-        ctx.fillRect(ROAD_RIGHT, y + curbOffset, 12, curbSegHeight);
+        ctx.fillStyle = isRed ? '#dc2626' : '#94a3b8';
+        ctx.fillRect(ROAD_LEFT - 10, y + curbOffset, 10, curbSegHeight);
+        ctx.fillRect(ROAD_RIGHT, y + curbOffset, 10, curbSegHeight);
       }
 
-      // Dashed lane lines
-      ctx.strokeStyle = '#f8fafc';
+      // Dashed lane lines (Vạch kẻ đường dài 32px cách 36px, lướt êm ái)
+      ctx.strokeStyle = '#e2e8f0';
       ctx.lineWidth = 3;
-      ctx.setLineDash([20, 24]);
+      ctx.setLineDash([32, 36]);
       ctx.lineDashOffset = -roadOffset.current;
 
       for (let l = 1; l < LANE_COUNT; l++) {
@@ -309,11 +315,11 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
           car.current.invincibleTimer--;
         }
 
-        // Spawn obstacles
+        // Spawn obstacles với khoảng cách rộng rãi, tăng dần độ thử thách
         nextSpawnDist.current -= currentSpeed;
         if (nextSpawnDist.current <= 0) {
           spawnObstacleOrItem();
-          nextSpawnDist.current = Math.max(70, 140 - Math.min(scoreRef.current / 2, 60));
+          nextSpawnDist.current = Math.max(110, 200 - Math.min(distanceRef.current / 6, 80));
         }
 
         // Update Obstacles
