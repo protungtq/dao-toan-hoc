@@ -202,7 +202,7 @@ export const PenaltyKickGame: React.FC<Props> = ({ onScore, onFinish, onExit }) 
           } catch {}
         }
 
-        playMiniGameSound('fanfare');
+        playMiniGameSound('goal');
         setResultBanner({
           text: superShotActive ? '🔥 SIÊU PHẨM SẤM SÉT! VÀOOOO! ⚽' : 'VÀOOOOOO! ⚽🎉',
           sub: superShotActive ? '+200 ĐIỂM BÓNG VÀNG!' : '+100 ĐIỂM SÚT PHẠT ĐỈNH CAO!',

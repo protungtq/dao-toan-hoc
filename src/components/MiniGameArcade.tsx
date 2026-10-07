@@ -24,7 +24,30 @@ import PenaltyKickGame from './minigames/PenaltyKickGame';
 import SpaceGlideGame from './minigames/SpaceGlideGame';
 import HighwayRacerGame from './minigames/HighwayRacerGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
+import {
+  readMiniGameRecords,
+  recordGameResult,
+  getGameRankTitle,
+  clearMiniGameRecords,
+  getFavoriteGame,
+  getOverallArcadeRank,
+  RECORDS_UPDATED_EVENT,
+  type MiniGameRecordsState,
+} from '../lib/minigameRecords';
+import { isSoundEnabled, setSoundEnabled } from '../lib/gameAudio';
 import './MiniGameArcade.css';
+
+function formatPlayTime(timestamp: number): string {
+  if (!timestamp) return 'Chưa chơi';
+  const now = Date.now();
+  const diffMin = Math.floor((now - timestamp) / 60000);
+  if (diffMin < 1) return 'Vừa xong';
+  if (diffMin < 60) return `${diffMin} phút trước`;
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  const d = new Date(timestamp);
+  return `${d.getDate()}/${d.getMonth() + 1} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
 
 type GameId =
   | 'space-ship'
@@ -126,6 +149,18 @@ export default function MiniGameArcade() {
   const [climbFeedback, setClimbFeedback] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [ticketModal, setTicketModal] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [highScoreNotice, setHighScoreNotice] = useState<string | null>(null);
+  const [soundActive, setSoundActive] = useState(true);
+  const [recordsState, setRecordsState] = useState<MiniGameRecordsState>({
+    records: {},
+    history: [],
+    totalPlays: 0,
+    overallHighScore: 0,
+  });
+
+  const pointsRef = useRef(0);
+  pointsRef.current = points;
 
   const maze = mazeFor(mazeLevel);
   const gameRef = useRef<GameId | null>(null);
@@ -137,17 +172,38 @@ export default function MiniGameArcade() {
   const levelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const recordCurrentGame = useCallback((scoreToRecord?: number) => {
+    const activeId = gameRef.current;
+    if (!activeId) return;
+    const gameEntry = GAMES.find((entry) => entry.id === activeId);
+    if (!gameEntry) return;
+    const finalScore = scoreToRecord !== undefined ? scoreToRecord : pointsRef.current;
+    const res = recordGameResult(gameEntry.id, gameEntry.name, gameEntry.icon, finalScore);
+    const updated = readMiniGameRecords();
+    setRecordsState(updated);
+    if (res.isNewHighScore && finalScore > 0) {
+      setHighScoreNotice(`🎉 KỶ LỤC MỚI: ${gameEntry.name} - ${finalScore} điểm!`);
+      playMiniGameSound('fanfare');
+      setTimeout(() => setHighScoreNotice(null), 3600);
+    }
+  }, []);
+
   // Chỉ chạy sau khi trình duyệt mount hoàn toàn
   useEffect(() => {
     setMounted(true);
     setWallet(readTickets());
     setAdminPlay(readAdminPlayMode());
+    setRecordsState(readMiniGameRecords());
+    setSoundActive(isSoundEnabled());
 
     const update = () => setWallet(readTickets());
     const updateAdmin = () => setAdminPlay(readAdminPlayMode());
+    const updateRecords = () => setRecordsState(readMiniGameRecords());
+
     window.addEventListener('trang-toan:tickets-updated', update);
     window.addEventListener('storage', update);
     window.addEventListener('trang-toan:admin-play-updated', updateAdmin);
+    window.addEventListener(RECORDS_UPDATED_EVENT, updateRecords);
 
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'play') setAdminPlayMode(true);
@@ -171,6 +227,7 @@ export default function MiniGameArcade() {
       window.removeEventListener('trang-toan:tickets-updated', update);
       window.removeEventListener('storage', update);
       window.removeEventListener('trang-toan:admin-play-updated', updateAdmin);
+      window.removeEventListener(RECORDS_UPDATED_EVENT, updateRecords);
     };
   }, []);
 
@@ -205,6 +262,9 @@ export default function MiniGameArcade() {
   }, []);
 
   function stop() {
+    if (gameRef.current) {
+      recordCurrentGame(pointsRef.current);
+    }
     if (levelTimer.current) clearTimeout(levelTimer.current);
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     levelTimer.current = null;
@@ -392,6 +452,19 @@ export default function MiniGameArcade() {
           </div>
 
           <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !soundActive;
+                setSoundEnabled(next);
+                setSoundActive(next);
+              }}
+              className="flex items-center gap-1.5 rounded-2xl bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md border border-white/20 hover:bg-white/25 transition cursor-pointer"
+            >
+              <span>{soundActive ? '🔊' : '🔇'}</span>
+              <span>{soundActive ? 'Âm thanh: BẬT' : 'Âm thanh: TẮT'}</span>
+            </button>
+
             <div className="flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-2.5 backdrop-blur-md border border-white/20">
               <span className="text-xl">🎟️</span>
               <div>
@@ -411,34 +484,60 @@ export default function MiniGameArcade() {
         </div>
       </div>
 
+      {/* Thông báo Kỷ Lục Mới */}
+      {highScoreNotice && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black px-6 py-3 rounded-full shadow-2xl flex items-center gap-2.5 animate-bounce border-2 border-white text-sm sm:text-base">
+          <span className="text-xl">🏆</span>
+          <span>{highScoreNotice}</span>
+        </div>
+      )}
+
       {!game ? (
         <>
-          {/* Segmented Filter Categories */}
-          <div className="mt-6 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-slate-100/80 p-1.5 dark:border-slate-800 dark:bg-slate-900/80">
-            {GAME_CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-white text-violet-700 shadow-xs dark:bg-slate-800 dark:text-violet-300'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                }`}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.name}</span>
-                <span className="text-xs opacity-60">
-                  ({cat.id === 'all' ? GAMES.length : GAMES.filter((g) => getCategoryForGame(g.id) === cat.id).length})
-                </span>
-              </button>
-            ))}
+          {/* Header Bar: Filter Categories & Bảng Vàng Kỷ Lục */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-100/80 p-1.5 dark:border-slate-800 dark:bg-slate-900/80">
+              {GAME_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold transition-all ${
+                    selectedCategory === cat.id
+                      ? 'bg-white text-violet-700 shadow-xs dark:bg-slate-800 dark:text-violet-300'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.name}</span>
+                  <span className="text-xs opacity-60">
+                    ({cat.id === 'all' ? GAMES.length : GAMES.filter((g) => getCategoryForGame(g.id) === cat.id).length})
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Nút Bảng Vàng Kỷ Lục */}
+            <button
+              type="button"
+              onClick={() => setShowLeaderboard(true)}
+              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-black px-4 py-2.5 text-sm shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
+            >
+              <span className="text-base">🏆</span>
+              <span>Bảng vàng Kỷ lục</span>
+              <span className="bg-amber-700/60 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                {recordsState.totalPlays} lượt
+              </span>
+            </button>
           </div>
 
           {/* Grid Games Cards */}
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredGames.map((entry) => {
               const classic = entry.id.startsWith('squirrel') || entry.id.startsWith('bear');
+              const rec = recordsState.records[entry.id];
+              const rank = getGameRankTitle(rec?.highScore || 0);
+
               return (
                 <article
                   key={entry.id}
@@ -466,7 +565,31 @@ export default function MiniGameArcade() {
                     <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                       {entry.description}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-1">
+
+                    {/* Kỷ lục & Lần chơi gần nhất */}
+                    <div className="mt-3 rounded-2xl bg-gradient-to-r from-amber-50/70 to-orange-50/40 dark:from-slate-800/80 dark:to-slate-800/40 p-2.5 border border-amber-200/70 dark:border-slate-700/60">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-300 font-black">
+                          <span>🏆</span>
+                          <span>Kỷ lục:</span>
+                          <span className="text-sm">{rec && rec.highScore > 0 ? `${rec.highScore} đ` : '---'}</span>
+                        </div>
+                        <div className={`text-[10px] font-black px-2 py-0.5 rounded-full ${rank.color} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700`}>
+                          {rank.badge} {rank.title}
+                        </div>
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                        <div className="truncate">
+                          ⏱️ Gần nhất: <strong className="text-slate-700 dark:text-slate-200">{rec && rec.playCount > 0 ? `${rec.lastScore} đ` : 'Chưa chơi'}</strong>
+                          {rec && rec.lastPlayedAt ? ` (${formatPlayTime(rec.lastPlayedAt)})` : ''}
+                        </div>
+                        <div className="shrink-0 font-semibold text-slate-600 dark:text-slate-400">
+                          {rec?.playCount ? `${rec.playCount} lượt` : '0 lượt'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-2.5 flex flex-wrap gap-1">
                       {entry.controls.map((ctrl, i) => (
                         <span
                           key={i}
@@ -482,7 +605,7 @@ export default function MiniGameArcade() {
                     type="button"
                     disabled={!adminPlay && wallet.tickets < 1 && wallet.activeUntil <= Date.now()}
                     onClick={() => start(entry.id)}
-                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 py-3.5 px-4 font-black text-white shadow-md shadow-violet-600/20 transition-all hover:bg-violet-500 active:scale-98 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 py-3.5 px-4 font-black text-white shadow-md shadow-violet-600/20 transition-all hover:bg-violet-500 active:scale-98 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
                   >
                     <span>▶</span>
                     <span>{wallet.tickets > 0 || wallet.activeUntil > Date.now() || adminPlay ? 'Bắt đầu chơi ngay' : 'Cần 1 vé để chơi'}</span>
@@ -707,97 +830,271 @@ export default function MiniGameArcade() {
           {/* Phi thuyền vượt không gian */}
           {game === 'space-ship' && (
             <div className="mt-4">
-              <SpaceShipGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <SpaceShipGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Phi thuyền lướt ngân hà (Flappy wave style) */}
           {game === 'space-glide' && (
             <div className="mt-4">
-              <SpaceGlideGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <SpaceGlideGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Đua xe vượt chướng ngại (Màn hình dọc) */}
           {game === 'highway-racer' && (
             <div className="mt-4">
-              <HighwayRacerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <HighwayRacerGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Đá penalty siêu cúp */}
           {game === 'penalty-kick' && (
             <div className="mt-4">
-              <PenaltyKickGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <PenaltyKickGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Bong bóng số học */}
           {game === 'bubble-math' && (
             <div className="mt-4">
-              <BubbleMathGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <BubbleMathGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Bóng nảy phá gạch */}
           {game === 'brick-breaker' && (
             <div className="mt-4">
-              <BrickBreakerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <BrickBreakerGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Đua xe tính nhanh */}
           {game === 'math-racer' && (
             <div className="mt-4">
-              <MathRacerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <MathRacerGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Chuột chũi số học */}
           {game === 'whack-math' && (
             <div className="mt-4">
-              <WhackMathGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <WhackMathGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Cân thăng bằng khối lượng */}
           {game === 'balance-scale' && (
             <div className="mt-4">
-              <BalanceScaleGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <BalanceScaleGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* 4 Games độc lập */}
           {game === 'maze-2d' && (
             <div className="mt-6">
-              <SquirrelMazeGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <SquirrelMazeGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {game === 'memory-card' && (
             <div className="mt-6">
-              <MemoryGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <MemoryGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {game === 'reflex-math' && (
             <div className="mt-6">
-              <ReflexMathGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <ReflexMathGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {game === 'snake-canvas' && (
             <div className="mt-6">
-              <SnakeGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+              <SnakeGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
           {/* Nhóm Extra Games */}
           {game && EXTRA_GAMES.includes(game as ExtraGameId) && (
             <div className="mt-6">
-              <ExtraMiniGames game={game as ExtraGameId} onScore={setPoints} />
+              <ExtraMiniGames game={game as ExtraGameId} onScore={(s) => { setPoints(s); recordCurrentGame(s); }} />
             </div>
           )}
+        </div>
+      )}
+
+      {/* Bảng Vàng Kỷ Lục Mini-Game Modal */}
+      {showLeaderboard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full max-w-3xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-5">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  <span>🏆 BẢNG VÀNG KỶ LỤC</span>
+                  <span>·</span>
+                  <span>LƯU CỤC BỘ TRÊN THIẾT BỊ</span>
+                </div>
+                <h3 className="mt-1 text-2xl font-black text-slate-900 dark:text-white">Thành Tích & Kỷ Lục Mini-Game</h3>
+                <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                  Theo dõi kỷ lục điểm cao nhất và lần chơi gần nhất của bé. Học thật vui, chơi thật cừ!
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowLeaderboard(false)}
+                className="rounded-2xl p-2.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer text-lg"
+                aria-label="Đóng bảng kỷ lục"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 4 Thẻ Thống Kê Tổng Quan */}
+            {(() => {
+              const favorite = getFavoriteGame(recordsState.records);
+              const overall = getOverallArcadeRank(recordsState.totalPlays, recordsState.overallHighScore);
+              return (
+                <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="rounded-2xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200/60 dark:border-violet-800/40 p-3.5 text-center">
+                    <div className="text-2xl">🎮</div>
+                    <div className="mt-1 text-xl font-black text-violet-700 dark:text-violet-300">{recordsState.totalPlays}</div>
+                    <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Tổng lượt chơi</div>
+                  </div>
+
+                  <div className="rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 p-3.5 text-center">
+                    <div className="text-2xl">🌟</div>
+                    <div className="mt-1 text-xl font-black text-amber-700 dark:text-amber-300">{recordsState.overallHighScore} đ</div>
+                    <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Kỷ lục cao nhất</div>
+                  </div>
+
+                  <div className="rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200/60 dark:border-sky-800/40 p-3.5 text-center">
+                    <div className="text-2xl">{favorite?.gameIcon || '🎯'}</div>
+                    <div className="mt-1 text-sm font-black text-sky-700 dark:text-sky-300 truncate">
+                      {favorite ? favorite.gameName : 'Chưa có'}
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                      {favorite ? `${favorite.playCount} lượt chơi` : 'Yêu thích nhất'}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 p-3.5 text-center">
+                    <div className="text-2xl">{overall.badge}</div>
+                    <div className="mt-1 text-xs font-black text-emerald-700 dark:text-emerald-300 truncate">
+                      {overall.title}
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Danh hiệu arcade</div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Bảng Kỷ Lục Từng Game */}
+            <div className="mt-6">
+              <h4 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <span>🎯</span>
+                <span>Kỷ lục chi tiết theo trò chơi ({GAMES.length} trò)</span>
+              </h4>
+
+              <div className="mt-3 grid gap-2.5 sm:grid-cols-2 max-h-72 overflow-y-auto pr-1">
+                {GAMES.map((g) => {
+                  const rec = recordsState.records[g.id];
+                  const rank = getGameRankTitle(rec?.highScore || 0);
+
+                  return (
+                    <div
+                      key={g.id}
+                      className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 hover:border-violet-300 transition"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-2xl shrink-0">{g.icon}</span>
+                        <div className="min-w-0">
+                          <div className="text-xs font-black text-slate-900 dark:text-white truncate">
+                            {g.name}
+                          </div>
+                          <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                            <span>🏆 Cao nhất: <strong className="text-amber-700 dark:text-amber-400">{rec?.highScore || 0} đ</strong></span>
+                            <span>·</span>
+                            <span>⏱️ Lần gần nhất: <strong className="text-slate-700 dark:text-slate-300">{rec && rec.playCount > 0 ? `${rec.lastScore} đ` : '---'}</strong></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${rank.color} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700`}>
+                          {rank.badge}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowLeaderboard(false);
+                            start(g.id);
+                          }}
+                          className="px-2.5 py-1 text-xs font-bold rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition cursor-pointer"
+                        >
+                          Chơi ▶
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Lịch Sử 10 Lần Chơi Gần Nhất */}
+            {recordsState.history.length > 0 && (
+              <div className="mt-6 border-t border-slate-200/80 dark:border-slate-800 pt-5">
+                <h4 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span>📜</span>
+                  <span>Lịch sử chơi gần nhất</span>
+                </h4>
+                <div className="mt-3 divide-y divide-slate-100 dark:divide-slate-800 max-h-48 overflow-y-auto pr-1">
+                  {recordsState.history.slice(0, 10).map((h) => (
+                    <div key={h.id} className="py-2 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span>{h.gameIcon}</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-200 truncate">{h.gameName}</span>
+                        {h.isNewHighScore && (
+                          <span className="bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full">
+                            🎉 Kỷ lục mới!
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0 text-slate-500 dark:text-slate-400">
+                        <strong className="text-violet-600 dark:text-violet-400 font-black">{h.score} điểm</strong>
+                        <span>{formatPlayTime(h.playedAt)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div className="mt-6 border-t border-slate-200/80 dark:border-slate-800 pt-4 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm('Bé có chắc muốn đặt lại toàn bộ kỷ lục và lịch sử chơi minigame trên thiết bị này?')) {
+                    clearMiniGameRecords();
+                    setRecordsState(readMiniGameRecords());
+                  }
+                }}
+                className="text-xs font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 px-3 py-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+              >
+                🗑️ Đặt lại kỷ lục
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowLeaderboard(false)}
+                className="rounded-2xl bg-violet-600 px-6 py-2.5 text-sm font-black text-white hover:bg-violet-500 transition cursor-pointer shadow-md shadow-violet-600/20"
+              >
+                Đóng bảng kỷ lục
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

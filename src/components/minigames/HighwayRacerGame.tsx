@@ -332,7 +332,7 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
               if (obs.type === 'oil') {
                 // Spin & slide
                 car.current.driftAngle = (Math.random() - 0.5) * 0.6;
-                playMiniGameSound('step');
+                playMiniGameSound('skid');
               } else if (isNitroRef.current) {
                 // Nitro destroys obstacle!
                 playMiniGameSound('crash');

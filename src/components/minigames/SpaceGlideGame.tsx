@@ -283,7 +283,7 @@ export const SpaceGlideGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
                   // Shield absorbs crash!
                   setHasShield(false);
                   ship.current.invincibleTimer = 80;
-                  playMiniGameSound('hit');
+                  playMiniGameSound('shield_break');
                   // Spark burst
                   createBurst(ship.current.x, ship.current.y, '#38bdf8', 20);
                 } else {
@@ -314,7 +314,7 @@ export const SpaceGlideGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
             gm.collected = true;
             if (gm.type === 'shield') {
               setHasShield(true);
-              playMiniGameSound('powerup');
+              playMiniGameSound('shield');
               setScore((s) => s + 50);
               createBurst(gm.x, gm.y, '#38bdf8', 16);
             } else if (gm.type === 'crystal') {
