@@ -168,7 +168,7 @@ export const SpaceShipGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =>
       { x: shipX - 12, y: shipY - 14, vx: 0, vy: -9 },
       { x: shipX + 12, y: shipY - 14, vx: 0, vy: -9 }
     );
-    playMiniGameSound('flap');
+    playMiniGameSound('laser');
   }, []);
 
   const resetGame = useCallback(() => {
@@ -293,14 +293,14 @@ export const SpaceShipGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =>
           const shipDist = Math.hypot(shipPos.current.x - ast.x, shipPos.current.y - ast.y);
           if (shipDist < ast.radius + 20) {
             createExplosion(shipPos.current.x, shipPos.current.y, '#ef4444', 20);
-            playMiniGameSound('miss');
+            playMiniGameSound('hit');
             invincibleTimer.current = 80; // 1.3s invulnerability
 
             setShields((prev) => {
               const nextShields = prev - 1;
               if (nextShields <= 0) {
                 setIsGameOver(true);
-                playMiniGameSound('miss');
+                playMiniGameSound('crash');
                 onFinish?.(scoreRef.current);
                 try {
                   const curBest = Number(localStorage.getItem('trang-toan:spaceship-best') || '0');
@@ -326,16 +326,18 @@ export const SpaceShipGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =>
 
         const dist = Math.hypot(shipPos.current.x - col.x, shipPos.current.y - col.y);
         if (dist < 32) {
-          playMiniGameSound('collect');
           if (col.type === 'shield') {
+            playMiniGameSound('powerup');
             setShields((s) => Math.min(3, s + 1));
             createExplosion(col.x, col.y, '#38bdf8', 12);
           } else if (col.type === 'gem') {
+            playMiniGameSound('collect');
             scoreRef.current += 50;
             setScore(scoreRef.current);
             onScore?.(scoreRef.current);
             createExplosion(col.x, col.y, '#c084fc', 14);
           } else {
+            playMiniGameSound('collect');
             scoreRef.current += 25;
             setScore(scoreRef.current);
             onScore?.(scoreRef.current);

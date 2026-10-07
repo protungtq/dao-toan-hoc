@@ -21,11 +21,15 @@ import { MathRacerGame } from './minigames/MathRacerGame';
 import { WhackMathGame } from './minigames/WhackMathGame';
 import { BalanceScaleGame } from './minigames/BalanceScaleGame';
 import PenaltyKickGame from './minigames/PenaltyKickGame';
+import SpaceGlideGame from './minigames/SpaceGlideGame';
+import HighwayRacerGame from './minigames/HighwayRacerGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import './MiniGameArcade.css';
 
 type GameId =
   | 'space-ship'
+  | 'space-glide'
+  | 'highway-racer'
   | 'penalty-kick'
   | 'bubble-math'
   | 'brick-breaker'
@@ -68,6 +72,8 @@ function getCategoryForGame(id: GameId): string {
 
 const GAMES: { id: GameId; name: string; icon: string; description: string; controls: string[] }[] = [
   { id: 'space-ship', name: 'Phi thuyền vượt không gian', icon: '🚀', description: 'Lái tàu vũ trụ lượn qua ngân hà vô tận, bắn thiên thạch, kích hoạt Warp và bảo vệ vũ trụ.', controls: ['🎮 TV / Remote', '⌨️ Phím ← → & Space', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'space-glide', name: 'Phi thuyền lướt ngân hà', icon: '🛸', description: 'Bật động cơ phản lực lượn sóng nhịp nhàng né các cổng năng lượng và thu thập khiên bảo vệ.', controls: ['🎮 TV / Phím Space', '⌨️ Phím Space / ↑', '📱 Chạm màn hình', '🖱️ Chuột'] },
+  { id: 'highway-racer', name: 'Đua xe vượt chướng ngại', icon: '🏎️', description: 'Lái siêu xe màn hình dọc phi như bay trên cao tốc, né xe tải và vũng dầu, bứt tốc Nitro thần sầu.', controls: ['🎮 TV / D-pad', '⌨️ Phím ← → & Space', '📱 Phím chạm / Vuốt', '🖱️ Chuột'] },
   { id: 'penalty-kick', name: 'Đá penalty siêu cúp', icon: '⚽', description: 'Chọn góc sút hiểm hóc, vượt qua thủ môn tài ba để ghi bàn thắng vàng rực rỡ.', controls: ['⚽ Chọn 5 góc sút', '⌨️ Phím 1–5 / Mũi tên', '📱 Chạm góc khung thành', '🖱️ Chuột'] },
   { id: 'math-racer', name: 'Đua xe tính nhanh', icon: '🏎️', description: 'Lái siêu xe vượt 3 làn cao tốc, lao qua đúng cổng đáp án để bứt tốc Turbo Nitro.', controls: ['🎮 TV / Remote', '⌨️ Phím ← → hoặc 1–3', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'whack-math', name: 'Chuột chũi số học', icon: '🐹', description: 'Đập nhanh các chú chuột chũi mang số đúng quy tắc toán học (chẵn, lẻ, bội số) và né bom.', controls: ['🎮 Phím số TV 1–9', '⌨️ Phím số 1–9', '📱 Chạm', '🖱️ Chuột'] },
@@ -702,6 +708,20 @@ export default function MiniGameArcade() {
           {game === 'space-ship' && (
             <div className="mt-4">
               <SpaceShipGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Phi thuyền lướt ngân hà (Flappy wave style) */}
+          {game === 'space-glide' && (
+            <div className="mt-4">
+              <SpaceGlideGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Đua xe vượt chướng ngại (Màn hình dọc) */}
+          {game === 'highway-racer' && (
+            <div className="mt-4">
+              <HighwayRacerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
             </div>
           )}
 

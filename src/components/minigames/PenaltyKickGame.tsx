@@ -216,7 +216,7 @@ export const PenaltyKickGame: React.FC<Props> = ({ onScore, onFinish, onExit }) 
         });
       } else {
         setStreak(0);
-        playMiniGameSound('miss');
+        playMiniGameSound('hit');
         setResultBanner({
           text: 'THỦ MÔN CẢN PHÁ! 🧤',
           sub: 'Cú sút rất hiểm nhưng thủ môn đã xuất sắc bay người!',
