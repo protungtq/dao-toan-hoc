@@ -17,6 +17,9 @@ import { SnakeGame } from './minigames/SnakeGame';
 import { SpaceShipGame } from './minigames/SpaceShipGame';
 import { BrickBreakerGame } from './minigames/BrickBreakerGame';
 import { BubbleMathGame } from './minigames/BubbleMathGame';
+import { MathRacerGame } from './minigames/MathRacerGame';
+import { WhackMathGame } from './minigames/WhackMathGame';
+import { BalanceScaleGame } from './minigames/BalanceScaleGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import './MiniGameArcade.css';
 
@@ -24,6 +27,9 @@ type GameId =
   | 'space-ship'
   | 'bubble-math'
   | 'brick-breaker'
+  | 'math-racer'
+  | 'whack-math'
+  | 'balance-scale'
   | 'squirrel-catch'
   | 'bear-catch'
   | 'squirrel-maze'
@@ -54,7 +60,7 @@ function getCategoryForGame(id: GameId): string {
   if (['squirrel-catch', 'bear-catch', 'squirrel-maze', 'bear-climb', 'maze-2d'].includes(id)) {
     return 'mascots';
   }
-  if (['reflex-math', 'memory-card', 'sudoku', '2048', 'bubble-math'].includes(id)) {
+  if (['reflex-math', 'memory-card', 'sudoku', '2048', 'bubble-math', 'whack-math', 'balance-scale'].includes(id)) {
     return 'math-brain';
   }
   return 'arcade';
@@ -62,6 +68,9 @@ function getCategoryForGame(id: GameId): string {
 
 const GAMES: { id: GameId; name: string; icon: string; description: string; controls: string[] }[] = [
   { id: 'space-ship', name: 'Phi thuyền không gian', icon: '🚀', description: 'Lái tàu vũ trụ lượn qua ngân hà, bắn thiên thạch, nhặt sao và khiên bảo vệ.', controls: ['🎮 TV / Remote', '⌨️ Phím', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-racer', name: 'Đua xe tính nhanh', icon: '🏎️', description: 'Lái siêu xe vượt 3 làn cao tốc, lao qua đúng cổng đáp án để bứt tốc Turbo Nitro.', controls: ['🎮 TV / Remote', '⌨️ Phím ← → hoặc 1–3', '📱 Chạm', '🖱️ Chuột'] },
+  { id: 'whack-math', name: 'Chuột chũi số học', icon: '🐹', description: 'Đập nhanh các chú chuột chũi mang số đúng quy tắc toán học (chẵn, lẻ, bội số) và né bom.', controls: ['🎮 Phím số TV 1–9', '⌨️ Phím số 1–9', '📱 Chạm', '🖱️ Chuột'] },
+  { id: 'balance-scale', name: 'Cân thăng bằng khối lượng', icon: '⚖️', description: 'Cân đo vật phẩm bằng cách chọn và đặt đúng các quả cân để đĩa cân thăng bằng tuyệt đối.', controls: ['🎮 TV / Phím 1–5', '⌨️ Phím số 1–5', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'bubble-math', name: 'Bong bóng số học', icon: '🎈', description: 'Bắn vỡ bong bóng số chẵn, lẻ hoặc phép tính. Phản xạ nhanh, cộng điểm liên hoàn.', controls: ['🎮 Phím số TV', '⌨️ Phím 1–5', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'brick-breaker', name: 'Bóng nảy phá gạch', icon: '🧱', description: 'Trượt thanh đỡ bóng nảy phá vỡ các khối gạch màu và nhặt năng lượng mở rộng.', controls: ['🎮 TV / Remote', '⌨️ Phím', '📱 Cảm ứng', '🖱️ Chuột'] },
   { id: 'squirrel-catch', name: 'Sóc hứng hạt dẻ', icon: '🐿️', description: 'Di chuyển Sóc nhanh nhẹn qua các làn để đón trọn từng hạt dẻ rơi.', controls: ['🎮 TV', '⌨️ Phím 1–5', '📱 Chạm'] },
@@ -708,6 +717,27 @@ export default function MiniGameArcade() {
           {game === 'brick-breaker' && (
             <div className="mt-4">
               <BrickBreakerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Đua xe tính nhanh */}
+          {game === 'math-racer' && (
+            <div className="mt-4">
+              <MathRacerGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Chuột chũi số học */}
+          {game === 'whack-math' && (
+            <div className="mt-4">
+              <WhackMathGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
+            </div>
+          )}
+
+          {/* Cân thăng bằng khối lượng */}
+          {game === 'balance-scale' && (
+            <div className="mt-4">
+              <BalanceScaleGame onScore={setPoints} onFinish={(s) => setPoints(s)} onExit={stop} />
             </div>
           )}
 
