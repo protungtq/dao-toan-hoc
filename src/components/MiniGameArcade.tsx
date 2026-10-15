@@ -24,6 +24,11 @@ import PenaltyKickGame from './minigames/PenaltyKickGame';
 import SpaceGlideGame from './minigames/SpaceGlideGame';
 import HighwayRacerGame from './minigames/HighwayRacerGame';
 import { TetrisGame } from './minigames/TetrisGame';
+import { MathFlappyGame } from './minigames/MathFlappyGame';
+import { MathArcheryGame } from './minigames/MathArcheryGame';
+import { GoldMinerGame } from './minigames/GoldMinerGame';
+import { CloudJumperGame } from './minigames/CloudJumperGame';
+import { MathFruitSliceGame } from './minigames/MathFruitSliceGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import {
   readMiniGameRecords,
@@ -71,7 +76,12 @@ type GameId =
   | 'snake'
   | 'match3'
   | '2048'
-  | 'tetris';
+  | 'tetris'
+  | 'math-flappy'
+  | 'math-archery'
+  | 'gold-miner'
+  | 'cloud-jumper'
+  | 'math-fruit-slice';
 
 type ExtraGameId = 'snake' | 'match3' | '2048';
 const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', '2048'];
@@ -89,7 +99,7 @@ function getCategoryForGame(id: GameId): string {
   if (['squirrel-catch', 'bear-catch', 'squirrel-maze', 'bear-climb', 'maze-2d'].includes(id)) {
     return 'mascots';
   }
-  if (['reflex-math', 'memory-card', '2048', 'bubble-math', 'whack-math', 'balance-scale'].includes(id)) {
+  if (['reflex-math', 'memory-card', '2048', 'bubble-math', 'whack-math', 'balance-scale', 'math-flappy', 'math-archery', 'gold-miner', 'cloud-jumper', 'math-fruit-slice'].includes(id)) {
     return 'math-brain';
   }
   return 'arcade';
@@ -105,6 +115,11 @@ const GAMES: { id: GameId; name: string; icon: string; description: string; cont
   { id: 'balance-scale', name: 'Cân thăng bằng khối lượng', icon: '⚖️', description: 'Cân đo vật phẩm bằng cách chọn và đặt đúng các quả cân để đĩa cân thăng bằng tuyệt đối.', controls: ['🎮 TV / Phím 1–5', '⌨️ Phím số 1–5', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'bubble-math', name: 'Bong bóng số học', icon: '🎈', description: 'Bắn vỡ bong bóng số chẵn, lẻ hoặc phép tính. Phản xạ nhanh, cộng điểm liên hoàn.', controls: ['🎮 Phím số TV', '⌨️ Phím 1–5', '📱 Chạm', '🖱️ Chuột'] },
   { id: 'brick-breaker', name: 'Bóng nảy phá gạch', icon: '🧱', description: 'Trượt thanh đỡ bóng nảy phá vỡ các khối gạch màu và nhặt năng lượng mở rộng.', controls: ['🎮 TV / Remote', '⌨️ Phím', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-flappy', name: 'Flappy Bird toán học', icon: '🐦', description: 'Bay lượn qua các cổng kết quả toán học chính xác để ghi điểm ngoạn mục.', controls: ['🎮 Space / Tap', '⌨️ Phím Space / ↑', '📱 Chạm', '🖱️ Chuột'] },
+  { id: 'math-archery', name: 'Bắn cung toán học', icon: '🏹', description: 'Ngắm và bắn cung vào các bong bóng bay có kết quả phép tính đúng.', controls: ['🎮 Chạm / Click', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'gold-miner', name: 'Đào vàng tri thức', icon: '⛏️', description: 'Thả móc đúng thời điểm để thu thập kho báu và vàng số học.', controls: ['🎮 Chạm / Click', '⌨️ Phím Space', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'cloud-jumper', name: 'Nhảy mây toán học', icon: '☁️', description: 'Chọn đám mây có phép tính đúng để nhảy bậc cao hơn lên bầu trời.', controls: ['🎮 Chạm đám mây', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-fruit-slice', name: 'Cắt trái cây toán học', icon: '🍉', description: 'Cắt nhanh các loại trái cây mang số chẵn, lẻ hoặc số nguyên tố theo yêu cầu.', controls: ['🎮 Chạm trái cây', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
   { id: 'squirrel-catch', name: 'Sóc hứng hạt dẻ', icon: '🐿️', description: 'Di chuyển Sóc nhanh nhẹn qua các làn để đón trọn từng hạt dẻ rơi.', controls: ['🎮 TV', '⌨️ Phím 1–5', '📱 Chạm'] },
   { id: 'bear-catch', name: 'Gấu hứng mật ong', icon: '🐻', description: 'Giúp chú Gấu Nâu đáng yêu hứng từng hũ mật ong vàng óng.', controls: ['🎮 TV', '⌨️ Phím 1–5', '📱 Chạm'] },
   { id: 'squirrel-maze', name: 'Sóc tìm đường về nhà 3D', icon: '🏡', description: 'Dẫn Sóc đi qua mê cung đá 3D vượt chướng ngại về tổ an toàn.', controls: ['🎮 TV / D-pad', '⌨️ Mũi tên', '📱 Chạm'] },
@@ -944,6 +959,41 @@ function MiniGameArcadeInner() {
           {game === 'tetris' && (
             <div className="mt-4">
               <TetrisGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Flappy Bird toán học */}
+          {game === 'math-flappy' && (
+            <div className="mt-4">
+              <MathFlappyGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Bắn cung toán học */}
+          {game === 'math-archery' && (
+            <div className="mt-4">
+              <MathArcheryGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Đào vàng tri thức */}
+          {game === 'gold-miner' && (
+            <div className="mt-4">
+              <GoldMinerGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Nhảy mây toán học */}
+          {game === 'cloud-jumper' && (
+            <div className="mt-4">
+              <CloudJumperGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Cắt trái cây toán học */}
+          {game === 'math-fruit-slice' && (
+            <div className="mt-4">
+              <MathFruitSliceGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
