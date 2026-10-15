@@ -23,6 +23,7 @@ import { BalanceScaleGame } from './minigames/BalanceScaleGame';
 import PenaltyKickGame from './minigames/PenaltyKickGame';
 import SpaceGlideGame from './minigames/SpaceGlideGame';
 import HighwayRacerGame from './minigames/HighwayRacerGame';
+import { TetrisGame } from './minigames/TetrisGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import {
   readMiniGameRecords,
@@ -69,7 +70,8 @@ type GameId =
   | 'snake-canvas'
   | 'snake'
   | 'match3'
-  | '2048';
+  | '2048'
+  | 'tetris';
 
 type ExtraGameId = 'snake' | 'match3' | '2048';
 const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', '2048'];
@@ -114,6 +116,7 @@ const GAMES: { id: GameId; name: string; icon: string; description: string; cont
   { id: 'snake', name: 'Rắn săn mồi mượt mà', icon: '🍏', description: 'Điều khiển rắn ăn táo và đừng tự cắn mình.', controls: ['🎮 TV', '⌨️ Mũi tên', '📱 D-pad'] },
   { id: 'match3', name: 'Vườn trái cây Match-3', icon: '💎', description: 'Đổi chỗ để ghép ít nhất 3 viên kim cương giống nhau.', controls: ['📱 Chạm', '🖱️ Chuột', '🎮 TV'] },
   { id: '2048', name: 'Ghép số 2048', icon: '🧩', description: 'Ghép các ô số giống nhau để tạo số lớn hơn.', controls: ['🎮 TV', '⌨️ Mũi tên', '📱 Vuốt'] },
+  { id: 'tetris', name: 'Xếp hình Tetris', icon: '🧩', description: 'Xoay và sắp xếp các khối hình cổ điển để xóa hàng và ghi điểm cao.', controls: ['🎮 TV / Remote', '⌨️ Mũi tên & Space', '📱 Cảm ứng', '🖱️ Chuột'] },
 ];
 
 const MAZE = [
@@ -934,6 +937,13 @@ function MiniGameArcadeInner() {
           {game === 'balance-scale' && (
             <div className="mt-4">
               <BalanceScaleGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Xếp hình Tetris */}
+          {game === 'tetris' && (
+            <div className="mt-4">
+              <TetrisGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 
