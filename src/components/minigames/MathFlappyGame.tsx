@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { playMiniGameSound } from '../../lib/minigameSounds';
 
 interface Props {
@@ -7,83 +7,425 @@ interface Props {
   onExit?: () => void;
 }
 
-export const MathFlappyGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
-  const [shipY, setShipY] = useState(180);
-  const [velocity, setVelocity] = useState(0);
-  const [score, setScore] = useState(0);
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [problem, setProblem] = useState({ q: '4 + 5 = ?', ans: 9, options: [7, 9, 12, 14] });
-  const [targetLane, setTargetLane] = useState(1);
+interface Star {
+  x: number;
+  y: number;
+  size: number;
+  speed: number;
+  alpha: number;
+}
 
-  const shipYRef = useRef(shipY);
-  shipYRef.current = shipY;
-  const velocityRef = useRef(velocity);
-  velocityRef.current = velocity;
-  const isGameOverRef = useRef(isGameOver);
-  isGameOverRef.current = isGameOver;
-  const scoreRef = useRef(score);
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  color: string;
+  size: number;
+  life: number;
+  maxLife: number;
+}
+
+interface Gate {
+  x: number;
+  problem: string;
+  options: { value: number; isCorrect: boolean; yMin: number; yMax: number }[];
+  passed: boolean;
+}
+
+const WIDTH = 480;
+const HEIGHT = 580;
+const GRAVITY = 0.32;
+const THRUST = -5.8;
+const SCROLL_SPEED = 2.6;
+
+export const MathFlappyGame: React.FC<Props> = ({ onScore, onFinish, onExit }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [shields, setShields] = useState(1);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [currentProblemText, setCurrentProblemText] = useState('4 + 5 = ?');
+
+  // Ship physics
+  const ship = useRef({
+    x: 120,
+    y: HEIGHT / 2,
+    vy: 0,
+    radius: 20,
+    invincibleTimer: 0,
+  });
+
+  const stars = useRef<Star[]>([]);
+  const gates = useRef<Gate[]>([]);
+  const particles = useRef<Particle[]>([]);
+  const animFrameId = useRef<number | null>(null);
+  const scoreRef = useRef(0);
   scoreRef.current = score;
 
-  const generateProblem = useCallback(() => {
+  // Load High Score
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('trang-toan:mathflappy-best');
+      if (stored) setHighScore(Number(stored));
+    } catch {}
+  }, []);
+
+  // Initialize starfield
+  useEffect(() => {
+    const s: Star[] = [];
+    for (let i = 0; i < 70; i++) {
+      s.push({
+        x: Math.random() * WIDTH,
+        y: Math.random() * HEIGHT,
+        size: Math.random() * 2 + 0.5,
+        speed: Math.random() * 1.8 + 0.5,
+        alpha: Math.random() * 0.7 + 0.3,
+      });
+    }
+    stars.current = s;
+  }, []);
+
+  const generateNewGate = useCallback((spawnX: number) => {
     const a = Math.floor(Math.random() * 9) + 1;
     const b = Math.floor(Math.random() * 9) + 1;
     const ans = a + b;
     const wrong1 = ans + (Math.random() > 0.5 ? 2 : -2);
-    const wrong2 = ans + (Math.random() > 0.5 ? 4 : -4);
-    const wrong3 = Math.max(1, ans + (Math.random() > 0.5 ? 3 : -3));
-    const opts = [ans, wrong1, wrong2, wrong3].sort(() => Math.random() - 0.5);
-    setProblem({ q: `${a} + ${b} = ?`, ans, options: opts });
-    setTargetLane(opts.indexOf(ans));
+    const wrong2 = Math.max(1, ans + (Math.random() > 0.5 ? 4 : -4));
+    const opts = [ans, wrong1, wrong2].sort(() => Math.random() - 0.5);
+
+    setCurrentProblemText(`${a} + ${b} = ?`);
+
+    // 3 lanes vertically: top (y: 80 - 180), middle (y: 240 - 340), bottom (y: 400 - 500)
+    const laneCoords = [
+      { yCenter: 130, yMin: 80, yMax: 180 },
+      { yCenter: 290, yMin: 240, yMax: 340 },
+      { yCenter: 450, yMin: 400, yMax: 500 },
+    ];
+
+    const options = opts.map((val, idx) => ({
+      value: val,
+      isCorrect: val === ans,
+      yMin: laneCoords[idx].yMin,
+      yMax: laneCoords[idx].yMax,
+    }));
+
+    gates.current.push({
+      x: spawnX,
+      problem: `${a} + ${b} = ?`,
+      options,
+      passed: false,
+    });
   }, []);
 
-  const boost = useCallback(() => {
-    if (isGameOverRef.current) return;
-    setVelocity(-6.8);
-    playMiniGameSound('collect');
-  }, []);
+  const resetGame = useCallback(() => {
+    ship.current = {
+      x: 120,
+      y: HEIGHT / 2,
+      vy: 0,
+      radius: 20,
+      invincibleTimer: 60,
+    };
+    gates.current = [];
+    particles.current = [];
+    generateNewGate(WIDTH + 100);
+    setScore(0);
+    scoreRef.current = 0;
+    setShields(1);
+    setIsGameOver(false);
+    setIsPaused(false);
+    setGameStarted(false);
+    onScore?.(0);
+  }, [generateNewGate, onScore]);
 
   useEffect(() => {
-    generateProblem();
-  }, [generateProblem]);
+    resetGame();
+  }, [resetGame]);
 
+  const thrust = useCallback(() => {
+    if (isGameOver) {
+      resetGame();
+      return;
+    }
+    if (!gameStarted) {
+      setGameStarted(true);
+    }
+    if (isPaused) return;
+
+    ship.current.vy = THRUST;
+    playMiniGameSound('flap');
+
+    // Thruster particles
+    for (let i = 0; i < 5; i++) {
+      particles.current.push({
+        x: ship.current.x - 16,
+        y: ship.current.y + (Math.random() - 0.5) * 10,
+        vx: -Math.random() * 3 - 1.5,
+        vy: (Math.random() - 0.5) * 2,
+        color: '#38bdf8',
+        size: Math.random() * 4 + 2,
+        life: 0,
+        maxLife: 20,
+      });
+    }
+  }, [gameStarted, isGameOver, isPaused, resetGame]);
+
+  // Keyboard controls
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') {
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
         e.preventDefault();
-        boost();
+        thrust();
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [boost]);
+  }, [thrust]);
 
+  // Main game loop
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (isGameOverRef.current) return;
-      setVelocity(v => v + 0.42);
-      setShipY(y => {
-        const next = y + velocityRef.current;
-        if (next > 380 || next < 0) {
-          setIsGameOver(true);
-          isGameOverRef.current = true;
-          playMiniGameSound('gameover');
-          onFinish?.(scoreRef.current);
-          return Math.max(0, Math.min(380, next));
-        }
-        return next;
-      });
-    }, 28);
-    return () => clearInterval(timer);
-  }, [onFinish]);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  const restart = () => {
-    setShipY(180);
-    setVelocity(0);
-    setScore(0);
-    setIsGameOver(false);
-    isGameOverRef.current = false;
-    generateProblem();
-  };
+    let lastTime = performance.now();
+
+    const render = (time: number) => {
+      const dt = (time - lastTime) / 1000;
+      lastTime = time;
+
+      if (!isPaused && !isGameOver && gameStarted) {
+        // Physics update
+        ship.current.vy += GRAVITY;
+        ship.current.y += ship.current.vy;
+
+        if (ship.current.invincibleTimer > 0) {
+          ship.current.invincibleTimer--;
+        }
+
+        // Boundary check
+        if (ship.current.y - ship.current.radius < 0 || ship.current.y + ship.current.radius > HEIGHT) {
+          if (shields > 0) {
+            setShields(0);
+            ship.current.vy = -4;
+            ship.current.y = Math.max(30, Math.min(HEIGHT - 30, ship.current.y));
+            playMiniGameSound('shield_break');
+          } else {
+            setIsGameOver(true);
+            playMiniGameSound('gameover');
+            onFinish?.(scoreRef.current);
+            try {
+              const best = Number(localStorage.getItem('trang-toan:mathflappy-best') || 0);
+              if (scoreRef.current > best) {
+                localStorage.setItem('trang-toan:mathflappy-best', String(scoreRef.current));
+                setHighScore(scoreRef.current);
+              }
+            } catch {}
+          }
+        }
+
+        // Scroll stars
+        stars.current.forEach((star) => {
+          star.x -= star.speed * (SCROLL_SPEED / 2);
+          if (star.x < 0) {
+            star.x = WIDTH;
+            star.y = Math.random() * HEIGHT;
+          }
+        });
+
+        // Scroll gates
+        gates.current.forEach((gate) => {
+          gate.x -= SCROLL_SPEED;
+
+          // Check if ship passes gate
+          if (!gate.passed && gate.x + 40 < ship.current.x) {
+            gate.passed = true;
+            // Check which option lane ship is in
+            let hitCorrect = false;
+            let hitAny = false;
+
+            gate.options.forEach((opt) => {
+              if (ship.current.y >= opt.yMin && ship.current.y <= opt.yMax) {
+                hitAny = true;
+                if (opt.isCorrect) {
+                  hitCorrect = true;
+                }
+              }
+            });
+
+            if (hitCorrect) {
+              const newScore = scoreRef.current + 10;
+              setScore(newScore);
+              onScore?.(newScore);
+              playMiniGameSound('collect');
+              // Particle burst
+              for (let i = 0; i < 15; i++) {
+                particles.current.push({
+                  x: ship.current.x,
+                  y: ship.current.y,
+                  vx: (Math.random() - 0.5) * 6,
+                  vy: (Math.random() - 0.5) * 6,
+                  color: '#34d399',
+                  size: Math.random() * 5 + 2,
+                  life: 0,
+                  maxLife: 25,
+                });
+              }
+            } else {
+              if (shields > 0) {
+                setShields(0);
+                playMiniGameSound('shield_break');
+              } else {
+                setIsGameOver(true);
+                playMiniGameSound('gameover');
+                onFinish?.(scoreRef.current);
+                try {
+                  const best = Number(localStorage.getItem('trang-toan:mathflappy-best') || 0);
+                  if (scoreRef.current > best) {
+                    localStorage.setItem('trang-toan:mathflappy-best', String(scoreRef.current));
+                    setHighScore(scoreRef.current);
+                  }
+                } catch {}
+              }
+            }
+          }
+        });
+
+        // Spawn new gates
+        if (gates.current.length === 0 || gates.current[gates.current.length - 1].x < WIDTH - 240) {
+          generateNewGate(WIDTH + 50);
+        }
+
+        // Clean offscreen gates
+        gates.current = gates.current.filter((g) => g.x > -100);
+
+        // Update particles
+        particles.current.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+        });
+        particles.current = particles.current.filter((p) => p.life < p.maxLife);
+      }
+
+      // --- DRAWING ---
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+      // Background gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+      bgGrad.addColorStop(0, '#0f172a');
+      bgGrad.addColorStop(0.5, '#1e1b4b');
+      bgGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // Draw Stars
+      stars.current.forEach((star) => {
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw Gates (Neon Math Portals)
+      gates.current.forEach((gate) => {
+        // Draw problem statement above gate
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'center';
+        ctx.fillText(gate.problem, gate.x, 50);
+
+        gate.options.forEach((opt) => {
+          const gateWidth = 90;
+          const gateHeight = 70;
+          const gateX = gate.x - gateWidth / 2;
+          const gateY = opt.yMin + (opt.yMax - opt.yMin) / 2 - gateHeight / 2;
+
+          ctx.save();
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = opt.isCorrect ? '#06b6d4' : '#64748b';
+          ctx.fillStyle = opt.isCorrect ? 'rgba(6, 182, 212, 0.25)' : 'rgba(30, 41, 59, 0.75)';
+          ctx.strokeStyle = opt.isCorrect ? '#22d3ee' : '#475569';
+          ctx.lineWidth = 3;
+
+          ctx.beginPath();
+          ctx.roundRect(gateX, gateY, gateWidth, gateHeight, 16);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 24px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(String(opt.value), gate.x, gateY + gateHeight / 2);
+          ctx.restore();
+        });
+      });
+
+      // Draw Spaceship
+      ctx.save();
+      ctx.translate(ship.current.x, ship.current.y);
+      const rot = Math.min(Math.max(ship.current.vy * 0.05, -0.4), 0.6);
+      ctx.rotate(rot);
+
+      // Spaceship Body (Neon Sci-Fi)
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#38bdf8';
+      ctx.fillStyle = '#0284c7';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(22, 0);
+      ctx.lineTo(-14, -14);
+      ctx.lineTo(-8, 0);
+      ctx.lineTo(-14, 14);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Cockpit Window
+      ctx.fillStyle = '#22d3ee';
+      ctx.beginPath();
+      ctx.ellipse(4, 0, 6, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+
+      // Draw Particles
+      particles.current.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 1 - p.life / p.maxLife;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      });
+
+      // Draw start prompt if not started
+      if (!gameStarted && !isGameOver) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Chạm hoặc nhấn Phím Cách để Bắt Đầu!', WIDTH / 2, HEIGHT / 2);
+      }
+
+      animFrameId.current = requestAnimationFrame(render);
+    };
+
+    animFrameId.current = requestAnimationFrame(render);
+
+    return () => {
+      if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+    };
+  }, [gameStarted, isGameOver, isPaused, shields, generateNewGate, onScore, onFinish]);
 
   return (
     <div className="mx-auto max-w-xl rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 p-6 sm:p-8 text-white shadow-2xl border border-indigo-400/40">
@@ -93,61 +435,32 @@ export const MathFlappyGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
             <span>🚀</span>
             <span>Phi Thuyền Lướt Không Gian</span>
           </h3>
-          <p className="text-xs sm:text-sm text-indigo-200">Chạm hoặc nhấn Space để tăng tốc phi thuyền qua cổng năng lượng toán học đúng!</p>
+          <p className="text-xs sm:text-sm text-indigo-200">Điều khiển phi thuyền bay qua cổng năng lượng có đáp án đúng!</p>
         </div>
-        <div className="text-right bg-black/50 px-4 py-2 rounded-2xl border border-white/20">
-          <div className="text-[11px] uppercase font-bold text-indigo-300">Điểm số</div>
-          <div className="text-2xl font-black text-amber-400">{score} đ</div>
+        <div className="flex items-center gap-3">
+          <div className="text-right bg-black/50 px-4 py-2 rounded-2xl border border-white/20">
+            <div className="text-[11px] uppercase font-bold text-indigo-300">Điểm số</div>
+            <div className="text-2xl font-black text-amber-400">{score} đ</div>
+          </div>
         </div>
       </div>
 
       <div
-        onClick={boost}
-        className="relative h-[400px] w-full overflow-hidden rounded-3xl bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 border-2 border-indigo-500/50 shadow-inner cursor-pointer select-none flex items-center justify-center"
+        onClick={thrust}
+        className="relative mx-auto h-[580px] w-full max-w-[480px] overflow-hidden rounded-3xl bg-slate-950 border-2 border-indigo-500/50 shadow-inner cursor-pointer select-none"
       >
-        {/* Starfield background elements */}
-        <div className="absolute inset-0 opacity-45 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent" />
-
-        {/* Glowing Problem Banner */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white px-7 py-2.5 rounded-2xl font-black text-2xl shadow-2xl border-2 border-cyan-400 flex items-center gap-3">
-          <span>🌌</span>
-          <span className="text-cyan-300">{problem.q}</span>
-        </div>
-
-        {/* Neon Player Spaceship */}
-        <div
-          className="absolute left-16 w-16 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-sky-400 border-2 border-white shadow-[0_0_20px_rgba(56,189,248,0.9)] flex items-center justify-center text-3xl transition-transform"
-          style={{ top: `${shipY}px`, transform: `rotate(${velocity * 3.2}deg)` }}
-        >
-          🚀
-          <div className="absolute -left-3 bottom-3 w-4 h-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_10px_orange]" />
-        </div>
-
-        {/* Space Energy Gates on the right */}
-        <div className="absolute right-12 top-0 bottom-0 w-32 flex flex-col justify-around py-8 pointer-events-none">
-          {problem.options.map((opt, idx) => (
-            <div
-              key={idx}
-              className={`h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl border-2 transition-all ${
-                targetLane === idx
-                  ? 'bg-cyan-500/90 border-cyan-200 text-white shadow-[0_0_25px_rgba(6,182,212,0.9)] scale-105'
-                  : 'bg-slate-900/80 border-slate-700 text-slate-400'
-              }`}
-            >
-              {opt}
-            </div>
-          ))}
-        </div>
+        <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="block w-full h-full" />
 
         {isGameOver && (
           <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-40">
             <span className="text-7xl animate-bounce">💥</span>
             <h4 className="mt-4 text-3xl font-black text-white">Va Chạm Thiên Thạch!</h4>
             <p className="mt-2 text-base text-indigo-200">Điểm số vượt ngân hà: <strong className="text-amber-400 text-xl">{score} điểm</strong></p>
+            <p className="text-xs text-slate-400 mt-1">Kỷ lục: {highScore} điểm</p>
             <div className="mt-6 flex gap-4">
               <button
                 type="button"
-                onClick={restart}
+                onClick={resetGame}
                 className="px-8 py-3.5 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-lg shadow-xl transition cursor-pointer"
               >
                 🔄 Bay Lại
