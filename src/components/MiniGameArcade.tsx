@@ -29,6 +29,13 @@ import { MathArcheryGame } from './minigames/MathArcheryGame';
 import { GoldMinerGame } from './minigames/GoldMinerGame';
 import { CloudJumperGame } from './minigames/CloudJumperGame';
 import { MathFruitSliceGame } from './minigames/MathFruitSliceGame';
+import { MathTowerDefenseGame } from './minigames/MathTowerDefenseGame';
+import { MathFishingGame } from './minigames/MathFishingGame';
+import { MathPixelArtGame } from './minigames/MathPixelArtGame';
+import { MathPianoGame } from './minigames/MathPianoGame';
+import { CutTheRopeGame } from './minigames/CutTheRopeGame';
+import { BallShooterGame } from './minigames/BallShooterGame';
+import { ChickenShooterGame } from './minigames/ChickenShooterGame';
 import { playMiniGameSound } from '../lib/minigameSounds';
 import {
   readMiniGameRecords,
@@ -81,7 +88,14 @@ type GameId =
   | 'math-archery'
   | 'gold-miner'
   | 'cloud-jumper'
-  | 'math-fruit-slice';
+  | 'math-fruit-slice'
+  | 'math-tower-defense'
+  | 'math-fishing'
+  | 'math-pixel-art'
+  | 'math-piano'
+  | 'cut-the-rope'
+  | 'ball-shooter'
+  | 'chicken-shooter';
 
 type ExtraGameId = 'snake' | 'match3' | '2048';
 const EXTRA_GAMES: ExtraGameId[] = ['snake', 'match3', '2048'];
@@ -99,7 +113,7 @@ function getCategoryForGame(id: GameId): string {
   if (['squirrel-catch', 'bear-catch', 'squirrel-maze', 'bear-climb', 'maze-2d'].includes(id)) {
     return 'mascots';
   }
-  if (['reflex-math', 'memory-card', '2048', 'bubble-math', 'whack-math', 'balance-scale', 'math-flappy', 'math-archery', 'gold-miner', 'cloud-jumper', 'math-fruit-slice'].includes(id)) {
+  if (['reflex-math', 'memory-card', '2048', 'bubble-math', 'whack-math', 'balance-scale', 'math-flappy', 'math-archery', 'gold-miner', 'cloud-jumper', 'math-fruit-slice', 'math-tower-defense', 'math-fishing', 'math-pixel-art', 'math-piano', 'cut-the-rope', 'math-pixel-art'].includes(id)) {
     return 'math-brain';
   }
   return 'arcade';
@@ -120,6 +134,13 @@ const GAMES: { id: GameId; name: string; icon: string; description: string; cont
   { id: 'gold-miner', name: 'Đào vàng tri thức', icon: '⛏️', description: 'Thả móc đúng thời điểm để thu thập kho báu và vàng số học.', controls: ['🎮 Chạm / Click', '⌨️ Phím Space', '📱 Cảm ứng', '🖱️ Chuột'] },
   { id: 'cloud-jumper', name: 'Nhảy mây toán học', icon: '☁️', description: 'Chọn đám mây có phép tính đúng để nhảy bậc cao hơn lên bầu trời.', controls: ['🎮 Chạm đám mây', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
   { id: 'math-fruit-slice', name: 'Cắt trái cây toán học', icon: '🍉', description: 'Cắt nhanh các loại trái cây mang số chẵn, lẻ hoặc số nguyên tố theo yêu cầu.', controls: ['🎮 Chạm trái cây', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-tower-defense', name: 'Tháp Toán Học (Defense)', icon: '🏰', description: 'Giải toán nhanh để tiêu diệt quái vật trước khi chúng tiến đến lâu đài.', controls: ['🎮 Phím số', '⌨️ Phím số 1–9', '📱 Chạm', '🖱️ Chuột'] },
+  { id: 'math-fishing', name: 'Câu Cá Thông Minh', icon: '🎣', description: 'Câu chú cá có con số trùng khớp với mục tiêu câu cá.', controls: ['🎮 Chạm / Click', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-pixel-art', name: 'Tô Màu Pixel Theo Phép Toán', icon: '🎨', description: 'Chọn màu tương ứng với kết quả phép tính để tô bức tranh pixel tuyệt đẹp.', controls: ['🎮 Chạm ô', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'math-piano', name: 'Đàn Piano Số Học', icon: '🎹', description: 'Chạm đúng các phím đàn rơi xuống theo giai điệu số học.', controls: ['🎮 Chạm phím', '⌨️ Phím số 1–3', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'cut-the-rope', name: 'Cắt Dây Thả Hạt Dẻ', icon: '🌰', description: 'Cắt đúng các sợi dây để hạt dẻ rơi chính xác vào miệng Sóc.', controls: ['🎮 Chạm cắt dây', '⌨️ Phím Space', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'ball-shooter', name: 'Bắn Bóng Ghép Số', icon: '⚽', description: 'Bắn quả bóng vào ô có con số tương ứng để làm nổ bong bóng.', controls: ['🎮 Chạm bắn', '⌨️ Phím số', '📱 Cảm ứng', '🖱️ Chuột'] },
+  { id: 'chicken-shooter', name: 'Bắn Gà Toán Học', icon: '🐔', description: 'Bắn hạ các chú gà mang phép tính nhanh và chính xác.', controls: ['🎮 Ngắm bắn', '⌨️ Phím', '📱 Cảm ứng', '🖱️ Chuột'] },
   { id: 'squirrel-catch', name: 'Sóc hứng hạt dẻ', icon: '🐿️', description: 'Di chuyển Sóc nhanh nhẹn qua các làn để đón trọn từng hạt dẻ rơi.', controls: ['🎮 TV', '⌨️ Phím 1–5', '📱 Chạm'] },
   { id: 'bear-catch', name: 'Gấu hứng mật ong', icon: '🐻', description: 'Giúp chú Gấu Nâu đáng yêu hứng từng hũ mật ong vàng óng.', controls: ['🎮 TV', '⌨️ Phím 1–5', '📱 Chạm'] },
   { id: 'squirrel-maze', name: 'Sóc tìm đường về nhà 3D', icon: '🏡', description: 'Dẫn Sóc đi qua mê cung đá 3D vượt chướng ngại về tổ an toàn.', controls: ['🎮 TV / D-pad', '⌨️ Mũi tên', '📱 Chạm'] },
@@ -994,6 +1015,55 @@ function MiniGameArcadeInner() {
           {game === 'math-fruit-slice' && (
             <div className="mt-4">
               <MathFruitSliceGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Tháp Toán Học */}
+          {game === 'math-tower-defense' && (
+            <div className="mt-4">
+              <MathTowerDefenseGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Câu Cá Thông Minh */}
+          {game === 'math-fishing' && (
+            <div className="mt-4">
+              <MathFishingGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Tô Màu Pixel Theo Phép Toán */}
+          {game === 'math-pixel-art' && (
+            <div className="mt-4">
+              <MathPixelArtGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Đàn Piano Số Học */}
+          {game === 'math-piano' && (
+            <div className="mt-4">
+              <MathPianoGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Cắt Dây Thả Hạt Dẻ */}
+          {game === 'cut-the-rope' && (
+            <div className="mt-4">
+              <CutTheRopeGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Bắn Bóng Ghép Số */}
+          {game === 'ball-shooter' && (
+            <div className="mt-4">
+              <BallShooterGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
+            </div>
+          )}
+
+          {/* Bắn Gà Toán Học */}
+          {game === 'chicken-shooter' && (
+            <div className="mt-4">
+              <ChickenShooterGame onScore={setPoints} onFinish={(s) => { setPoints(s); recordCurrentGame(s); }} onExit={stop} />
             </div>
           )}
 

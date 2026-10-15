@@ -92,15 +92,21 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
     generateMaze();
   }, [generateMaze]);
 
-  const resetAll = useCallback(() => {
-    playMiniGameSound('step');
-    setLevel(1);
-    setScore(0);
-    onScore?.(0);
-    setIsGameOver(false);
-    setIsPaused(false);
-    generateMaze();
-  }, [generateMaze, onScore]);
+  useEffect(() => {
+    if (isGameOver || isPaused || levelWon) return;
+    const timer = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          setIsGameOver(true);
+          playMiniGameSound('gameover');
+          onFinish?.(score);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isGameOver, isPaused, levelWon, score, onFinish]);
 
   const movePlayer = useCallback(
     (dr: number, dc: number) => {
@@ -155,66 +161,32 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
       } else if (['ArrowRight', 'KeyD'].includes(e.code)) {
         e.preventDefault();
         movePlayer(0, 1);
-      } else if (e.code === 'Space') {
-        e.preventDefault();
-        setIsPaused((p) => !p);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [movePlayer]);
 
-  useEffect(() => {
-    if (isGameOver || isPaused || levelWon) return;
-
-    const timer = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          playMiniGameSound('miss');
-          setIsGameOver(true);
-          onFinish?.(score);
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isGameOver, isPaused, levelWon, score, onFinish]);
-
-  const nextLevel = () => {
-    playMiniGameSound('step');
-    setLevel((lvl) => lvl + 1);
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center p-2 sm:p-4 max-w-xl mx-auto w-full select-none text-slate-800 dark:text-slate-100">
-      {/* HUD Header */}
-      <div className="w-full flex items-center justify-between mb-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
-        <div className="flex items-center gap-4">
-          <div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">MÀN CHƠI</div>
-            <div className="text-xl font-black font-mono text-emerald-600 dark:text-emerald-400">Tầng {level}</div>
-          </div>
-          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-          <div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">ĐIỂM TỔNG</div>
-            <div className="text-2xl font-black font-mono text-amber-500 dark:text-amber-400 tabular-nums">{score}</div>
-          </div>
+    <div className="mx-auto max-w-xl rounded-3xl bg-gradient-to-br from-amber-700 via-orange-800 to-amber-950 p-6 sm:p-8 text-white shadow-2xl border border-amber-500/40">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-2xl font-black flex items-center gap-2">
+            <span>🌰</span>
+            <span>Sóc Vượt Mê Cung Pro</span>
+          </h3>
+          <p className="text-xs sm:text-sm text-amber-200">Dẫn đường cho Sóc 🐿️ ăn hạt dẻ và tìm về nhà 🏡!</p>
         </div>
-
-        <div className="flex items-center gap-2 text-xs font-mono font-bold bg-slate-100 dark:bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200">
-          <svg className={`w-4 h-4 ${secondsLeft < 10 ? 'text-rose-500 animate-spin' : 'text-emerald-500 dark:text-emerald-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className={secondsLeft < 10 ? 'text-rose-600 dark:text-rose-400 font-black' : ''}>{secondsLeft}s</span>
+        <div className="text-right bg-black/50 px-4 py-2 rounded-2xl border border-white/20">
+          <div className="text-[11px] uppercase font-bold text-amber-300">⏱️ {secondsLeft}s · Màn {level}</div>
+          <div className="text-2xl font-black text-amber-400">{score} đ</div>
         </div>
       </div>
 
-      {/* Maze Board */}
-      <div className="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xl">
+      <div className="relative flex flex-col items-center bg-amber-950/90 rounded-3xl p-6 border-2 border-amber-500/40 shadow-inner">
+        {/* Maze Grid */}
         <div
-          className="grid gap-1 w-[300px] sm:w-[360px] md:w-[380px] h-[300px] sm:h-[360px] md:h-[380px] bg-emerald-50 dark:bg-slate-900/50 p-1.5 rounded-2xl border border-emerald-100 dark:border-slate-800"
+          className="grid gap-1 bg-amber-900/40 p-3 rounded-2xl border border-amber-600/50 shadow-inner"
           style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
         >
           {maze.map((row, r) =>
@@ -223,68 +195,79 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
               const isGoal = goalPos.r === r && goalPos.c === c;
               const hasAcorn = acorns.some((a) => a.r === r && a.c === c);
 
-              let bg = 'bg-white/60 dark:bg-slate-900/40';
-              if (cell === 1) bg = 'bg-emerald-600 dark:bg-emerald-800/80 border border-emerald-500 dark:border-emerald-700/60 rounded-xs shadow-2xs';
-
               return (
                 <div
                   key={`${r}-${c}`}
-                  className={`flex items-center justify-center text-xs sm:text-sm select-none transition-all ${bg}`}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs transition-all ${
+                    cell === 1
+                      ? 'bg-gradient-to-br from-stone-700 to-stone-900 border border-stone-600 shadow-sm'
+                      : 'bg-amber-900/30'
+                  }`}
                 >
-                  {isPlayer ? (
-                    <span className="text-base sm:text-lg animate-bounce drop-shadow-sm">🐿️</span>
-                  ) : isGoal ? (
-                    <span className="text-base sm:text-lg animate-pulse drop-shadow-sm">🏡</span>
-                  ) : hasAcorn ? (
-                    <span className="text-xs drop-shadow-xs">🌰</span>
-                  ) : null}
+                  {isPlayer && <span className="text-xl animate-bounce filter drop-shadow-[0_0_8px_rgba(251,191,36,0.9)]">🐿️</span>}
+                  {isGoal && !isPlayer && <span className="text-xl animate-pulse">🏡</span>}
+                  {hasAcorn && !isPlayer && !isGoal && <span className="text-base animate-pulse">🌰</span>}
                 </div>
               );
             })
           )}
         </div>
 
-        {levelWon && (
-          <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-3xl animate-fade-in z-20">
-            <span className="text-5xl mb-2">🎉</span>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-1">VỀ NHÀ AN TOÀN!</h3>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-5">
-              Sóc đã về đến tổ ấm trước khi trời tối! Điểm hiện tại: <span className="text-emerald-600 dark:text-emerald-400 font-black">{score}</span>
-            </p>
-            <button
-              type="button"
-              onClick={nextLevel}
-              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-emerald-600/30 transition-all"
-            >
-              Tiếp tục Màn {level + 1}
-            </button>
-          </div>
-        )}
+        {/* D-Pad touch controls */}
+        <div className="mt-6 grid grid-cols-3 gap-2 w-48">
+          <span />
+          <button
+            type="button"
+            onClick={() => movePlayer(-1, 0)}
+            className="py-3 bg-amber-600 hover:bg-amber-500 active:scale-95 rounded-2xl font-black text-xl shadow-lg transition cursor-pointer"
+          >
+            ⬆️
+          </button>
+          <span />
+          <button
+            type="button"
+            onClick={() => movePlayer(0, -1)}
+            className="py-3 bg-amber-600 hover:bg-amber-500 active:scale-95 rounded-2xl font-black text-xl shadow-lg transition cursor-pointer"
+          >
+            ⬅️
+          </button>
+          <button
+            type="button"
+            onClick={() => movePlayer(1, 0)}
+            className="py-3 bg-amber-600 hover:bg-amber-500 active:scale-95 rounded-2xl font-black text-xl shadow-lg transition cursor-pointer"
+          >
+            ⬇️
+          </button>
+          <button
+            type="button"
+            onClick={() => movePlayer(0, 1)}
+            className="py-3 bg-amber-600 hover:bg-amber-500 active:scale-95 rounded-2xl font-black text-xl shadow-lg transition cursor-pointer"
+          >
+            ➡️
+          </button>
+        </div>
 
-        {isGameOver && (
-          <div className="absolute inset-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center rounded-3xl animate-fade-in z-20">
-            <div className="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-1">HẾT GIỜ!</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">
-              Điểm đạt được: <span className="font-mono text-amber-500 dark:text-amber-400 font-black text-xl">{score}</span>
-            </p>
-            <div className="flex gap-3">
+        {levelWon && (
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-40">
+            <span className="text-7xl animate-bounce">🏡</span>
+            <h4 className="mt-4 text-3xl font-black text-white">Sóc Đã Về Nhà An Toàn!</h4>
+            <p className="mt-2 text-base text-amber-200">Tổng điểm tích lũy: <strong className="text-amber-400 text-xl">{score} điểm</strong></p>
+            <div className="mt-6 flex gap-4">
               <button
                 type="button"
-                onClick={resetAll}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl flex items-center gap-2 active:scale-95 shadow-lg shadow-emerald-600/30 transition-all"
+                onClick={() => {
+                  setLevel(l => l + 1);
+                  generateMaze();
+                }}
+                className="px-8 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg shadow-xl transition cursor-pointer"
               >
-                Chơi lại
+                🚀 Sang Màn Tiếp
               </button>
               {onExit && (
                 <button
                   type="button"
                   onClick={onExit}
-                  className="px-5 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
+                  className="px-8 py-3.5 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-bold transition cursor-pointer"
                 >
                   Thoát
                 </button>
@@ -292,45 +275,37 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
             </div>
           </div>
         )}
-      </div>
 
-      {/* D-Pad */}
-      <div className="mt-4 grid grid-cols-3 gap-2 w-44">
-        <div />
-        <button
-          type="button"
-          onClick={() => movePlayer(-1, 0)}
-          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
-          aria-label="Lên"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
-        </button>
-        <div />
-
-        <button
-          type="button"
-          onClick={() => movePlayer(0, -1)}
-          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
-          aria-label="Trái"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => movePlayer(1, 0)}
-          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
-          aria-label="Xuống"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => movePlayer(0, 1)}
-          className="p-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-2xl flex items-center justify-center shadow-md active:scale-95 transition-all"
-          aria-label="Phải"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-        </button>
+        {isGameOver && (
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-40">
+            <span className="text-7xl animate-bounce">⏰</span>
+            <h4 className="mt-4 text-3xl font-black text-white">Hết Thời Gian!</h4>
+            <p className="mt-2 text-base text-amber-200">Điểm đạt được: <strong className="text-amber-400 text-xl">{score} điểm</strong></p>
+            <div className="mt-6 flex gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setLevel(1);
+                  setScore(0);
+                  setIsGameOver(false);
+                  generateMaze();
+                }}
+                className="px-8 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg shadow-xl transition cursor-pointer"
+              >
+                🔄 Chơi Lại
+              </button>
+              {onExit && (
+                <button
+                  type="button"
+                  onClick={onExit}
+                  className="px-8 py-3.5 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-bold transition cursor-pointer"
+                >
+                  Thoát
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
