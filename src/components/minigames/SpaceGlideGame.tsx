@@ -648,7 +648,7 @@ export const SpaceGlideGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =
             e.preventDefault();
             thrust();
           }}
-          className="block max-w-full aspect-[4/5] w-[340px] sm:w-[420px] cursor-pointer touch-none"
+          className="block w-full h-auto object-contain aspect-[4/5] sm:aspect-[480/580] max-h-[70vh] cursor-pointer touch-none"
         />
 
         {/* Pause Overlay */}

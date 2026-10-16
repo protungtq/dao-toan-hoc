@@ -28,6 +28,11 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
   const [goalPos, setGoalPos] = useState<Point>({ r: ROWS - 2, c: COLS - 2 });
   const [acorns, setAcorns] = useState<Point[]>([]);
 
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
+  const onFinishRef = useRef(onFinish);
+  onFinishRef.current = onFinish;
+
   const generateMaze = useCallback(() => {
     const grid: number[][] = Array(ROWS)
       .fill(0)
@@ -99,14 +104,14 @@ export const SquirrelMazeGame: React.FC<Props> = ({ onScore, onFinish, onExit })
         if (s <= 1) {
           setIsGameOver(true);
           playMiniGameSound('gameover');
-          onFinish?.(score);
+          onFinishRef.current?.(scoreRef.current);
           return 0;
         }
         return s - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [isGameOver, isPaused, levelWon, score, onFinish]);
+  }, [isGameOver, isPaused, levelWon]);
 
   const movePlayer = useCallback(
     (dr: number, dc: number) => {

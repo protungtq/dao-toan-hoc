@@ -695,7 +695,7 @@ export const SpaceShipGame: React.FC<Props> = ({ onScore, onFinish, onExit }) =>
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
-          className="block max-w-full aspect-[4/5] w-[340px] sm:w-[420px] cursor-crosshair touch-none"
+          className="block w-full h-auto object-contain aspect-[4/5] sm:aspect-[480/600] max-h-[70vh] cursor-crosshair touch-none"
         />
 
         {/* Pause Overlay */}

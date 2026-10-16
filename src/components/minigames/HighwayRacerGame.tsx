@@ -706,7 +706,7 @@ export const HighwayRacerGame: React.FC<Props> = ({ onScore, onFinish, onExit })
           ref={canvasRef}
           width={WIDTH}
           height={HEIGHT}
-          className="block max-w-full aspect-[4/5] w-[340px] sm:w-[420px]"
+          className="block w-full h-auto object-contain aspect-[4/5] sm:aspect-[420/580] max-h-[70vh]"
         />
 
         {/* Pause Overlay */}
