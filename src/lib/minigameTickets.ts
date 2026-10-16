@@ -7,16 +7,22 @@ export type TicketState = { tickets: number; progress: number; countedSessionIds
 const EMPTY: TicketState = { tickets: 0, progress: 0, countedSessionIds: [], activeUntil: 0 };
 
 export function readTickets(): TicketState {
-  if (typeof window === 'undefined') return { ...EMPTY };
+  if (typeof window === 'undefined') return { tickets: 3, progress: 0, countedSessionIds: [], activeUntil: 0 };
   try {
-    const value = JSON.parse(localStorage.getItem(TICKET_KEY) || '{}');
+    const raw = localStorage.getItem(TICKET_KEY);
+    if (!raw) {
+      const initial: TicketState = { tickets: 3, progress: 0, countedSessionIds: [], activeUntil: 0 };
+      localStorage.setItem(TICKET_KEY, JSON.stringify(initial));
+      return initial;
+    }
+    const value = JSON.parse(raw || '{}');
     return {
-      tickets: Math.min(MAX_TICKETS, Math.max(0, Math.floor(Number(value.tickets) || 0))),
+      tickets: Math.min(MAX_TICKETS, Math.max(0, Math.floor(Number(value.tickets ?? 3)))),
       progress: Math.min(2, Math.max(0, Math.floor(Number(value.progress) || 0))),
       countedSessionIds: Array.isArray(value.countedSessionIds) ? value.countedSessionIds.filter((id: unknown) => typeof id === 'string').slice(-150) : [],
       activeUntil: Number.isFinite(value.activeUntil) ? Math.max(0, value.activeUntil) : 0,
     };
-  } catch { return { ...EMPTY }; }
+  } catch { return { tickets: 3, progress: 0, countedSessionIds: [], activeUntil: 0 }; }
 }
 
 function writeTickets(state: TicketState) {
@@ -66,7 +72,7 @@ export function startTicketGame(adminPlay = false) {
     return writeTickets(state);
   }
   if (state.activeUntil > Date.now()) return state;
-  if (!state.tickets) return null;
+  if (state.tickets < 1) return null;
   state.tickets -= 1;
   state.activeUntil = Date.now() + GAME_DURATION_MS;
   return writeTickets(state);
