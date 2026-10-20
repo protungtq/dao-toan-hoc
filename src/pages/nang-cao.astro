@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import AdvancedLogicMathGame from '../components/AdvancedLogicMathGame';
+
+const advancedSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'Toán Nâng Cao & Suy Luận Logic Tiểu Học (Toán Thám Tử)',
+  description: 'Hệ thống các dạng toán tư duy, toán suy luận logic theo bảng loại trừ, thứ tự xếp hạng, cân thăng bằng và ma trận quy luật.',
+  provider: {
+    '@type': 'Organization',
+    name: 'Trạng Toán',
+    url: 'https://trangtoan.com',
+  },
+  educationalLevel: 'Tiểu học (Lớp 1 - 5)',
+  inLanguage: 'vi',
+};
+---
+
+<BaseLayout
+  title="Toán Nâng Cao & Suy Luận Logic (Toán Thám Tử) – Trạng Toán"
+  description="Luyện tập các dạng toán tư duy, toán suy luận logic, toán thám tử theo bảng loại trừ và cân thăng bằng dành cho học sinh tiểu học."
+  canonical="/nang-cao"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(advancedSchema)} />
+  <SiteHeader compact />
+  <main class="min-h-[85vh] py-4 sm:py-8 bg-gradient-to-b from-indigo-50/40 via-white to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <AdvancedLogicMathGame client:load />
+  </main>
+  <SiteFooter />
+</BaseLayout>
