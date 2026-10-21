@@ -152,7 +152,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Số 6 và Số 9', 'Số 2 và Số 3', 'Số 4 và Số 7', 'Số 1 và Số 8'],
     correctAnswer: 'Số 6 và Số 9',
     hint: 'Nhấc que bên phải trên của số 0 đưa vào giữa ta được số 6; hoặc nhấc que bên trái dưới đưa vào giữa ta được số 9!',
-    explanation: 'Từ số 0 (6 que diêm), khi nhấc 1 que dọc ở thành bên đặt vào thanh ngang giữa, ta có thể tạo thành số 6 hoặc số 9 (Ebook trang 11)!'
+    explanation: 'Từ số 0 (6 que diêm), khi nhấc 1 que dọc ở thành bên đặt vào thanh ngang giữa, ta có thể tạo thành số 6 hoặc số 9!'
   },
   {
     id: 'cau-3-que-diem-tim-so-9',
@@ -171,7 +171,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Gồm 6 que diêm hoàn chỉnh', 'Gồm 4 que diêm', 'Gồm 5 que diêm khuyết', 'Gồm 7 que diêm'],
     correctAnswer: 'Gồm 6 que diêm hoàn chỉnh',
     hint: 'Số 9 có vòng tròn trên (4 que) và thêm 1 thanh dọc cùng 1 thanh đáy (2 que) = tổng 6 que diêm.',
-    explanation: 'Số 9 hiển thị bằng que diêm chuẩn gồm 6 que diêm (khuyết thanh dọc dưới bên trái) (Ebook trang 13, Câu 7).'
+    explanation: 'Số 9 hiển thị bằng que diêm chuẩn gồm 6 que diêm (khuyết thanh dọc dưới bên trái).'
   },
   {
     id: 'cau-4-que-diem-so-5-thanh-so-3',
@@ -190,7 +190,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Que diêm thứ 2', 'Que diêm thứ 3', 'Que diêm thứ 4', 'Que diêm thứ 5'],
     correctAnswer: 'Que diêm thứ 2',
     hint: 'Số 3 có 3 que ngang và 2 que dọc đều nằm ở BÊN PHẢI. Cần nhấc que dọc bên trái sang bên phải!',
-    explanation: 'Nhấc que diêm thứ 2 (dọc trên bên trái) dời sang vị trí dọc trên bên phải, số 5 sẽ lập tức biến thành số 3 (Ebook trang 17, Câu 23)!'
+    explanation: 'Nhấc que diêm thứ 2 (dọc trên bên trái) dời sang vị trí dọc trên bên phải, số 5 sẽ lập tức biến thành số 3!'
   },
   {
     id: 'cau-5-que-diem-xep-tu-3-que',
@@ -208,8 +208,8 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     },
     options: ['Số 1, 4, 7', 'Số 2, 4', 'Số 3, 5', 'Số 6, 9'],
     correctAnswer: 'Số 1, 4, 7',
-    hint: 'Số 4 gồm 3 que (hoặc 4 que), số 7 gồm 3 que. Xem đáp án chuẩn trang 81 của Ebook!',
-    explanation: 'Theo bài học Ebook trang 81 (Câu 19), các số 1, 4, 7 có thể tạo thành từ 3 que tính đơn giản.'
+    hint: 'Số 4 gồm 3 que (hoặc 4 que), số 7 gồm 3 que. Quan sát kỹ cấu tạo từng que tính nhé!',
+    explanation: 'Các chữ số 1, 4, 7 có thể tạo thành từ đúng 3 que tính đơn giản.'
   },
 
   // ==================== CHỦ ĐỀ 2: BÀI TOÁN XẾP HÀNG & BẬC THANG (EBOOK TRANG 47, 48, 49, 67, 69) ====================
@@ -236,7 +236,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['6 người', '7 người', '8 người', '9 người'],
     correctAnswer: '7 người',
     hint: 'Số người = (Người đứng trước) + (Cô Nga) + (Người đứng sau). Đứng thứ 4 từ dưới lên tức là sau cô có 3 người!',
-    explanation: 'Đứng trước cô Nga có 3 người. Cô Nga đứng thứ 4 từ cuối hàng lên => sau cô Nga có 3 người. Tổng số người trong hàng là: 3 + 1 (cô Nga) + 3 = 7 người (Ebook trang 48, 49).'
+    explanation: 'Đứng trước cô Nga có 3 người. Cô Nga đứng thứ 4 từ cuối hàng lên => sau cô Nga có 3 người. Tổng số người trong hàng là: 3 + 1 (cô Nga) + 3 = 7 người.'
   },
   {
     id: 'cau-7-xep-hang-ban-nam',
@@ -256,7 +256,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Thứ 14', 'Thứ 15', 'Thứ 16', 'Thứ 17'],
     correctAnswer: 'Thứ 15',
     hint: 'Công thức: Vị trí từ trên xuống = Tổng số bạn - Vị trí từ dưới lên + 1.',
-    explanation: 'Bạn Nam đứng thứ 6 từ dưới lên => sau lưng Nam có 5 bạn. Vị trí của Nam từ trên xuống là: 20 - 5 = 15 (Ebook trang 67, Câu 15).'
+    explanation: 'Bạn Nam đứng thứ 6 từ dưới lên => sau lưng Nam có 5 bạn. Vị trí của Nam từ trên xuống là: 20 - 5 = 15.'
   },
   {
     id: 'cau-8-xep-hang-ban-min',
@@ -276,7 +276,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['9 bạn', '10 bạn', '11 bạn', '8 bạn'],
     correctAnswer: '10 bạn',
     hint: 'Đừng quên cộng chính bạn Min vào hàng nhé!',
-    explanation: 'Tổng số bạn trong hàng là: 6 (đứng trước) + 1 (bạn Min) + 3 (đứng sau) = 10 bạn (Ebook trang 49, Ví dụ 3).'
+    explanation: 'Tổng số bạn trong hàng là: 6 (đứng trước) + 1 (bạn Min) + 3 (đứng sau) = 10 bạn.'
   },
   {
     id: 'cau-9-xep-hang-peter',
@@ -288,7 +288,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['8 bạn', '9 bạn', '10 bạn', '7 bạn'],
     correctAnswer: '8 bạn',
     hint: 'Lấy tổng số bạn trong hàng trừ đi số thứ tự của Peter!',
-    explanation: 'Số bạn đứng sau Peter là: 15 - 7 = 8 bạn (Ebook trang 69, Câu 21).'
+    explanation: 'Số bạn đứng sau Peter là: 15 - 7 = 8 bạn.'
   },
   {
     id: 'cau-10-xep-hang-khang-trai-phai',
@@ -310,7 +310,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     ],
     correctAnswer: 'Bên trái nhiều hơn và nhiều hơn 16 bạn',
     hint: 'Tìm số bạn bên trái: 25 - 1 - 4 = 20 bạn. Sau đó so sánh: 20 - 4 = ?',
-    explanation: 'Số bạn bên trái Khang là: 25 - 1 (Khang) - 4 = 20 bạn. Số bạn bên trái nhiều hơn bên phải là: 20 - 4 = 16 bạn (Ebook trang 69, Câu 22).'
+    explanation: 'Số bạn bên trái Khang là: 25 - 1 (Khang) - 4 = 20 bạn. Số bạn bên trái nhiều hơn bên phải là: 20 - 4 = 16 bạn.'
   },
   {
     id: 'cau-11-bac-thang-nha-kaka',
@@ -329,7 +329,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['10 bậc', '20 bậc', '30 bậc', '15 bậc'],
     correctAnswer: '20 bậc',
     hint: 'Từ tầng trệt lên lầu 1 cần 10 bậc. Từ lầu 1 lên lầu 2 cần thêm 10 bậc nữa!',
-    explanation: 'Số bậc thang tổng cộng = 10 (lên lầu 1) + 10 (lên lầu 2) = 20 bậc thang (Ebook trang 47).'
+    explanation: 'Số bậc thang tổng cộng = 10 (lên lầu 1) + 10 (lên lầu 2) = 20 bậc thang.'
   },
   {
     id: 'cau-12-day-pho-ngoi-nha',
@@ -341,7 +341,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['4 ngôi nhà', '5 ngôi nhà', '6 ngôi nhà', '8 ngôi nhà'],
     correctAnswer: '4 ngôi nhà',
     hint: 'Liệt kê các số nhà ở giữa số 7 và số 12: nhà số 8, 9, 10, 11!',
-    explanation: 'Ở giữa số 7 và số 12 có các ngôi nhà mang số: 8, 9, 10, 11 => Đúng 4 ngôi nhà (Ebook trang 68, Câu 17).'
+    explanation: 'Ở giữa số 7 và số 12 có các ngôi nhà mang số: 8, 9, 10, 11 => Đúng 4 ngôi nhà.'
   },
 
   // ==================== CHỦ ĐỀ 3: BÀI TOÁN TRỒNG CÂY & KHOẢNG CÁCH (EBOOK TRANG 45, 46, 55, 56) ====================
@@ -362,7 +362,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['3 khoảng cách', '4 khoảng cách', '5 khoảng cách', '2 khoảng cách'],
     correctAnswer: '3 khoảng cách',
     hint: 'Vẽ 4 cây ra giấy: Cây 1 [khoảng cách 1] Cây 2 [khoảng cách 2] Cây 3 [khoảng cách 3] Cây 4!',
-    explanation: 'Giữa 4 cái cây liên tiếp có đúng: 4 - 1 = 3 khoảng cách (Ebook trang 45, Ví dụ 1).'
+    explanation: 'Giữa 4 cái cây liên tiếp có đúng: 4 - 1 = 3 khoảng cách.'
   },
   {
     id: 'cau-14-trong-5-cay-tao-2m',
@@ -381,7 +381,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['8 mét', '10 mét', '6 mét', '12 mét'],
     correctAnswer: '8 mét',
     hint: 'Tìm số khoảng cách trước: 5 cây có 4 khoảng cách. Mỗi khoảng cách dài 2m!',
-    explanation: 'Giữa 5 cây táo có: 5 - 1 = 4 khoảng cách. Khoảng cách từ cây đầu tiên đến cây cuối cùng là: 2 + 2 + 2 + 2 = 8 mét (Ebook trang 45, 46).'
+    explanation: 'Giữa 5 cây táo có: 5 - 1 = 4 khoảng cách. Khoảng cách từ cây đầu tiên đến cây cuối cùng là: 2 + 2 + 2 + 2 = 8 mét.'
   },
   {
     id: 'cau-15-trong-dau-tay-7m',
@@ -393,7 +393,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['1m', '2m', '7m', '0.5m'],
     correctAnswer: '1m',
     hint: '8 cây liên tiếp thì có bao nhiêu khoảng cách? (8 - 1 = 7 khoảng cách). Lấy tổng độ dài chia cho số khoảng cách!',
-    explanation: 'Giữa cây thứ nhất đến cây thứ tám có: 8 - 1 = 7 khoảng cách. Khoảng cách giữa hai cây liên tiếp là: 7m : 7 = 1 mét (Ebook trang 46, Ví dụ 3).'
+    explanation: 'Giữa cây thứ nhất đến cây thứ tám có: 8 - 1 = 7 khoảng cách. Khoảng cách giữa hai cây liên tiếp là: 7m : 7 = 1 mét.'
   },
   {
     id: 'cau-16-chau-hoa-khoang-cach',
@@ -405,7 +405,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['5 khoảng cách', '6 khoảng cách', '4 khoảng cách', '3 khoảng cách'],
     correctAnswer: '5 khoảng cách',
     hint: 'Số khoảng cách = Số chậu hoa - 1.',
-    explanation: 'Giữa 6 chậu hoa liên tiếp có: 6 - 1 = 5 khoảng cách (Ebook trang 55, Câu 22).'
+    explanation: 'Giữa 6 chậu hoa liên tiếp có: 6 - 1 = 5 khoảng cách.'
   },
   {
     id: 'cau-17-coc-giao-thong-khoang-cach',
@@ -417,7 +417,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['7 khoảng cách', '8 khoảng cách', '6 khoảng cách', '9 khoảng cách'],
     correctAnswer: '7 khoảng cách',
     hint: 'Khoảng cách giữa các vật = Tổng số vật trừ đi 1.',
-    explanation: 'Giữa 8 cọc giao thông có: 8 - 1 = 7 khoảng cách (Ebook trang 55, Câu 23).'
+    explanation: 'Giữa 8 cọc giao thông có: 8 - 1 = 7 khoảng cách.'
   },
   {
     id: 'cau-18-duong-4-cay-cach-4m',
@@ -429,7 +429,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['12 mét', '16 mét', '8 mét', '10 mét'],
     correctAnswer: '12 mét',
     hint: 'Có bao nhiêu khoảng cách giữa 4 cây? (3 khoảng cách). Mỗi khoảng cách dài 4 mét!',
-    explanation: 'Giữa 4 cái cây có: 4 - 1 = 3 khoảng cách. Cây thứ tư cách cây thứ nhất: 3 × 4m = 12 mét (Ebook trang 56, Câu 25).'
+    explanation: 'Giữa 4 cái cây có: 4 - 1 = 3 khoảng cách. Cây thứ tư cách cây thứ nhất: 3 × 4m = 12 mét.'
   },
 
   // ==================== CHỦ ĐỀ 4: BIỂU ĐỒ VENN & PHÂN LOẠI TẬP HỢP (EBOOK TRANG 25, 26, 33) ====================
@@ -456,7 +456,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['2 con vật', '1 con vật', '3 con vật', '4 con vật'],
     correctAnswer: '2 con vật',
     hint: 'Tính tổng: 5 + 5 = 10 lượt con vật. Nhưng thực tế chỉ có 8 con. Lấy 10 - 8 = ?',
-    explanation: 'Tổng số lượt con vật là: 5 + 5 = 10. Vì thực tế chỉ có 8 con vật, phần giao nhau (vừa dưới nước vừa trên cạn như ếch, cá sấu) là: 10 - 8 = 2 con vật (Ebook trang 33, Câu 22).'
+    explanation: 'Tổng số lượt con vật là: 5 + 5 = 10. Vì thực tế chỉ có 8 con vật, phần giao nhau (vừa dưới nước vừa trên cạn như ếch, cá sấu) là: 10 - 8 = 2 con vật.'
   },
   {
     id: 'cau-20-venn-so-chan-lon-hon-20',
@@ -468,7 +468,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['3 số (22, 28, 36)', '4 số', '2 số', '5 số'],
     correctAnswer: '3 số (22, 28, 36)',
     hint: 'Lưu ý: "Lớn hơn 20" phải có giá trị > 20, số 20 bằng 20 nên không lớn hơn 20!',
-    explanation: 'Số 20 bằng 20 (không lớn hơn 20). Các số chẵn vừa LỚN HƠN 20 gồm: 22, 28, 36 (có đúng 3 số) (Ebook trang 26 & 33).'
+    explanation: 'Số 20 bằng 20 (không lớn hơn 20). Các số chẵn vừa LỚN HƠN 20 gồm: 22, 28, 36 (có đúng 3 số).'
   },
 
   // ==================== CHỦ ĐỀ 5: XEM ĐỒNG HỒ & LỊCH CÁC NGÀY TRONG TUẦN (EBOOK TRANG 41, 52, 53, 54, 55, 110, 114) ====================
@@ -486,7 +486,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Thứ Năm', 'Thứ Tư', 'Thứ Sáu', 'Chủ Nhật'],
     correctAnswer: 'Thứ Năm',
     hint: 'Lùi từng bước: Ngày hôm sau của ngày mai là thứ Bảy => Ngày mai là thứ Sáu => Hôm nay là thứ mấy?',
-    explanation: 'Ngày hôm sau của ngày mai là thứ Bảy => Ngày mai là thứ Sáu => Hôm nay chính là thứ Năm (Ebook trang 41 & 52).'
+    explanation: 'Ngày hôm sau của ngày mai là thứ Bảy => Ngày mai là thứ Sáu => Hôm nay chính là thứ Năm.'
   },
   {
     id: 'cau-22-hom-kia-la-thu-bay',
@@ -498,7 +498,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Thứ Tư', 'Thứ Ba', 'Thứ Năm', 'Thứ Hai'],
     correctAnswer: 'Thứ Tư',
     hint: 'Hôm kia là thứ Bảy => Hôm qua là Chủ Nhật => Hôm nay là thứ Hai. Ngày mai là thứ Ba => Ngày mốt là thứ mấy?',
-    explanation: 'Hôm kia là thứ Bảy => Hôm qua là Chủ Nhật => Hôm nay là thứ Hai. Vậy ngày mai là thứ Ba, và ngày mốt sẽ là thứ Tư (Ebook trang 114, Câu 24)!'
+    explanation: 'Hôm kia là thứ Bảy => Hôm qua là Chủ Nhật => Hôm nay là thứ Hai. Vậy ngày mai là thứ Ba, và ngày mốt sẽ là thứ Tư!'
   },
   {
     id: 'cau-23-hom-nay-thu-ba-14',
@@ -510,7 +510,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['Thứ Hai, ngày 13', 'Thứ Tư, ngày 15', 'Thứ Hai, ngày 15', 'Thứ Tư, ngày 13'],
     correctAnswer: 'Thứ Hai, ngày 13',
     hint: 'Hôm qua là ngày liền trước của hôm nay: thứ Ba lùi 1 ngày là thứ Hai, ngày 14 lùi 1 ngày là ngày 13!',
-    explanation: 'Hôm qua là ngày liền trước: Thứ Ba lùi 1 ngày là thứ Hai, ngày 14 lùi 1 ngày là ngày 13 => Thứ Hai, ngày 13 (Ebook trang 55, Câu 21).'
+    explanation: 'Hôm qua là ngày liền trước: Thứ Ba lùi 1 ngày là thứ Hai, ngày 14 lùi 1 ngày là ngày 13 => Thứ Hai, ngày 13.'
   },
   {
     id: 'cau-24-dong-ho-9-gio',
@@ -522,7 +522,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['9 giờ', '12 giờ', '9 giờ 12 phút', '8 giờ'],
     correctAnswer: '9 giờ',
     hint: 'Kim dài chỉ số 12 là đúng giờ chẵn!',
-    explanation: 'Kim ngắn chỉ số 9 và kim dài chỉ số 12 nghĩa là đồng hồ đang chỉ đúng 9 giờ (Ebook trang 53, Câu 13).'
+    explanation: 'Kim ngắn chỉ số 9 và kim dài chỉ số 12 nghĩa là đồng hồ đang chỉ đúng 9 giờ.'
   },
   {
     id: 'cau-25-dong-ho-8-gio-ruoi',
@@ -539,7 +539,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     ],
     correctAnswer: 'Kim giờ chỉ giữa số 8 và 9, kim phút chỉ số 6',
     hint: '"Rưỡi" nghĩa là 30 phút, kim phút quay đến số 6; kim giờ đã đi được nửa đường giữa số 8 và số 9!',
-    explanation: 'Lúc 8 giờ rưỡi, kim phút chỉ đúng số 6 (30 phút) và kim giờ di chuyển đến chính giữa số 8 và số 9 (Ebook trang 54, Câu 18).'
+    explanation: 'Lúc 8 giờ rưỡi, kim phút chỉ đúng số 6 (30 phút) và kim giờ di chuyển đến chính giữa số 8 và số 9.'
   },
   {
     id: 'cau-26-minh-an-com-6h30',
@@ -551,7 +551,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['6 giờ 40 phút', '6 giờ 30 phút', '7 giờ', '6 giờ 20 phút'],
     correctAnswer: '6 giờ 40 phút',
     hint: 'Lấy số phút cộng thêm 10 phút: 30 phút + 10 phút = ?',
-    explanation: 'Thời gian Minh bắt đầu làm bài: 6 giờ 30 phút + 10 phút = 6 giờ 40 phút (Ebook trang 54, Câu 20).'
+    explanation: 'Thời gian Minh bắt đầu làm bài: 6 giờ 30 phút + 10 phút = 6 giờ 40 phút.'
   },
 
   // ==================== CHỦ ĐỀ 6: QUY LUẬT DÃY SỐ & DÃY HÌNH (EBOOK TRANG 58, 59, 62, 102, 103) ====================
@@ -571,7 +571,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['4 hình tròn 🔵', '3 hình tròn 🔵', '5 hình tròn 🔵', '2 hình tròn 🔵'],
     correctAnswer: '4 hình tròn 🔵',
     hint: 'Giữa 2 ngôi sao đầu có 1 hình tròn; cặp sau có 2 hình tròn; cặp tiếp theo có 3 hình tròn... Quy luật tăng dần!',
-    explanation: 'Số hình tròn xen giữa các ngôi sao tăng dần theo thứ tự 1, 2, 3, 4... Vậy sau ngôi sao tiếp theo sẽ có đúng 4 hình tròn (Ebook trang 62).'
+    explanation: 'Số hình tròn xen giữa các ngôi sao tăng dần theo thứ tự 1, 2, 3, 4... Vậy sau ngôi sao tiếp theo sẽ có đúng 4 hình tròn.'
   },
   {
     id: 'cau-28-day-so-cach-deu-4',
@@ -583,7 +583,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['14 và 18', '12 và 16', '14 và 16', '12 và 18'],
     correctAnswer: '14 và 18',
     hint: 'Tìm khoảng cách giữa các số: 6 - 2 = 4; 10 - 6 = 4. Đây là dãy số cộng thêm 4!',
-    explanation: 'Quy luật mỗi số bằng số đứng trước cộng thêm 4: 10 + 4 = 14; 14 + 4 = 18; 18 + 4 = 22. Hai số cần điền là 14 và 18 (Ebook trang 103, Câu 19).'
+    explanation: 'Quy luật mỗi số bằng số đứng trước cộng thêm 4: 10 + 4 = 14; 14 + 4 = 18; 18 + 4 = 22. Hai số cần điền là 14 và 18.'
   },
 
   // ==================== CHỦ ĐỀ 7: THÁP SỐ KIM TỰ THÁP (EBOOK TRANG 102) ====================
@@ -607,7 +607,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
       [3, 4, 2, 7]
     ],
     hint: 'Tính từ tầng đáy lên: 3 + 4 = 7; 4 + 2 = 6; 2 + 7 = 9. Tầng tiếp theo: 7 + 6 = 13. Đỉnh tháp: 13 + 15 = ?',
-    explanation: 'Hàng 2: ô giữa là 4 + 2 = 6. Hàng 1: ô trái là 7 + 6 = 13. Đỉnh kim tự tháp là 13 + 15 = 28 (Ebook trang 102, Câu 15).'
+    explanation: 'Hàng 2: ô giữa là 4 + 2 = 6. Hàng 1: ô trái là 7 + 6 = 13. Đỉnh kim tự tháp là 13 + 15 = 28.'
   },
 
   // ==================== CHỦ ĐỀ 8: ĐẾM HÌNH & KHỐI 3D (EBOOK TRANG 30, 85, 87, 89, 91) ====================
@@ -621,7 +621,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['6 hình tam giác', '4 hình tam giác', '5 hình tam giác', '8 hình tam giác'],
     correctAnswer: '6 hình tam giác',
     hint: 'Đếm tầng trên có: 2 tam giác đơn + 1 tam giác ghép = 3. Đếm cả hình lớn cũng có 3 hình!',
-    explanation: 'Tầng trên gồm: 2 tam giác nhỏ + 1 tam giác ghép = 3 hình. Toàn bộ hình lớn gồm: 2 nửa tam giác lớn + 1 tam giác to nhất = 3 hình. Tổng cộng có: 3 + 3 = 6 hình tam giác (Ebook trang 30 & 85).'
+    explanation: 'Tầng trên gồm: 2 tam giác nhỏ + 1 tam giác ghép = 3 hình. Toàn bộ hình lớn gồm: 2 nửa tam giác lớn + 1 tam giác to nhất = 3 hình. Tổng cộng có: 3 + 3 = 6 hình tam giác.'
   },
   {
     id: 'cau-31-dem-khoi-lap-phuong',
@@ -633,7 +633,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['14 khối lập phương', '12 khối lập phương', '15 khối lập phương', '10 khối lập phương'],
     correctAnswer: '14 khối lập phương',
     hint: 'Cộng số khối của từng tầng lại với nhau: 9 + 4 + 1 = ?',
-    explanation: 'Tổng số khối lập phương = 9 (tầng 1) + 4 (tầng 2) + 1 (tầng 3) = 14 khối lập phương (Ebook trang 87 & 91).'
+    explanation: 'Tổng số khối lập phương = 9 (tầng 1) + 4 (tầng 2) + 1 (tầng 3) = 14 khối lập phương.'
   },
   {
     id: 'cau-32-cat-giay-tam-giac',
@@ -650,7 +650,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     ],
     correctAnswer: 'Đường chéo nối hai góc đối diện',
     hint: 'Một đường chéo chia hình chữ nhật thành 2 nửa tam giác vuông bằng nhau!',
-    explanation: 'Cắt theo đường chéo nối hai đỉnh đối diện của hình chữ nhật, ta nhận được đúng 2 hình tam giác (Ebook trang 89, Câu 9).'
+    explanation: 'Cắt theo đường chéo nối hai đỉnh đối diện của hình chữ nhật, ta nhận được đúng 2 hình tam giác.'
   },
 
   // ==================== CHỦ ĐỀ 9: VẬT CHE CHỮ SỐ (EBOOK TRANG 11, 16, 95) ====================
@@ -672,7 +672,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['3', '2', '4', '5'],
     correctAnswer: '3',
     hint: '10 cộng mấy bằng 13? Và 16 trừ mấy bằng 13?',
-    explanation: '10 + 3 = 13 và 16 - 3 = 13. Vậy chữ số bí mật được quả táo 🍎 che là số 3 (Ebook trang 95, Ví dụ).'
+    explanation: '10 + 3 = 13 và 16 - 3 = 13. Vậy chữ số bí mật được quả táo 🍎 che là số 3.'
   },
   {
     id: 'cau-34-con-cua-che-so',
@@ -684,7 +684,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['8', '6', '9', '10'],
     correctAnswer: '8',
     hint: 'Số tự nhiên nào nằm giữa số 7 và số 9?',
-    explanation: 'Số tự nhiên lớn hơn 7 và nhỏ hơn 9 duy nhất là số 8: 7 < 8 < 9 (Ebook trang 16, Câu 16).'
+    explanation: 'Số tự nhiên lớn hơn 7 và nhỏ hơn 9 duy nhất là số 8: 7 < 8 < 9.'
   },
   {
     id: 'cau-35-qua-cam-che-so',
@@ -696,7 +696,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     options: ['2', '3', '4', '1'],
     correctAnswer: '2',
     hint: '8 trừ mấy thì bằng 6? Lấy 8 - 6 = ?',
-    explanation: '8 - 2 = 6. Vậy chữ số che sau quả cam là 2 (Ebook trang 79, Câu 9).'
+    explanation: '8 - 2 = 6. Vậy chữ số che sau quả cam là 2.'
   },
 
   // ==================== CHỦ ĐỀ 10: TOÁN THÁM TỬ (BẢNG LOGIC GRID) ====================

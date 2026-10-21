@@ -8,10 +8,13 @@ import {
   type NumberPyramidQuestion,
   type ChoiceQuestion,
 } from '../data/advancedLogicMath';
-import { playCorrectSound, playWrongSound } from '../lib/gameAudio';
+import { generateRandomSession } from '../lib/advancedLogicGenerator';
+import MatchstickDisplay from './MatchstickDisplay';
+import { grantFullTickets, readTickets, MAX_TICKETS } from '../lib/minigameTickets';
+import { playCorrectSound, playWrongSound, playFinalSound } from '../lib/gameAudio';
 import { playMiniGameSound } from '../lib/minigameSounds';
 
-const STORAGE_KEY = 'trang-toan:advanced-logic-v3';
+const STORAGE_KEY = 'trang-toan:advanced-logic-v4';
 
 export default function AdvancedLogicMathGame() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -21,6 +24,12 @@ export default function AdvancedLogicMathGame() {
   const [showHelp, setShowHelp] = useState<boolean>(false);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
   const [validationResult, setValidationResult] = useState<'correct' | 'wrong' | null>(null);
+
+  // Danh sách câu hỏi của phiên hiện tại (có thể là bộ chuẩn hoặc bộ random mới)
+  const [sessionQuestions, setSessionQuestions] = useState<AdvancedQuestion[]>(ADVANCED_QUESTIONS);
+  const [isRandomSession, setIsRandomSession] = useState<boolean>(false);
+  const [showSessionCompletedModal, setShowSessionCompletedModal] = useState<boolean>(false);
+  const [currentTickets, setCurrentTickets] = useState<number>(3);
 
   // Lưu trạng thái bảng logic grid: Record<questionId, Record<`${row}-${col}`, 'check' | 'cross' | ''>>
   const [gridState, setGridState] = useState<Record<string, Record<string, 'check' | 'cross' | ''>>>({});
@@ -37,9 +46,11 @@ export default function AdvancedLogicMathGame() {
   // Lưu các câu đã hoàn thành: Record<questionId, boolean>
   const [completedQuestions, setCompletedQuestions] = useState<Record<string, boolean>>({});
 
-  // Tải tiến độ từ localStorage
+  // Tải tiến độ và số vé
   useEffect(() => {
     try {
+      const tickets = readTickets();
+      setCurrentTickets(tickets.tickets);
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -48,6 +59,15 @@ export default function AdvancedLogicMathGame() {
         if (parsed.choiceState) setChoiceState(parsed.choiceState);
       }
     } catch {}
+
+    const onTicketsUpdate = () => {
+      try {
+        const t = readTickets();
+        setCurrentTickets(t.tickets);
+      } catch {}
+    };
+    window.addEventListener('trang-toan:tickets-updated', onTicketsUpdate);
+    return () => window.removeEventListener('trang-toan:tickets-updated', onTicketsUpdate);
   }, []);
 
   const saveProgress = useCallback((newCompleted: Record<string, boolean>) => {
@@ -65,11 +85,11 @@ export default function AdvancedLogicMathGame() {
 
   // Lọc câu hỏi theo danh mục
   const filteredQuestions = useMemo(() => {
-    if (selectedCategory === 'all') return ADVANCED_QUESTIONS;
-    return ADVANCED_QUESTIONS.filter((q) => q.type === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === 'all') return sessionQuestions;
+    return sessionQuestions.filter((q) => q.type === selectedCategory);
+  }, [sessionQuestions, selectedCategory]);
 
-  const currentQuestion: AdvancedQuestion = filteredQuestions[currentIndex] || filteredQuestions[0] || ADVANCED_QUESTIONS[0];
+  const currentQuestion: AdvancedQuestion = filteredQuestions[currentIndex] || filteredQuestions[0] || sessionQuestions[0];
 
   // Khởi tạo trạng thái Code Breaker nếu chưa có
   useEffect(() => {
@@ -92,6 +112,45 @@ export default function AdvancedLogicMathGame() {
     }
   }, [currentQuestion.id]);
 
+  // Kiểm tra hoàn thành phiên học & Trao 3/3 Vé Minigame
+  const checkSessionCompletion = useCallback((updatedCompleted: Record<string, boolean>) => {
+    const totalInList = filteredQuestions.length;
+    const completedInList = filteredQuestions.filter((q) => updatedCompleted[q.id]).length;
+
+    // Khi hoàn thành tất cả câu hỏi trong danh mục hoặc phiên học
+    if (completedInList >= totalInList && totalInList > 0) {
+      playFinalSound();
+      // Nhận luôn 3/3 vé minigame theo yêu cầu đặc biệt của Toán Nâng Cao!
+      const newTicketState = grantFullTickets(`advanced-session-${Date.now()}`);
+      setCurrentTickets(newTicketState.tickets);
+      setShowSessionCompletedModal(true);
+    }
+  }, [filteredQuestions]);
+
+  // Tạo phiên ngẫu nhiên mới
+  const handleStartNewRandomSession = (cat = selectedCategory) => {
+    playMiniGameSound('reward');
+    const newQuestions = generateRandomSession(10, cat);
+    setSessionQuestions(newQuestions);
+    setIsRandomSession(true);
+    setCurrentIndex(0);
+    setCompletedQuestions({});
+    setGridState({});
+    setCodeBreakerState({});
+    setPyramidState({});
+    setChoiceState({});
+    setShowSessionCompletedModal(false);
+    setValidationResult(null);
+  };
+
+  // Quay lại bộ câu hỏi gốc
+  const handleResetToStandardBank = () => {
+    setSessionQuestions(ADVANCED_QUESTIONS);
+    setIsRandomSession(false);
+    setCurrentIndex(0);
+    setShowSessionCompletedModal(false);
+  };
+
   // Phóng to / thu nhỏ cỡ chữ
   const handleZoom = (delta: number) => {
     setFontSizePercent((prev) => Math.min(130, Math.max(85, prev + delta)));
@@ -99,10 +158,7 @@ export default function AdvancedLogicMathGame() {
 
   // Đọc âm thanh giọng nói (TTS)
   const speakText = (lang: 'vi-VN' | 'en-US') => {
-    if (!('speechSynthesis' in window)) {
-      return;
-    }
-
+    if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
     let textToSpeak = '';
@@ -113,9 +169,6 @@ export default function AdvancedLogicMathGame() {
       }
     } else {
       textToSpeak = currentQuestion.titleEn || currentQuestion.title;
-      if ('cluesEn' in currentQuestion && (currentQuestion as any).cluesEn) {
-        textToSpeak += '. ' + (currentQuestion as any).cluesEn.join('. ');
-      }
     }
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -174,52 +227,33 @@ export default function AdvancedLogicMathGame() {
 
   // Kiểm tra đáp án
   const handleCheckAnswer = () => {
+    let isCorrect = false;
+
     if (currentQuestion.type === 'logic-grid') {
       const q = currentQuestion as LogicGridQuestion;
       const qGrid = gridState[q.id] || {};
-      let isAllCorrect = true;
+      let allGood = true;
 
       for (const row of q.rows) {
         const expectedCol = q.solution[row];
         const userChecked = qGrid[`${row}-${expectedCol}`] === 'check';
         if (!userChecked) {
-          isAllCorrect = false;
+          allGood = false;
           break;
         }
 
         for (const col of q.cols) {
           if (col !== expectedCol && qGrid[`${row}-${col}`] === 'check') {
-            isAllCorrect = false;
+            allGood = false;
             break;
           }
         }
       }
-
-      if (isAllCorrect) {
-        setValidationResult('correct');
-        setShowAnswer(true);
-        playCorrectSound();
-        const updated = { ...completedQuestions, [q.id]: true };
-        setCompletedQuestions(updated);
-        saveProgress(updated);
-      } else {
-        setValidationResult('wrong');
-        playWrongSound();
-      }
+      isCorrect = allGood;
     } else if (currentQuestion.type === 'code-breaker') {
       const q = currentQuestion as CodeBreakerQuestion;
       const currentDigits = (codeBreakerState[q.id] || ['0', '0', '0']).join('');
-      if (currentDigits === q.correctCode) {
-        setValidationResult('correct');
-        setShowAnswer(true);
-        playCorrectSound();
-        const updated = { ...completedQuestions, [q.id]: true };
-        setCompletedQuestions(updated);
-        saveProgress(updated);
-      } else {
-        setValidationResult('wrong');
-        playWrongSound();
-      }
+      isCorrect = currentDigits === q.correctCode;
     } else if (currentQuestion.type === 'number-pyramid') {
       const q = currentQuestion as NumberPyramidQuestion;
       const userP = pyramidState[q.id] || {};
@@ -235,33 +269,24 @@ export default function AdvancedLogicMathGame() {
           }
         });
       });
-
-      if (allCorrect) {
-        setValidationResult('correct');
-        setShowAnswer(true);
-        playCorrectSound();
-        const updated = { ...completedQuestions, [q.id]: true };
-        setCompletedQuestions(updated);
-        saveProgress(updated);
-      } else {
-        setValidationResult('wrong');
-        playWrongSound();
-      }
+      isCorrect = allCorrect;
     } else {
-      // Các câu hỏi trắc nghiệm
       const q = currentQuestion as ChoiceQuestion;
       const userChoice = choiceState[q.id];
-      if (userChoice !== undefined && String(userChoice) === String(q.correctAnswer)) {
-        setValidationResult('correct');
-        setShowAnswer(true);
-        playCorrectSound();
-        const updated = { ...completedQuestions, [q.id]: true };
-        setCompletedQuestions(updated);
-        saveProgress(updated);
-      } else {
-        setValidationResult('wrong');
-        playWrongSound();
-      }
+      isCorrect = userChoice !== undefined && String(userChoice) === String(q.correctAnswer);
+    }
+
+    if (isCorrect) {
+      setValidationResult('correct');
+      setShowAnswer(true);
+      playCorrectSound();
+      const updated = { ...completedQuestions, [currentQuestion.id]: true };
+      setCompletedQuestions(updated);
+      saveProgress(updated);
+      checkSessionCompletion(updated);
+    } else {
+      setValidationResult('wrong');
+      playWrongSound();
     }
   };
 
@@ -307,8 +332,8 @@ export default function AdvancedLogicMathGame() {
   };
 
   const completedCount = useMemo(() => {
-    return Object.values(completedQuestions).filter(Boolean).length;
-  }, [completedQuestions]);
+    return filteredQuestions.filter((q) => completedQuestions[q.id]).length;
+  }, [filteredQuestions, completedQuestions]);
 
   return (
     <div
@@ -318,7 +343,7 @@ export default function AdvancedLogicMathGame() {
       {/* Top Banner Card */}
       <div className="mb-6 rounded-3xl bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 p-5 sm:p-7 text-white shadow-xl relative overflow-hidden">
         <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-md">
               <span>🧠 Hạng mục Nâng cao</span>
@@ -329,16 +354,56 @@ export default function AdvancedLogicMathGame() {
               Toán Tư Duy & Suy Luận IQ Tiểu Học
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-indigo-100 max-w-xl">
-              Hệ thống bài tập tư duy logic theo sách 1001 Bài toán tư duy tiểu học: toán que diêm, xếp hàng & bậc thang, khoảng cách trồng cây, biểu đồ Venn, xem đồng hồ & lịch tuần, tháp số và toán thám tử.
+              Hệ thống toán tư duy tương tác: toán que diêm chân thực, xếp hàng & bậc thang, bài toán trồng cây, biểu đồ Venn, xem đồng hồ & lịch tuần, tháp số và toán thám tử.
             </p>
+
+            <div className="mt-3 flex flex-wrap items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleStartNewRandomSession()}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md transition-all active:scale-95 cursor-pointer"
+                title="Tạo phiên bài tập mới với số, nhân vật và tình huống ngẫu nhiên"
+              >
+                <span>🎲</span>
+                <span>Tạo phiên bài mới ngẫu nhiên</span>
+              </button>
+              {isRandomSession && (
+                <button
+                  type="button"
+                  onClick={handleResetToStandardBank}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition cursor-pointer"
+                >
+                  <span>🔄</span>
+                  <span>Về kho câu hỏi gốc</span>
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-black/25 backdrop-blur-md p-3.5 rounded-2xl border border-white/20 shrink-0">
-            <span className="text-2xl">🏆</span>
-            <div>
-              <div className="text-[11px] font-bold uppercase text-amber-300">Tiến độ nâng cao</div>
-              <div className="text-lg font-black">
-                {completedCount} / {ADVANCED_QUESTIONS.length} câu hoàn thành
+          <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+            {/* Hộp vé Minigame */}
+            <div className="flex items-center gap-3 bg-black/25 backdrop-blur-md p-3.5 rounded-2xl border border-white/20">
+              <span className="text-3xl">🎟️</span>
+              <div>
+                <div className="text-[11px] font-bold uppercase text-amber-300">Vé Minigame</div>
+                <div className="text-lg font-black flex items-center gap-1.5">
+                  <span>{currentTickets} / {MAX_TICKETS} vé</span>
+                  {currentTickets === MAX_TICKETS && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/80 text-white font-bold">Đầy</span>
+                  )}
+                </div>
+                <div className="text-[10px] text-indigo-200">Hoàn thành phiên nhận luôn 3/3 vé!</div>
+              </div>
+            </div>
+
+            {/* Tiến độ phiên */}
+            <div className="flex items-center gap-3 bg-black/20 backdrop-blur-md p-3 rounded-2xl border border-white/10">
+              <span className="text-2xl">🏆</span>
+              <div>
+                <div className="text-[11px] font-bold uppercase text-amber-300">Tiến độ phiên</div>
+                <div className="text-sm font-black">
+                  {completedCount} / {filteredQuestions.length} câu hoàn thành
+                </div>
               </div>
             </div>
           </div>
@@ -372,12 +437,11 @@ export default function AdvancedLogicMathGame() {
         {/* Toolbar Header */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850">
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Pill Số Câu */}
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-violet-600 text-white font-black text-sm shadow-sm">
               Câu {currentQuestion.questionNumber}
             </span>
 
-            {/* Tên danh mục rõ ràng thân thiện (không còn slug kiểu sudoku-bieu-tuong) */}
+            {/* Tên danh mục rõ ràng thân thiện (không còn bất kỳ slug thô nào) */}
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold text-xs border border-amber-200/60 dark:border-amber-800/40">
               {currentQuestion.categoryTitle}
             </span>
@@ -444,7 +508,7 @@ export default function AdvancedLogicMathGame() {
             {currentQuestion.title}
           </h2>
 
-          {/* Dữ kiện manh mối nếu có */}
+          {/* Dữ kiện manh mối */}
           {'clues' in currentQuestion && currentQuestion.clues && currentQuestion.clues.length > 0 && (
             <div className="mt-4 rounded-2xl border-2 border-dashed border-indigo-200/90 dark:border-indigo-800/80 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 sm:p-5">
               <div className="space-y-2 text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
@@ -457,17 +521,15 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: TOÁN QUE DIÊM (MATCHSTICK) */}
+          {/* DẠNG: TOÁN QUE DIÊM - RENDER QUE DIÊM THẬT VỚI THÂN GỖ & ĐẦU DIÊM ĐỎ! */}
           {currentQuestion.type === 'matchstick' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
               {(currentQuestion as ChoiceQuestion).visualContent && (
-                <div className="p-6 rounded-3xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-800/60 text-center mb-6 w-full shadow-inner">
-                  <div className="text-4xl sm:text-5xl font-mono font-black text-amber-900 dark:text-amber-200 tracking-wider">
-                    {(currentQuestion as ChoiceQuestion).visualContent?.data.equation}
-                  </div>
-                  <div className="mt-3 text-xs sm:text-sm font-bold text-amber-800 dark:text-amber-300">
-                    🥢 {(currentQuestion as ChoiceQuestion).visualContent?.data.moveClue}
-                  </div>
+                <div className="mb-6 w-full">
+                  <MatchstickDisplay
+                    equation={(currentQuestion as ChoiceQuestion).visualContent?.data.equation || '6 + 4 = 4'}
+                    highlightStick={(currentQuestion as ChoiceQuestion).visualContent?.data.moveClue}
+                  />
                 </div>
               )}
               <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
@@ -500,24 +562,23 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: BÀI TOÁN XẾP HÀNG & BẬC THANG (LINEUP) */}
+          {/* DẠNG: BÀI TOÁN XẾP HÀNG & BẬC THANG */}
           {currentQuestion.type === 'lineup-logic' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              {(currentQuestion as ChoiceQuestion).visualContent && (
-                <div className="p-5 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-200 dark:border-indigo-800 text-center mb-6 w-full">
-                  <div className="flex items-center justify-center gap-2 sm:gap-4 text-3xl sm:text-4xl py-2">
-                    <span>🚶‍♂️</span>
-                    <span>🚶‍♀️</span>
-                    <span>🧍‍♂️</span>
-                    <span>⭐</span>
-                    <span>🧍‍♀️</span>
-                    <span>🚶‍♂️</span>
-                  </div>
-                  <div className="mt-2 text-xs sm:text-sm font-bold text-indigo-700 dark:text-indigo-300">
-                    Sơ đồ hàng dọc / bậc thang mô phỏng theo bài toán
-                  </div>
+              <div className="p-5 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-200 dark:border-indigo-800 text-center mb-6 w-full shadow-inner">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 text-3xl sm:text-4xl py-2">
+                  <span>🚶‍♂️</span>
+                  <span>🚶‍♀️</span>
+                  <span>🧍‍♂️</span>
+                  <span className="p-1.5 bg-amber-400 text-slate-900 rounded-xl shadow-md text-2xl font-black">⭐</span>
+                  <span>🧍‍♀️</span>
+                  <span>🚶‍♂️</span>
                 </div>
-              )}
+                <div className="mt-2 text-xs sm:text-sm font-bold text-indigo-700 dark:text-indigo-300">
+                  Mô phỏng hàng ngũ hoặc các nhịp cầu thang bước lên
+                </div>
+              </div>
+
               <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
                 Chọn kết quả đúng:
               </p>
@@ -548,19 +609,19 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: BÀI TOÁN TRỒNG CÂY (TREE INTERVAL) */}
+          {/* DẠNG: BÀI TOÁN TRỒNG CÂY */}
           {currentQuestion.type === 'tree-interval' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 text-center mb-6 w-full">
-                <div className="flex items-center justify-center gap-3 sm:gap-6 text-3xl sm:text-4xl py-3">
+              <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 text-center mb-6 w-full shadow-inner">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 text-3xl sm:text-4xl py-2">
                   <span>🌳</span>
-                  <span className="text-xs font-bold text-emerald-600 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
                   <span>🌳</span>
-                  <span className="text-xs font-bold text-emerald-600 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
                   <span>🌳</span>
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-emerald-800 dark:text-emerald-300">
-                  Ghi nhớ tư duy: Số khoảng cách = Số cây - 1
+                  Ghi nhớ tư duy: Số khoảng cách = Số vật - 1
                 </div>
               </div>
 
@@ -594,11 +655,11 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: BIỂU ĐỒ VENN (VENN DIAGRAM) */}
+          {/* DẠNG: BIỂU ĐỒ VENN */}
           {currentQuestion.type === 'venn-diagram' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              <div className="p-6 rounded-3xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-200 dark:border-sky-800 text-center mb-6 w-full">
-                <div className="flex items-center justify-center gap-[-20px] relative py-4">
+              <div className="p-6 rounded-3xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-200 dark:border-sky-800 text-center mb-6 w-full shadow-inner">
+                <div className="flex items-center justify-center relative py-4">
                   <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full border-4 border-blue-400 bg-blue-100/60 dark:bg-blue-900/40 flex items-center justify-center text-xs font-black text-blue-900 dark:text-blue-200 text-center p-2 -mr-6 shadow-sm">
                     Tập hợp A
                   </div>
@@ -607,7 +668,7 @@ export default function AdvancedLogicMathGame() {
                   </div>
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300">
-                  Phần ở giữa là phần giao nhau (thỏa mãn cả 2 điều kiện)
+                  Phần ở giữa là phần giao nhau (thỏa mãn cả 2 tập hợp)
                 </div>
               </div>
 
@@ -641,10 +702,10 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: ĐỒNG HỒ & LỊCH TUẦN (CALENDAR & CLOCK) */}
+          {/* DẠNG: ĐỒNG HỒ & LỊCH TUẦN */}
           {currentQuestion.type === 'calendar-clock' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              <div className="p-5 rounded-3xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800 text-center mb-6 w-full">
+              <div className="p-5 rounded-3xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800 text-center mb-6 w-full shadow-inner">
                 <div className="flex items-center justify-center gap-4 text-4xl sm:text-5xl py-2">
                   <span>⏰</span>
                   <span>🗓️</span>
@@ -684,10 +745,10 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: QUY LUẬT DÃY SỐ & DÃY HÌNH (PATTERN) */}
+          {/* DẠNG: QUY LUẬT DÃY SỐ & DÃY HÌNH */}
           {currentQuestion.type === 'pattern-matrix' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              <div className="p-6 rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-indigo-200 dark:border-indigo-900 text-center mb-6 w-full">
+              <div className="p-6 rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-indigo-200 dark:border-indigo-900 text-center mb-6 w-full shadow-inner">
                 <div className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 py-2">
                   {(currentQuestion as ChoiceQuestion).visualContent?.data?.pattern || '🧩 Quy luật tăng / giảm dần'}
                 </div>
@@ -723,10 +784,10 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: ĐẾM HÌNH & KHỐI 3D (SHAPE COUNTING) */}
+          {/* DẠNG: ĐẾM HÌNH & KHỐI 3D */}
           {currentQuestion.type === 'shape-counting' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-              <div className="p-5 rounded-3xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800 text-center mb-6 w-full">
+              <div className="p-5 rounded-3xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800 text-center mb-6 w-full shadow-inner">
                 <div className="flex items-center justify-center gap-4 text-4xl sm:text-5xl py-2">
                   <span>📐</span>
                   <span>🔺</span>
@@ -767,7 +828,7 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: VẬT CHE CHỮ SỐ (SYMBOL SUBSTITUTE) */}
+          {/* DẠNG: VẬT CHE CHỮ SỐ */}
           {currentQuestion.type === 'symbol-substitute' && (
             <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
               {(currentQuestion as ChoiceQuestion).visualContent && (
@@ -880,14 +941,13 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG: PHÁ KHÓA MẬT MÃ (CODE BREAKER) */}
+          {/* DẠNG: PHÁ KHÓA MẬT MÃ */}
           {currentQuestion.type === 'code-breaker' && (() => {
             const q = currentQuestion as CodeBreakerQuestion;
             const currentDigits = codeBreakerState[q.id] || Array(q.digitsCount).fill('0');
 
             return (
               <div className="mt-6 max-w-2xl mx-auto">
-                {/* Dải gợi ý dạng scanner */}
                 <div className="space-y-2.5 mb-6">
                   {q.clueStrips.map((strip, sIdx) => (
                     <div
@@ -909,7 +969,6 @@ export default function AdvancedLogicMathGame() {
                   ))}
                 </div>
 
-                {/* Ổ khóa xoay số tương tác */}
                 <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-indigo-500/20 border-2 border-amber-400/60 dark:border-amber-600/60 text-center shadow-inner">
                   <div className="text-4xl mb-2">
                     {validationResult === 'correct' ? '🔓' : '🔐'}
@@ -946,14 +1005,14 @@ export default function AdvancedLogicMathGame() {
             );
           })()}
 
-          {/* DẠNG: THÁP SỐ KIM TỰ THÁP (NUMBER PYRAMID) */}
+          {/* DẠNG: THÁP SỐ KIM TỰ THÁP */}
           {currentQuestion.type === 'number-pyramid' && (() => {
             const q = currentQuestion as NumberPyramidQuestion;
             const userP = pyramidState[q.id] || {};
 
             return (
               <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 w-full">
+                <div className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 w-full shadow-inner">
                   {q.pyramidRows.map((row, r) => (
                     <div key={r} className="flex items-center gap-2 justify-center">
                       {row.map((cell, c) => {
@@ -1111,13 +1170,26 @@ export default function AdvancedLogicMathGame() {
         </div>
       </div>
 
-      {/* Danh sách câu hỏi Nâng cao */}
+      {/* Danh sách câu hỏi Nâng cao & Nút tạo phiên mới */}
       <div className="mt-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
-        <h3 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
-          <span>🎯</span>
-          <span>Danh sách câu hỏi Nâng cao ({filteredQuestions.length} câu)</span>
-        </h3>
-        <div className="mt-4 flex flex-wrap gap-2.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <h3 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <span>🎯</span>
+            <span>
+              Danh sách câu hỏi {isRandomSession ? 'phiên ngẫu nhiên' : 'Nâng cao'} ({filteredQuestions.length} câu)
+            </span>
+          </h3>
+          <button
+            type="button"
+            onClick={() => handleStartNewRandomSession()}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800 transition cursor-pointer self-start sm:self-auto"
+          >
+            <span>🎲</span>
+            <span>Tạo phiên bài ngẫu nhiên mới</span>
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-2.5">
           {filteredQuestions.map((q, idx) => {
             const isActive = idx === currentIndex;
             const isCompleted = completedQuestions[q.id];
@@ -1146,6 +1218,60 @@ export default function AdvancedLogicMathGame() {
           })}
         </div>
       </div>
+
+      {/* POPUP CHÚC MỪNG HOÀN THÀNH PHIÊN TOÁN NÂNG CAO - NHẬN TRỌN VẸN 3/3 VÉ MINIGAME! */}
+      {showSessionCompletedModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="max-w-md w-full rounded-3xl bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-amber-600 p-6 sm:p-8 text-center shadow-2xl relative overflow-hidden">
+            <div className="text-6xl mb-3 animate-bounce">🎉</div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-black uppercase mb-3">
+              <span>🌟 Hoàn thành xuất sắc!</span>
+            </div>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+              Bé đã chinh phục trọn vẹn phiên Toán Nâng Cao!
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Tư duy logic và suy luận tuyệt vời. Bé được thưởng trọn vẹn 3/3 vé chơi minigame!
+            </p>
+
+            <div className="my-6 p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 border-2 border-amber-300 dark:border-amber-700 flex items-center justify-center gap-3">
+              <span className="text-4xl">🎟️</span>
+              <div className="text-left">
+                <div className="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase">Phần thưởng đặc biệt</div>
+                <div className="text-xl font-black text-amber-900 dark:text-amber-100">
+                  +3 Vé Minigame (Đầy 3/3 vé)
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="/minigame"
+                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                <span>🎟️</span>
+                <span>Vào Đảo Minigame</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => handleStartNewRandomSession()}
+                className="flex-1 py-3 px-4 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-black text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>🎲</span>
+                <span>Luyện phiên mới</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowSessionCompletedModal(false)}
+              className="mt-4 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+            >
+              Đóng và xem lại bài giải
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

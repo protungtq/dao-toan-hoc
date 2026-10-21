@@ -47,6 +47,17 @@ export function countSuccessfulSession(id: string, score: number) {
   return writeTickets(state);
 }
 
+export function grantFullTickets(sessionId?: string) {
+  const state = readTickets();
+  state.tickets = MAX_TICKETS;
+  state.progress = 0;
+  if (sessionId && !state.countedSessionIds.includes(sessionId)) {
+    state.countedSessionIds.push(sessionId);
+    state.countedSessionIds = state.countedSessionIds.slice(-150);
+  }
+  return writeTickets(state);
+}
+
 export function readAdminPlayMode() {
   if (typeof window === 'undefined') return false;
   try {
