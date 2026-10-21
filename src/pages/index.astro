@@ -101,6 +101,26 @@ const grades = [
     text: 'text-rose-600 dark:text-rose-400',
     lightTint: 'from-rose-50/50 via-white to-pink-50/30'
   },
+  {
+    grade: '⭐',
+    badgeText: 'Nâng cao',
+    mascot: '🦉',
+    title: 'Lớp Nâng cao',
+    short: 'Tư duy & suy luận logic',
+    description: 'Toán que diêm, bài toán xếp hàng & bậc thang, trồng cây, biểu đồ Venn, xem đồng hồ & lịch tuần, tháp số và toán thám tử.',
+    count: 37,
+    countLabel: '37 câu tư duy & IQ',
+    gradient: 'from-fuchsia-500 to-purple-600',
+    accentGradient: 'from-fuchsia-500 via-purple-500 to-indigo-600',
+    badgeGradient: 'from-fuchsia-500 to-purple-600',
+    border: 'border-fuchsia-200/90 dark:border-fuchsia-900/50',
+    hoverBorder: 'hover:border-fuchsia-400 dark:hover:border-fuchsia-500',
+    hoverShadow: 'hover:shadow-[0_24px_48px_-12px_rgba(217,70,239,0.22)]',
+    pillBg: 'border-fuchsia-200 bg-fuchsia-50/90 text-fuchsia-700 dark:border-fuchsia-800/80 dark:bg-fuchsia-950/60 dark:text-fuchsia-300',
+    text: 'text-fuchsia-600 dark:text-fuchsia-400',
+    lightTint: 'from-fuchsia-50/50 via-white to-purple-50/30',
+    href: '/nang-cao',
+  },
 ];
 
 const quickLessons = [
@@ -234,12 +254,12 @@ const strengths = [
             <div class="mt-4 grid gap-2.5">
               {grades.map((item) => (
                 <a
-                  href={`/lop-${item.grade}`}
+                  href={item.href || `/lop-${item.grade}`}
                   class="group flex items-center gap-3.5 rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md dark:border-slate-700 dark:bg-slate-800/95 dark:hover:border-indigo-400 dark:hover:bg-slate-750"
                   aria-label={`Mở ${item.title}`}
                 >
                   <span class={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br text-lg font-black text-white shadow-md ring-2 ring-white/90 dark:ring-slate-700 ${item.badgeGradient}`}>
-                    {item.grade}
+                    {item.grade === '⭐' ? '✨' : item.grade}
                   </span>
                   <span class="min-w-0 flex-1">
                     <span class="block text-base font-black text-slate-950 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -249,14 +269,20 @@ const strengths = [
                       {item.short}
                     </span>
                   </span>
-                  <img
-                    src={`/models/grade-mascots/${item.grade}-compact.webp`}
-                    alt=""
-                    aria-hidden="true"
-                    width="56"
-                    height="56"
-                    class="h-11 w-11 shrink-0 object-contain drop-shadow transition-transform duration-200 group-hover:scale-110"
-                  />
+                  {typeof item.grade === 'number' ? (
+                    <img
+                      src={`/models/grade-mascots/${item.grade}-compact.webp`}
+                      alt=""
+                      aria-hidden="true"
+                      width="56"
+                      height="56"
+                      class="h-11 w-11 shrink-0 object-contain drop-shadow transition-transform duration-200 group-hover:scale-110"
+                    />
+                  ) : (
+                    <span class="text-3xl shrink-0 transition-transform duration-200 group-hover:scale-110" aria-hidden="true">
+                      {item.mascot}
+                    </span>
+                  )}
                   <span
                     class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-black text-slate-700 transition-all duration-200 group-hover:bg-indigo-600 group-hover:text-white group-hover:translate-x-0.5 dark:bg-slate-700 dark:text-slate-200 dark:group-hover:bg-indigo-500"
                     aria-hidden="true"
@@ -285,33 +311,39 @@ const strengths = [
             Từ những phép tính đầu tiên đến phân số, phần trăm và toán chuyển động, bé luôn có một người bạn đồng hành thú vị trong từng chủ đề bài học.
           </p>
         </div>
-        <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {grades.map((item) => (
             <a
-              href={`/lop-${item.grade}`}
+              href={item.href || `/lop-${item.grade}`}
               class={`poster-grade-card group relative flex min-h-[350px] flex-col justify-between overflow-hidden rounded-[2rem] border bg-white p-6 shadow-sm dark:bg-slate-900/90 dark:shadow-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2.5 ${item.border} ${item.hoverBorder} ${item.hoverShadow}`}
             >
               <!-- Nền gradient mờ tinh tế theo tông màu lớp -->
               <div class={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.lightTint} opacity-40 transition-opacity duration-300 group-hover:opacity-75 dark:opacity-0`}></div>
 
               <!-- Linh vật khối lớp tương ứng -->
-              <img
-                src={`/models/grade-mascots/${item.grade}-compact.webp`}
-                alt=""
-                aria-hidden="true"
-                width="224"
-                height="224"
-                loading="lazy"
-                class="poster-grade-ghost"
-              />
+              {typeof item.grade === 'number' ? (
+                <img
+                  src={`/models/grade-mascots/${item.grade}-compact.webp`}
+                  alt=""
+                  aria-hidden="true"
+                  width="224"
+                  height="224"
+                  loading="lazy"
+                  class="poster-grade-ghost"
+                />
+              ) : (
+                <span class="poster-grade-ghost text-8xl flex items-center justify-center opacity-15 select-none" aria-hidden="true">
+                  {item.mascot}
+                </span>
+              )}
 
               <!-- Phần trên: Badge số lớp & số chủ đề -->
               <div class="relative z-10 flex items-start justify-between gap-3">
                 <span class={`grid h-13 w-13 place-items-center rounded-2xl bg-gradient-to-br text-2xl font-black text-white shadow-md transition-transform duration-300 group-hover:scale-105 ring-4 ring-white/90 dark:ring-slate-800 ${item.badgeGradient}`}>
-                  {item.grade}
+                  {item.grade === '⭐' ? '✨' : item.grade}
                 </span>
                 <span class={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-black shadow-2xs backdrop-blur-sm ${item.pillBg}`}>
-                  <span>{item.count} chủ đề</span>
+                  <span>{item.countLabel || `${item.count} chủ đề`}</span>
                 </span>
               </div>
 
@@ -323,7 +355,7 @@ const strengths = [
                 <h3 class="mt-1 text-xl font-black tracking-tight text-slate-950 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
                   {item.title}
                 </h3>
-                <p class="mt-2 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400 max-w-[72%]">
+                <p class="mt-2 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400 max-w-[85%]">
                   {item.description}
                 </p>
               </div>
@@ -339,33 +371,6 @@ const strengths = [
             </a>
           ))}
         </div>
-      </div>
-    </section>
-
-    <!-- Hạng mục Nâng cao: Toán Tư Duy & Suy Luận Thám Tử -->
-    <section class="border-t border-slate-200/80 dark:border-slate-800 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-700 py-12 text-white relative overflow-hidden">
-      <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
-      <div class="relative mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 md:flex-row md:items-center md:px-8">
-        <div>
-          <div class="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-md">
-            <span>✨ Mới cập nhật</span>
-            <span>·</span>
-            <span>Hạng mục Nâng cao</span>
-          </div>
-          <h2 class="mt-2 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">
-            Toán Thám Tử & Suy Luận Logic
-          </h2>
-          <p class="mt-2 max-w-2xl text-sm sm:text-base text-indigo-100 font-medium">
-            Thử tài thám tử nhí với bảng suy luận loại trừ, bài toán thứ tự xếp hạng, cân thăng bằng hoa quả và ma trận quy luật số học hấp dẫn.
-          </p>
-        </div>
-        <a
-          href="/nang-cao"
-          class="inline-flex items-center gap-2.5 rounded-2xl bg-white px-7 py-4 text-base font-black text-indigo-900 shadow-xl transition-all hover:-translate-y-0.5 hover:bg-amber-300 hover:text-slate-950 active:scale-98 shrink-0 cursor-pointer"
-        >
-          <span>Khám phá ngay</span>
-          <span>→</span>
-        </a>
       </div>
     </section>
 

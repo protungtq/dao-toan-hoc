@@ -4,20 +4,14 @@ import {
   ADVANCED_CATEGORIES,
   type AdvancedQuestion,
   type LogicGridQuestion,
-  type IconSudokuQuestion,
   type CodeBreakerQuestion,
   type NumberPyramidQuestion,
-  type SpatialCubesQuestion,
-  type OrderComparisonQuestion,
-  type ScaleBalanceQuestion,
-  type PatternMatrixQuestion,
-  type TruthLieQuestion,
-  type ClassicWordLogicQuestion
+  type ChoiceQuestion,
 } from '../data/advancedLogicMath';
-import { playCorrectSound, playWrongSound, playFinalSound } from '../lib/gameAudio';
+import { playCorrectSound, playWrongSound } from '../lib/gameAudio';
 import { playMiniGameSound } from '../lib/minigameSounds';
 
-const STORAGE_KEY = 'trang-toan:advanced-logic-v2';
+const STORAGE_KEY = 'trang-toan:advanced-logic-v3';
 
 export default function AdvancedLogicMathGame() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -30,10 +24,6 @@ export default function AdvancedLogicMathGame() {
 
   // Lưu trạng thái bảng logic grid: Record<questionId, Record<`${row}-${col}`, 'check' | 'cross' | ''>>
   const [gridState, setGridState] = useState<Record<string, Record<string, 'check' | 'cross' | ''>>>({});
-
-  // Lưu trạng thái bảng Icon Sudoku: Record<questionId, (string | null)[][]>
-  const [sudokuState, setSudokuState] = useState<Record<string, (string | null)[][]>>({});
-  const [activeSudokuIcon, setActiveSudokuIcon] = useState<string | null>(null);
 
   // Lưu trạng thái Phá khóa mật mã: Record<questionId, string[]>
   const [codeBreakerState, setCodeBreakerState] = useState<Record<string, string[]>>({});
@@ -55,7 +45,6 @@ export default function AdvancedLogicMathGame() {
         const parsed = JSON.parse(saved);
         if (parsed.completed) setCompletedQuestions(parsed.completed);
         if (parsed.gridState) setGridState(parsed.gridState);
-        if (parsed.sudokuState) setSudokuState(parsed.sudokuState);
         if (parsed.choiceState) setChoiceState(parsed.choiceState);
       }
     } catch {}
@@ -68,12 +57,11 @@ export default function AdvancedLogicMathGame() {
         JSON.stringify({
           completed: newCompleted,
           gridState,
-          sudokuState,
-          choiceState
+          choiceState,
         })
       );
     } catch {}
-  }, [gridState, sudokuState, choiceState]);
+  }, [gridState, choiceState]);
 
   // Lọc câu hỏi theo danh mục
   const filteredQuestions = useMemo(() => {
@@ -81,21 +69,7 @@ export default function AdvancedLogicMathGame() {
     return ADVANCED_QUESTIONS.filter((q) => q.type === selectedCategory);
   }, [selectedCategory]);
 
-  const currentQuestion: AdvancedQuestion = filteredQuestions[currentIndex] || filteredQuestions[0];
-
-  // Khởi tạo trạng thái Sudoku nếu chưa có
-  useEffect(() => {
-    if (currentQuestion && currentQuestion.type === 'icon-sudoku') {
-      const q = currentQuestion as IconSudokuQuestion;
-      if (!sudokuState[q.id]) {
-        const initial = q.initialGrid.map((row) => [...row]);
-        setSudokuState((prev) => ({ ...prev, [q.id]: initial }));
-      }
-      if (q.icons.length > 0 && !activeSudokuIcon) {
-        setActiveSudokuIcon(q.icons[0].icon);
-      }
-    }
-  }, [currentQuestion, sudokuState, activeSudokuIcon]);
+  const currentQuestion: AdvancedQuestion = filteredQuestions[currentIndex] || filteredQuestions[0] || ADVANCED_QUESTIONS[0];
 
   // Khởi tạo trạng thái Code Breaker nếu chưa có
   useEffect(() => {
@@ -107,7 +81,7 @@ export default function AdvancedLogicMathGame() {
     }
   }, [currentQuestion, codeBreakerState]);
 
-  // Reset khi đổi câu
+  // Reset trạng thái khi đổi câu
   useEffect(() => {
     setShowHelp(false);
     setShowAnswer(false);
@@ -126,7 +100,6 @@ export default function AdvancedLogicMathGame() {
   // Đọc âm thanh giọng nói (TTS)
   const speakText = (lang: 'vi-VN' | 'en-US') => {
     if (!('speechSynthesis' in window)) {
-      alert('Trình duyệt không hỗ trợ đọc giọng nói tự động.');
       return;
     }
 
@@ -138,13 +111,10 @@ export default function AdvancedLogicMathGame() {
       if ('clues' in currentQuestion && currentQuestion.clues) {
         textToSpeak += '. ' + currentQuestion.clues.join('. ');
       }
-      if ('story' in currentQuestion && (currentQuestion as any).story) {
-        textToSpeak += '. ' + (currentQuestion as any).story;
-      }
     } else {
-      textToSpeak = currentQuestion.titleEn;
-      if ('cluesEn' in currentQuestion && currentQuestion.cluesEn) {
-        textToSpeak += '. ' + currentQuestion.cluesEn.join('. ');
+      textToSpeak = currentQuestion.titleEn || currentQuestion.title;
+      if ('cluesEn' in currentQuestion && (currentQuestion as any).cluesEn) {
+        textToSpeak += '. ' + (currentQuestion as any).cluesEn.join('. ');
       }
     }
 
@@ -158,43 +128,19 @@ export default function AdvancedLogicMathGame() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Tương tác ô Logic Grid: Trống -> Check (✓) -> Cross (X) -> Trống
+  // Tương tác ô Logic Grid: Trống -> Check (✓) -> Cross (✗) -> Trống
   const handleCellClick = (row: string, col: string) => {
     playMiniGameSound('step');
     const qId = currentQuestion.id;
-    const cellKey = `${row}-${col}`;
     const currentQuestionGrid = gridState[qId] || {};
-    const currentVal = currentQuestionGrid[cellKey] || '';
+    const currentVal = currentQuestionGrid[`${row}-${col}`] || '';
 
     let nextVal: 'check' | 'cross' | '' = 'check';
     if (currentVal === 'check') nextVal = 'cross';
     else if (currentVal === 'cross') nextVal = '';
 
-    const newQGrid = { ...currentQuestionGrid, [cellKey]: nextVal };
+    const newQGrid = { ...currentQuestionGrid, [`${row}-${col}`]: nextVal };
     setGridState({ ...gridState, [qId]: newQGrid });
-    setValidationResult(null);
-  };
-
-  // Tương tác ô Sudoku Biểu Tượng (Icon Sudoku)
-  const handleSudokuCellClick = (r: number, c: number) => {
-    const q = currentQuestion as IconSudokuQuestion;
-    // Nếu ô cố định ban đầu thì không cho sửa
-    if (q.initialGrid[r][c] !== null) return;
-
-    playMiniGameSound('step');
-    const qId = q.id;
-    const currentGrid = (sudokuState[qId] || q.initialGrid).map((row) => [...row]);
-    const currentCellVal = currentGrid[r][c];
-
-    if (currentCellVal === activeSudokuIcon) {
-      // Chạm lại ô đã có icon để xoá (như ghi chú trong ảnh)
-      currentGrid[r][c] = null;
-    } else {
-      // Đặt icon đang chọn vào ô
-      currentGrid[r][c] = activeSudokuIcon;
-    }
-
-    setSudokuState({ ...sudokuState, [qId]: currentGrid });
     setValidationResult(null);
   };
 
@@ -203,7 +149,7 @@ export default function AdvancedLogicMathGame() {
     playMiniGameSound('step');
     const qId = currentQuestion.id;
     const currentDigits = [...(codeBreakerState[qId] || ['0', '0', '0'])];
-    let num = (parseInt(currentDigits[index] || '0', 10) + delta + 10) % 10;
+    const num = (parseInt(currentDigits[index] || '0', 10) + delta + 10) % 10;
     currentDigits[index] = String(num);
     setCodeBreakerState({ ...codeBreakerState, [qId]: currentDigits });
     setValidationResult(null);
@@ -260,49 +206,10 @@ export default function AdvancedLogicMathGame() {
         setValidationResult('wrong');
         playWrongSound();
       }
-    } else if (currentQuestion.type === 'icon-sudoku') {
-      const q = currentQuestion as IconSudokuQuestion;
-      const currentGrid = sudokuState[q.id] || q.initialGrid;
-      let isCompleteAndValid = true;
-
-      // Kiểm tra mọi hàng
-      for (let r = 0; r < q.size; r++) {
-        const rowIcons = currentGrid[r].filter(Boolean) as string[];
-        if (rowIcons.length !== q.size || new Set(rowIcons).size !== q.size) {
-          isCompleteAndValid = false;
-          break;
-        }
-      }
-
-      // Kiểm tra mọi cột
-      if (isCompleteAndValid) {
-        for (let c = 0; c < q.size; c++) {
-          const colIcons: string[] = [];
-          for (let r = 0; r < q.size; r++) {
-            if (currentGrid[r][c]) colIcons.push(currentGrid[r][c] as string);
-          }
-          if (colIcons.length !== q.size || new Set(colIcons).size !== q.size) {
-            isCompleteAndValid = false;
-            break;
-          }
-        }
-      }
-
-      if (isCompleteAndValid) {
-        setValidationResult('correct');
-        setShowAnswer(true);
-        playCorrectSound();
-        const updated = { ...completedQuestions, [q.id]: true };
-        setCompletedQuestions(updated);
-        saveProgress(updated);
-      } else {
-        setValidationResult('wrong');
-        playWrongSound();
-      }
     } else if (currentQuestion.type === 'code-breaker') {
       const q = currentQuestion as CodeBreakerQuestion;
-      const userCode = (codeBreakerState[q.id] || []).join('');
-      if (userCode === q.correctCode) {
+      const currentDigits = (codeBreakerState[q.id] || ['0', '0', '0']).join('');
+      if (currentDigits === q.correctCode) {
         setValidationResult('correct');
         setShowAnswer(true);
         playCorrectSound();
@@ -316,21 +223,20 @@ export default function AdvancedLogicMathGame() {
     } else if (currentQuestion.type === 'number-pyramid') {
       const q = currentQuestion as NumberPyramidQuestion;
       const userP = pyramidState[q.id] || {};
-      let isPyramidCorrect = true;
+      let allCorrect = true;
 
       q.pyramidRows.forEach((row, r) => {
         row.forEach((cell, c) => {
           if (cell === null) {
-            const expected = q.solutionRows[r][c];
             const entered = parseInt(userP[`${r}-${c}`] || '', 10);
-            if (entered !== expected) {
-              isPyramidCorrect = false;
+            if (entered !== q.solutionRows[r][c]) {
+              allCorrect = false;
             }
           }
         });
       });
 
-      if (isPyramidCorrect) {
+      if (allCorrect) {
         setValidationResult('correct');
         setShowAnswer(true);
         playCorrectSound();
@@ -342,15 +248,14 @@ export default function AdvancedLogicMathGame() {
         playWrongSound();
       }
     } else {
-      // Các dạng trắc nghiệm
-      const selected = choiceState[currentQuestion.id];
-      const correct = (currentQuestion as any).correctAnswer;
-
-      if (String(selected).trim() === String(correct).trim()) {
+      // Các câu hỏi trắc nghiệm
+      const q = currentQuestion as ChoiceQuestion;
+      const userChoice = choiceState[q.id];
+      if (userChoice !== undefined && String(userChoice) === String(q.correctAnswer)) {
         setValidationResult('correct');
         setShowAnswer(true);
         playCorrectSound();
-        const updated = { ...completedQuestions, [currentQuestion.id]: true };
+        const updated = { ...completedQuestions, [q.id]: true };
         setCompletedQuestions(updated);
         saveProgress(updated);
       } else {
@@ -360,22 +265,28 @@ export default function AdvancedLogicMathGame() {
     }
   };
 
-  // Đặt lại câu hiện tại
+  // Reset nháp câu hiện tại
   const handleResetCurrent = () => {
-    playMiniGameSound('miss');
+    playMiniGameSound('reset');
     const qId = currentQuestion.id;
-    if (currentQuestion.type === 'icon-sudoku') {
-      const q = currentQuestion as IconSudokuQuestion;
-      setSudokuState((prev) => ({ ...prev, [qId]: q.initialGrid.map((r) => [...r]) }));
-    } else if (currentQuestion.type === 'logic-grid') {
+    if (currentQuestion.type === 'logic-grid') {
       setGridState((prev) => {
         const copy = { ...prev };
         delete copy[qId];
         return copy;
       });
     } else if (currentQuestion.type === 'code-breaker') {
-      const q = currentQuestion as CodeBreakerQuestion;
-      setCodeBreakerState((prev) => ({ ...prev, [qId]: Array(q.digitsCount).fill('0') }));
+      setCodeBreakerState((prev) => {
+        const copy = { ...prev };
+        delete copy[qId];
+        return copy;
+      });
+    } else if (currentQuestion.type === 'number-pyramid') {
+      setPyramidState((prev) => {
+        const copy = { ...prev };
+        delete copy[qId];
+        return copy;
+      });
     } else {
       setChoiceState((prev) => {
         const copy = { ...prev };
@@ -412,13 +323,13 @@ export default function AdvancedLogicMathGame() {
             <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-md">
               <span>🧠 Hạng mục Nâng cao</span>
               <span>·</span>
-              <span>Toán Tư Duy & Suy Luận</span>
+              <span>Toán Tư Duy & IQ Tiểu Học</span>
             </div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight">
-              Toán Thám Tử, Sudoku & Tư Duy Logic
+              Toán Tư Duy & Suy Luận IQ Tiểu Học
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-indigo-100 max-w-xl">
-              Kho bài tập tư duy nâng cao chuẩn quốc tế: Sudoku biểu tượng thời tiết, bảng logic thám tử, phá khóa mật mã, tháp số và tư duy không gian 3D.
+              Hệ thống bài tập tư duy logic theo sách 1001 Bài toán tư duy tiểu học: toán que diêm, xếp hàng & bậc thang, khoảng cách trồng cây, biểu đồ Venn, xem đồng hồ & lịch tuần, tháp số và toán thám tử.
             </p>
           </div>
 
@@ -443,9 +354,9 @@ export default function AdvancedLogicMathGame() {
                 setSelectedCategory(cat.id);
                 setCurrentIndex(0);
               }}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectedCategory === cat.id
-                  ? 'bg-white text-indigo-900 shadow-md scale-102 font-black'
+                  ? 'bg-white text-indigo-900 shadow-md scale-105 font-black'
                   : 'bg-white/15 text-white hover:bg-white/25'
               }`}
             >
@@ -466,9 +377,9 @@ export default function AdvancedLogicMathGame() {
               Câu {currentQuestion.questionNumber}
             </span>
 
-            {/* Tag loại câu hỏi */}
+            {/* Tên danh mục rõ ràng thân thiện (không còn slug kiểu sudoku-bieu-tuong) */}
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold text-xs border border-amber-200/60 dark:border-amber-800/40">
-              {currentQuestion.tag}
+              {currentQuestion.categoryTitle}
             </span>
 
             {/* Zoom Controls */}
@@ -503,63 +414,39 @@ export default function AdvancedLogicMathGame() {
               }`}
             >
               <span>🔊</span>
-              <span>Đọc TV</span>
-            </button>
-
-            {/* TTS Tiếng Anh */}
-            <button
-              type="button"
-              onClick={() => speakText('en-US')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-xs font-bold transition-all cursor-pointer"
-            >
-              <span>🔊</span>
-              <span>Read Eng</span>
+              <span>Đọc bài</span>
             </button>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Nút Xem đáp án */}
             <button
               type="button"
-              onClick={() => {
-                setShowAnswer(!showAnswer);
-                playMiniGameSound('collect');
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
-            >
-              <span>✓</span>
-              <span>{showAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</span>
-            </button>
-
-            {/* Nút Trợ giúp */}
-            <button
-              type="button"
-              onClick={() => {
-                setShowHelp(!showHelp);
-                playMiniGameSound('step');
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+              onClick={() => setShowHelp(!showHelp)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-xs font-bold transition cursor-pointer hover:bg-amber-100"
             >
               <span>💡</span>
-              <span>Trợ giúp</span>
+              <span>Gợi ý</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAnswer(!showAnswer)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition cursor-pointer hover:bg-emerald-100"
+            >
+              <span>📖</span>
+              <span>Lời giải</span>
             </button>
           </div>
         </div>
 
-        {/* Nội dung chính */}
-        <div className="p-6 sm:p-8">
-          <h2 className="text-lg sm:text-xl font-bold leading-relaxed text-slate-900 dark:text-white">
+        {/* Question Body */}
+        <div className="p-5 sm:p-7">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-relaxed">
             {currentQuestion.title}
           </h2>
-          {currentQuestion.titleEn && (
-            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium italic">
-              {currentQuestion.titleEn}
-            </p>
-          )}
 
-          {/* Khung Dữ kiện / Manh mối */}
+          {/* Dữ kiện manh mối nếu có */}
           {'clues' in currentQuestion && currentQuestion.clues && currentQuestion.clues.length > 0 && (
-            <div className="mt-5 rounded-2xl border-2 border-dashed border-indigo-200/90 dark:border-indigo-800/80 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 sm:p-5">
+            <div className="mt-4 rounded-2xl border-2 border-dashed border-indigo-200/90 dark:border-indigo-800/80 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 sm:p-5">
               <div className="space-y-2 text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
                 {currentQuestion.clues.map((clue, idx) => (
                   <p key={idx} className="leading-relaxed">
@@ -570,83 +457,430 @@ export default function AdvancedLogicMathGame() {
             </div>
           )}
 
-          {/* DẠNG 1: SUDOKU / LATIN SQUARE BIỂU TƯỢNG (ẢNH MỚI 100%) */}
-          {currentQuestion.type === 'icon-sudoku' && (() => {
-            const q = currentQuestion as IconSudokuQuestion;
-            const currentGrid = sudokuState[q.id] || q.initialGrid;
-
-            return (
-              <div className="mt-6 flex flex-col items-center">
-                {/* Palette chọn biểu tượng ở trên (khớp 100% với ảnh mẫu) */}
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-slate-800/90 border border-indigo-100 dark:border-slate-700 shadow-sm mb-6">
-                  {q.icons.map((item) => (
-                    <button
-                      key={item.icon}
-                      type="button"
-                      onClick={() => setActiveSudokuIcon(item.icon)}
-                      className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl transition-all cursor-pointer relative ${
-                        activeSudokuIcon === item.icon
-                          ? 'bg-white dark:bg-slate-700 shadow-lg ring-4 ring-indigo-500 scale-110 -translate-y-1'
-                          : 'bg-white/70 dark:bg-slate-750 hover:bg-white hover:shadow-md'
-                      }`}
-                      title={item.name}
-                    >
-                      <span>{item.icon}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Khung lưới Sudoku / Latin square */}
-                <div className="overflow-x-auto w-full flex justify-center py-2">
-                  <div
-                    className="grid gap-1 p-2 sm:p-3 rounded-2xl bg-slate-300 dark:bg-slate-700 border-2 border-slate-500 shadow-xl"
-                    style={{
-                      gridTemplateColumns: `repeat(${q.size}, minmax(0, 1fr))`
-                    }}
-                  >
-                    {currentGrid.map((row, r) =>
-                      row.map((cell, c) => {
-                        const isPreset = q.initialGrid[r][c] !== null;
-                        const isCorrectSolution = showAnswer && q.solutionGrid[r][c] === cell;
-
-                        return (
-                          <div
-                            key={`${r}-${c}`}
-                            onClick={() => handleSudokuCellClick(r, c)}
-                            className={`h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl flex items-center justify-center text-2xl sm:text-3xl select-none transition-all ${
-                              isPreset
-                                ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white cursor-not-allowed shadow-2xs'
-                                : cell
-                                ? isCorrectSolution
-                                  ? 'bg-emerald-100 dark:bg-emerald-950/60 ring-2 ring-emerald-400 cursor-pointer shadow-sm active:scale-95'
-                                  : 'bg-indigo-50 dark:bg-indigo-950/50 ring-2 ring-indigo-400 cursor-pointer shadow-sm active:scale-95'
-                                : 'bg-white dark:bg-slate-800/60 hover:bg-indigo-50/50 dark:hover:bg-slate-750 cursor-pointer border border-dashed border-slate-300 dark:border-slate-600'
-                            }`}
-                          >
-                            {cell ? (
-                              <span>{cell}</span>
-                            ) : showAnswer ? (
-                              <span className="opacity-40 scale-75 filter grayscale">
-                                {q.solutionGrid[r][c]}
-                              </span>
-                            ) : null}
-                          </div>
-                        );
-                      })
-                    )}
+          {/* DẠNG: TOÁN QUE DIÊM (MATCHSTICK) */}
+          {currentQuestion.type === 'matchstick' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              {(currentQuestion as ChoiceQuestion).visualContent && (
+                <div className="p-6 rounded-3xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-800/60 text-center mb-6 w-full shadow-inner">
+                  <div className="text-4xl sm:text-5xl font-mono font-black text-amber-900 dark:text-amber-200 tracking-wider">
+                    {(currentQuestion as ChoiceQuestion).visualContent?.data.equation}
+                  </div>
+                  <div className="mt-3 text-xs sm:text-sm font-bold text-amber-800 dark:text-amber-300">
+                    🥢 {(currentQuestion as ChoiceQuestion).visualContent?.data.moveClue}
                   </div>
                 </div>
-
-                {/* Chú thích bàn tay khớp 100% với ảnh mẫu */}
-                <p className="mt-4 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 text-center flex items-center justify-center gap-1.5">
-                  <span>👉</span>
-                  <span>Chạm 1 vật ở trên, rồi chạm vào ô trống để đặt vào (chạm lại ô đã điền để xoá)</span>
-                </p>
+              )}
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn câu trả lời đúng:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-base sm:text-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
               </div>
-            );
-          })()}
+            </div>
+          )}
 
-          {/* DẠNG 2: PHÁ KHÓA MẬT MÃ LOGIC (CODE BREAKER) */}
+          {/* DẠNG: BÀI TOÁN XẾP HÀNG & BẬC THANG (LINEUP) */}
+          {currentQuestion.type === 'lineup-logic' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              {(currentQuestion as ChoiceQuestion).visualContent && (
+                <div className="p-5 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-200 dark:border-indigo-800 text-center mb-6 w-full">
+                  <div className="flex items-center justify-center gap-2 sm:gap-4 text-3xl sm:text-4xl py-2">
+                    <span>🚶‍♂️</span>
+                    <span>🚶‍♀️</span>
+                    <span>🧍‍♂️</span>
+                    <span>⭐</span>
+                    <span>🧍‍♀️</span>
+                    <span>🚶‍♂️</span>
+                  </div>
+                  <div className="mt-2 text-xs sm:text-sm font-bold text-indigo-700 dark:text-indigo-300">
+                    Sơ đồ hàng dọc / bậc thang mô phỏng theo bài toán
+                  </div>
+                </div>
+              )}
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn kết quả đúng:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: BÀI TOÁN TRỒNG CÂY (TREE INTERVAL) */}
+          {currentQuestion.type === 'tree-interval' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 text-center mb-6 w-full">
+                <div className="flex items-center justify-center gap-3 sm:gap-6 text-3xl sm:text-4xl py-3">
+                  <span>🌳</span>
+                  <span className="text-xs font-bold text-emerald-600 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
+                  <span>🌳</span>
+                  <span className="text-xs font-bold text-emerald-600 border-b-2 border-dashed border-emerald-400 pb-1">khoảng cách</span>
+                  <span>🌳</span>
+                </div>
+                <div className="text-xs sm:text-sm font-bold text-emerald-800 dark:text-emerald-300">
+                  Ghi nhớ tư duy: Số khoảng cách = Số cây - 1
+                </div>
+              </div>
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn kết quả đúng:
+              </p>
+              <div className="grid grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: BIỂU ĐỒ VENN (VENN DIAGRAM) */}
+          {currentQuestion.type === 'venn-diagram' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              <div className="p-6 rounded-3xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-200 dark:border-sky-800 text-center mb-6 w-full">
+                <div className="flex items-center justify-center gap-[-20px] relative py-4">
+                  <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full border-4 border-blue-400 bg-blue-100/60 dark:bg-blue-900/40 flex items-center justify-center text-xs font-black text-blue-900 dark:text-blue-200 text-center p-2 -mr-6 shadow-sm">
+                    Tập hợp A
+                  </div>
+                  <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full border-4 border-emerald-400 bg-emerald-100/60 dark:bg-emerald-900/40 flex items-center justify-center text-xs font-black text-emerald-900 dark:text-emerald-200 text-center p-2 -ml-6 shadow-sm">
+                    Tập hợp B
+                  </div>
+                </div>
+                <div className="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300">
+                  Phần ở giữa là phần giao nhau (thỏa mãn cả 2 điều kiện)
+                </div>
+              </div>
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn kết quả phân loại:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: ĐỒNG HỒ & LỊCH TUẦN (CALENDAR & CLOCK) */}
+          {currentQuestion.type === 'calendar-clock' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              <div className="p-5 rounded-3xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800 text-center mb-6 w-full">
+                <div className="flex items-center justify-center gap-4 text-4xl sm:text-5xl py-2">
+                  <span>⏰</span>
+                  <span>🗓️</span>
+                </div>
+                <div className="mt-2 text-xs sm:text-sm font-bold text-purple-800 dark:text-purple-300">
+                  Đồng hồ kim, đồng hồ điện tử và chu kỳ các ngày trong tuần
+                </div>
+              </div>
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn đáp án đúng:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: QUY LUẬT DÃY SỐ & DÃY HÌNH (PATTERN) */}
+          {currentQuestion.type === 'pattern-matrix' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              <div className="p-6 rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-indigo-200 dark:border-indigo-900 text-center mb-6 w-full">
+                <div className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 py-2">
+                  {(currentQuestion as ChoiceQuestion).visualContent?.data?.pattern || '🧩 Quy luật tăng / giảm dần'}
+                </div>
+              </div>
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn phương án tiếp theo:
+              </p>
+              <div className="grid grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: ĐẾM HÌNH & KHỐI 3D (SHAPE COUNTING) */}
+          {currentQuestion.type === 'shape-counting' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              <div className="p-5 rounded-3xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800 text-center mb-6 w-full">
+                <div className="flex items-center justify-center gap-4 text-4xl sm:text-5xl py-2">
+                  <span>📐</span>
+                  <span>🔺</span>
+                  <span>🧊</span>
+                </div>
+                <div className="mt-2 text-xs sm:text-sm font-bold text-rose-800 dark:text-rose-300">
+                  Tư duy hình học trực quan & đếm các hình đơn, hình ghép
+                </div>
+              </div>
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn số lượng hình:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: VẬT CHE CHỮ SỐ (SYMBOL SUBSTITUTE) */}
+          {currentQuestion.type === 'symbol-substitute' && (
+            <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
+              {(currentQuestion as ChoiceQuestion).visualContent && (
+                <div className="p-5 rounded-3xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-800 text-center mb-6 w-full shadow-inner">
+                  <div className="text-xl sm:text-2xl font-black text-amber-900 dark:text-amber-200">
+                    {(currentQuestion as ChoiceQuestion).visualContent?.data.line1}
+                  </div>
+                  {(currentQuestion as ChoiceQuestion).visualContent?.data.line2 && (
+                    <div className="text-xl sm:text-2xl font-black text-amber-900 dark:text-amber-200 mt-2">
+                      {(currentQuestion as ChoiceQuestion).visualContent?.data.line2}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
+                Chọn chữ số bí mật:
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+                {(currentQuestion as ChoiceQuestion).options.map((opt) => {
+                  const isSelected = choiceState[currentQuestion.id] === opt;
+                  const isCorrect = (currentQuestion as ChoiceQuestion).correctAnswer === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handleSelectChoice(opt)}
+                      className={`p-4 rounded-2xl border-2 font-black text-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        isSelected
+                          ? showAnswer && isCorrect
+                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
+                          : showAnswer && isCorrect
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* DẠNG: TOÁN THÁM TỬ (BẢNG LOGIC GRID) */}
+          {currentQuestion.type === 'logic-grid' && (
+            <div className="mt-8 flex flex-col items-center">
+              <div className="overflow-x-auto w-full flex justify-center py-2">
+                <table className="border-collapse border border-slate-400 dark:border-slate-600 shadow-md rounded-2xl overflow-hidden bg-white dark:bg-slate-800 text-center">
+                  <thead>
+                    <tr className="bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-sm sm:text-base">
+                      <th className="border border-slate-300 dark:border-slate-600 px-4 sm:px-6 py-3 w-28 sm:w-36 text-center">
+                        {(currentQuestion as LogicGridQuestion).rowHeader}
+                      </th>
+                      {(currentQuestion as LogicGridQuestion).cols.map((col) => (
+                        <th
+                          key={col}
+                          className="border border-slate-300 dark:border-slate-600 px-4 sm:px-6 py-3 min-w-[90px] sm:min-w-[110px] text-center"
+                        >
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(currentQuestion as LogicGridQuestion).rows.map((row) => (
+                      <tr key={row} className="hover:bg-slate-50/60 dark:hover:bg-slate-750 transition-colors">
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-bold text-slate-900 dark:text-slate-100 bg-slate-50/50 dark:bg-slate-750">
+                          {row}
+                        </td>
+                        {(currentQuestion as LogicGridQuestion).cols.map((col) => {
+                          const cellKey = `${row}-${col}`;
+                          const cellVal = (gridState[currentQuestion.id] || {})[cellKey] || '';
+                          const isExpectedMatch = (currentQuestion as LogicGridQuestion).solution[row] === col;
+
+                          return (
+                            <td
+                              key={col}
+                              onClick={() => handleCellClick(row, col)}
+                              className={`border border-slate-300 dark:border-slate-600 h-14 sm:h-16 w-20 sm:w-28 text-center text-2xl font-black cursor-pointer select-none transition-all active:scale-95 ${
+                                cellVal === 'check'
+                                  ? showAnswer && isExpectedMatch
+                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-extrabold'
+                                    : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400'
+                                  : cellVal === 'cross'
+                                  ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-black'
+                                  : showAnswer && isExpectedMatch
+                                  ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-500/50'
+                                  : 'hover:bg-indigo-50/30'
+                              }`}
+                            >
+                              {cellVal === 'check' && <span>✓</span>}
+                              {cellVal === 'cross' && <span>✗</span>}
+                              {!cellVal && showAnswer && isExpectedMatch && (
+                                <span className="text-emerald-400/60 text-lg">✓</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-4 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 text-center flex items-center justify-center gap-1.5">
+                <span>👉</span>
+                <span>Chạm 1 lần để đánh ✓ (đúng), chạm lần nữa để đánh ✗ (loại trừ), chạm lần ba để xoá</span>
+              </p>
+            </div>
+          )}
+
+          {/* DẠNG: PHÁ KHÓA MẬT MÃ (CODE BREAKER) */}
           {currentQuestion.type === 'code-breaker' && (() => {
             const q = currentQuestion as CodeBreakerQuestion;
             const currentDigits = codeBreakerState[q.id] || Array(q.digitsCount).fill('0');
@@ -712,7 +946,7 @@ export default function AdvancedLogicMathGame() {
             );
           })()}
 
-          {/* DẠNG 3: THÁP SỐ KIM TỰ THÁP (NUMBER PYRAMID) */}
+          {/* DẠNG: THÁP SỐ KIM TỰ THÁP (NUMBER PYRAMID) */}
           {currentQuestion.type === 'number-pyramid' && (() => {
             const q = currentQuestion as NumberPyramidQuestion;
             const userP = pyramidState[q.id] || {};
@@ -757,378 +991,9 @@ export default function AdvancedLogicMathGame() {
             );
           })()}
 
-          {/* DẠNG 4: TƯ DUY KHÔNG GIAN 3D: ĐẾM KHỐI LẬP PHƯƠNG */}
-          {currentQuestion.type === 'spatial-cubes' && (() => {
-            const q = currentQuestion as SpatialCubesQuestion;
-            return (
-              <div className="mt-6 max-w-xl mx-auto flex flex-col items-center">
-                {/* Sơ đồ độ cao các cột hình lập phương 3x3 */}
-                <div className="p-6 rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-indigo-200 dark:border-indigo-900 shadow-inner mb-6 text-center">
-                  <div className="text-xs font-black uppercase text-indigo-700 dark:text-indigo-400 tracking-wider mb-3">
-                    Mô hình số tầng của từng cột lập phương (nhìn từ trên xuống):
-                  </div>
-                  <div className="grid grid-cols-3 gap-2.5 max-w-[240px] mx-auto">
-                    {q.heightGrid.map((row, r) =>
-                      row.map((val, c) => (
-                        <div
-                          key={`${r}-${c}`}
-                          className={`h-16 w-16 rounded-2xl flex flex-col items-center justify-center shadow-md font-black text-xl ${
-                            val === 0
-                              ? 'bg-slate-200/50 dark:bg-slate-700/50 text-slate-400'
-                              : val === 3
-                              ? 'bg-violet-600 text-white shadow-violet-500/30'
-                              : val === 2
-                              ? 'bg-indigo-500 text-white'
-                              : 'bg-sky-400 text-slate-900'
-                          }`}
-                        >
-                          <span>{val > 0 ? `${val} tầng` : 'Trống'}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
-                  Chọn tổng số khối lập phương có trong mô hình:
-                </p>
-                <div className="grid grid-cols-4 gap-3 w-full">
-                  {q.options.map((opt) => {
-                    const isSelected = choiceState[currentQuestion.id] === opt;
-                    const isCorrect = q.correctAnswer === opt;
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => handleSelectChoice(opt)}
-                        className={`py-3.5 rounded-2xl border-2 font-black text-lg transition-all cursor-pointer flex items-center justify-center ${
-                          isSelected
-                            ? showAnswer && isCorrect
-                              ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                              : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                            : showAnswer && isCorrect
-                            ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                            : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                        }`}
-                      >
-                        {opt} khối
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* DẠNG 5: BẢNG SUY LUẬN LOGIC GRID (TOÁN THÁM TỬ) */}
-          {currentQuestion.type === 'logic-grid' && (
-            <div className="mt-8 flex flex-col items-center">
-              <div className="overflow-x-auto w-full flex justify-center py-2">
-                <table className="border-collapse border border-slate-400 dark:border-slate-600 shadow-md rounded-2xl overflow-hidden bg-white dark:bg-slate-800 text-center">
-                  <thead>
-                    <tr className="bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-200 font-black text-sm sm:text-base">
-                      <th className="border border-slate-300 dark:border-slate-600 px-4 sm:px-6 py-3 w-28 sm:w-36 text-center">
-                        {(currentQuestion as LogicGridQuestion).rowHeader}
-                      </th>
-                      {(currentQuestion as LogicGridQuestion).cols.map((col) => (
-                        <th
-                          key={col}
-                          className="border border-slate-300 dark:border-slate-600 px-4 sm:px-6 py-3 min-w-[90px] sm:min-w-[110px] text-center"
-                        >
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(currentQuestion as LogicGridQuestion).rows.map((row) => (
-                      <tr key={row} className="hover:bg-slate-50/60 dark:hover:bg-slate-750 transition-colors">
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-bold text-slate-900 dark:text-slate-100 bg-slate-50/50 dark:bg-slate-750">
-                          {row}
-                        </td>
-                        {(currentQuestion as LogicGridQuestion).cols.map((col) => {
-                          const cellKey = `${row}-${col}`;
-                          const cellVal = (gridState[currentQuestion.id] || {})[cellKey] || '';
-                          const isExpectedMatch = (currentQuestion as LogicGridQuestion).solution[row] === col;
-
-                          return (
-                            <td
-                              key={col}
-                              onClick={() => handleCellClick(row, col)}
-                              className={`border border-slate-300 dark:border-slate-600 h-14 sm:h-16 w-20 sm:w-28 text-center text-2xl font-black cursor-pointer select-none transition-all active:scale-95 ${
-                                cellVal === 'check'
-                                  ? showAnswer && isExpectedMatch
-                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-extrabold'
-                                    : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400'
-                                  : cellVal === 'cross'
-                                  ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-black'
-                                  : showAnswer && isExpectedMatch
-                                  ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-500/50'
-                                  : 'hover:bg-indigo-50/30'
-                              }`}
-                            >
-                              {cellVal === 'check' && <span>✓</span>}
-                              {cellVal === 'cross' && <span>✗</span>}
-                              {!cellVal && showAnswer && isExpectedMatch && (
-                                <span className="text-emerald-400/60 text-lg">✓</span>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-4 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 text-center flex items-center justify-center gap-1.5">
-                <span>👉</span>
-                <span>Chạm 1 lần để đánh ✓, chạm lần nữa để đánh X (nháp), chạm lần ba để xoá</span>
-              </p>
-            </div>
-          )}
-
-          {/* DẠNG 6: TOÁN VUI KINH ĐIỂN (VỪA GÀ VỪA CHÓ, TRỒNG CÂY) */}
-          {currentQuestion.type === 'classic-word-logic' && (
-            <div className="mt-6 max-w-xl mx-auto">
-              {(currentQuestion as ClassicWordLogicQuestion).story && (
-                <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 font-semibold text-sm sm:text-base mb-6 leading-relaxed">
-                  {(currentQuestion as ClassicWordLogicQuestion).story}
-                </div>
-              )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {(currentQuestion as ClassicWordLogicQuestion).options.map((opt) => {
-                  const isSelected = choiceState[currentQuestion.id] === opt;
-                  const isCorrect = (currentQuestion as ClassicWordLogicQuestion).correctAnswer === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => handleSelectChoice(opt)}
-                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center ${
-                        isSelected
-                          ? showAnswer && isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                          : showAnswer && isCorrect
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* DẠNG 7: CÂN THĂNG BẰNG LOGIC */}
-          {currentQuestion.type === 'scale-balance' && (
-            <div className="mt-8 max-w-2xl mx-auto">
-              {(currentQuestion as ScaleBalanceQuestion).scaleVisual && (
-                <div className="grid gap-3 sm:grid-cols-2 mb-6">
-                  <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-center">
-                    <div className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">
-                      Đĩa cân số 1 (Thăng bằng)
-                    </div>
-                    <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-black">
-                      <span className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xs">
-                        {(currentQuestion as ScaleBalanceQuestion).scaleVisual?.left1}
-                      </span>
-                      <span>⚖️</span>
-                      <span className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xs">
-                        {(currentQuestion as ScaleBalanceQuestion).scaleVisual?.right1}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/50 text-center">
-                    <div className="text-xs font-bold text-sky-700 dark:text-sky-400 uppercase tracking-wider mb-1">
-                      Đĩa cân số 2 (Thăng bằng)
-                    </div>
-                    <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-black">
-                      <span className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xs">
-                        {(currentQuestion as ScaleBalanceQuestion).scaleVisual?.left2}
-                      </span>
-                      <span>⚖️</span>
-                      <span className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xs">
-                        {(currentQuestion as ScaleBalanceQuestion).scaleVisual?.right2}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
-                Chọn kết quả cân thăng bằng:
-              </p>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {(currentQuestion as ScaleBalanceQuestion).options.map((opt) => {
-                  const isSelected = choiceState[currentQuestion.id] === opt;
-                  const isCorrect = (currentQuestion as ScaleBalanceQuestion).correctAnswer === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => handleSelectChoice(opt)}
-                      className={`p-4 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                        isSelected
-                          ? showAnswer && isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                          : showAnswer && isCorrect
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* DẠNG 8: MA TRẬN SỐ & QUY LUẬT */}
-          {currentQuestion.type === 'pattern-matrix' && (
-            <div className="mt-8 max-w-xl mx-auto flex flex-col items-center">
-              <div className="grid grid-cols-3 gap-3 p-4 rounded-3xl bg-slate-100 dark:bg-slate-800/80 border-2 border-indigo-200 dark:border-indigo-900 shadow-inner mb-6">
-                {(currentQuestion as PatternMatrixQuestion).matrix.map((row, rIdx) =>
-                  row.map((cell, cIdx) => (
-                    <div
-                      key={`${rIdx}-${cIdx}`}
-                      className={`h-16 w-16 sm:h-20 sm:w-20 rounded-2xl flex items-center justify-center font-black text-xl sm:text-2xl shadow-sm ${
-                        cell === '?'
-                          ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-300 animate-pulse'
-                          : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white'
-                      }`}
-                    >
-                      {cell === '?' && choiceState[currentQuestion.id]
-                        ? choiceState[currentQuestion.id]
-                        : cell}
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
-                Chọn số thay thế cho dấu hỏi chấm (?):
-              </p>
-              <div className="grid grid-cols-4 gap-3 sm:gap-4 w-full">
-                {(currentQuestion as PatternMatrixQuestion).options.map((opt) => {
-                  const isSelected = choiceState[currentQuestion.id] === opt;
-                  const isCorrect = (currentQuestion as PatternMatrixQuestion).correctAnswer === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => handleSelectChoice(opt)}
-                      className={`py-3 sm:py-4 rounded-2xl border-2 font-black text-lg sm:text-xl transition-all cursor-pointer flex items-center justify-center ${
-                        isSelected
-                          ? showAnswer && isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                          : showAnswer && isCorrect
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* DẠNG 9: SUY LUẬN THỨ TỰ */}
-          {currentQuestion.type === 'order-comparison' && (
-            <div className="mt-8 max-w-xl mx-auto">
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
-                Chọn phương án trả lời đúng:
-              </p>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {(currentQuestion as OrderComparisonQuestion).options.map((opt) => {
-                  const isSelected = choiceState[currentQuestion.id] === opt;
-                  const isCorrect = (currentQuestion as OrderComparisonQuestion).correctAnswer === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => handleSelectChoice(opt)}
-                      className={`p-4 rounded-2xl border-2 font-black text-base sm:text-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                        isSelected
-                          ? showAnswer && isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                          : showAnswer && isCorrect
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* DẠNG 10: MỆNH ĐỀ THẬT – GIẢ */}
-          {currentQuestion.type === 'truth-lie' && (
-            <div className="mt-8 max-w-2xl mx-auto">
-              <div className="space-y-3 mb-6">
-                {(currentQuestion as TruthLieQuestion).statements.map((st, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700"
-                  >
-                    <span className="text-3xl shrink-0">{st.avatar}</span>
-                    <div>
-                      <span className="font-black text-indigo-600 dark:text-indigo-400 mr-2">
-                        {st.speaker} nói:
-                      </span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200 italic">
-                        "{st.statement}"
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 text-center">
-                {(currentQuestion as TruthLieQuestion).questionPrompt}
-              </p>
-              <div className="grid grid-cols-3 gap-3">
-                {(currentQuestion as TruthLieQuestion).options.map((opt) => {
-                  const isSelected = choiceState[currentQuestion.id] === opt;
-                  const isCorrect = (currentQuestion as TruthLieQuestion).correctAnswer === opt;
-                  return (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => handleSelectChoice(opt)}
-                      className={`p-3.5 rounded-2xl border-2 font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center ${
-                        isSelected
-                          ? showAnswer && isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
-                            : 'bg-indigo-600 text-white border-indigo-700 shadow-md'
-                          : showAnswer && isCorrect
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
-                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Gợi ý khi bấm nút Trợ Giúp */}
+          {/* Gợi ý khi bấm nút Gợi ý */}
           {showHelp && (
-            <div className="mt-6 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 p-4 sm:p-5 animate-fadeIn">
+            <div className="mt-6 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 p-4 sm:p-5">
               <div className="flex items-start gap-3">
                 <span className="text-2xl shrink-0">💡</span>
                 <div>
@@ -1146,7 +1011,7 @@ export default function AdvancedLogicMathGame() {
           {/* Phản hồi kết quả sau khi kiểm tra */}
           {validationResult && (
             <div
-              className={`mt-6 rounded-2xl p-4 sm:p-5 flex items-center gap-3 animate-bounce ${
+              className={`mt-6 rounded-2xl p-4 sm:p-5 flex items-center gap-3 ${
                 validationResult === 'correct'
                   ? 'bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
                   : 'bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200'
@@ -1164,7 +1029,7 @@ export default function AdvancedLogicMathGame() {
                 <div className="text-xs mt-0.5 opacity-90">
                   {validationResult === 'correct'
                     ? 'Hãy xem lời giải từng bước bên dưới hoặc bấm Câu tiếp theo để sang thử thách mới.'
-                    : 'Bấm nút "💡 Trợ giúp" nếu bé cần một gợi ý nhỏ.'}
+                    : 'Bấm nút "💡 Gợi ý" nếu bé cần một gợi ý nhỏ.'}
                 </div>
               </div>
             </div>
@@ -1254,8 +1119,8 @@ export default function AdvancedLogicMathGame() {
         </h3>
         <div className="mt-4 flex flex-wrap gap-2.5">
           {filteredQuestions.map((q, idx) => {
-            const isCurrent = idx === currentIndex;
-            const isDone = completedQuestions[q.id];
+            const isActive = idx === currentIndex;
+            const isCompleted = completedQuestions[q.id];
 
             return (
               <button
@@ -1263,15 +1128,15 @@ export default function AdvancedLogicMathGame() {
                 type="button"
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-11 w-11 rounded-2xl font-black text-sm transition-all cursor-pointer flex items-center justify-center relative ${
-                  isCurrent
+                  isActive
                     ? 'bg-violet-600 text-white shadow-md ring-2 ring-violet-400 scale-105'
-                    : isDone
+                    : isCompleted
                     ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 <span>{q.questionNumber}</span>
-                {isDone && !isCurrent && (
+                {isCompleted && !isActive && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] text-white font-bold">
                     ✓
                   </span>
