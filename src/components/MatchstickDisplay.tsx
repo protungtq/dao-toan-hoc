@@ -192,7 +192,13 @@ function MatchstickOperator({ op }: { op: string }) {
   return null;
 }
 
-export default function MatchstickDisplay({ equation, highlightStick }: MatchstickProps) {
+interface MatchstickProps {
+  equation: string; // e.g. "6 + 4 = 4" or "0" or "5"
+  highlightStick?: string; // clue or hint
+  showHint?: boolean;
+}
+
+export default function MatchstickDisplay({ equation, highlightStick, showHint = false }: MatchstickProps) {
   // Tách phương trình thành các token: ví dụ "6 + 4 = 4"
   const tokens = equation.trim().split(/\s+/);
 
@@ -211,7 +217,7 @@ export default function MatchstickDisplay({ equation, highlightStick }: Matchsti
                 <MatchstickDigit
                   key={cIdx}
                   char={char}
-                  highlightMiddle={highlightStick?.includes('ngang ở giữa số 6') && tok === '6'}
+                  highlightMiddle={showHint && highlightStick?.includes('ngang ở giữa số 6') && tok === '6'}
                 />
               ))}
             </div>
@@ -219,8 +225,8 @@ export default function MatchstickDisplay({ equation, highlightStick }: Matchsti
         })}
       </div>
 
-      {highlightStick && (
-        <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-bold border border-amber-300 dark:border-amber-700">
+      {showHint && highlightStick && (
+        <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-bold border border-amber-300 dark:border-amber-700 animate-fadeIn">
           <span>🥢</span>
           <span>{highlightStick}</span>
         </div>

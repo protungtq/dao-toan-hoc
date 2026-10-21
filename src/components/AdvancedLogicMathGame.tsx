@@ -529,6 +529,7 @@ export default function AdvancedLogicMathGame() {
                   <MatchstickDisplay
                     equation={(currentQuestion as ChoiceQuestion).visualContent?.data.equation || '6 + 4 = 4'}
                     highlightStick={(currentQuestion as ChoiceQuestion).visualContent?.data.moveClue}
+                    showHint={showHelp}
                   />
                 </div>
               )}
@@ -621,7 +622,7 @@ export default function AdvancedLogicMathGame() {
                   <span>🌳</span>
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-emerald-800 dark:text-emerald-300">
-                  Ghi nhớ tư duy: Số khoảng cách = Số vật - 1
+                  Mô hình hàng cây và khoảng cách giữa các cây liên tiếp
                 </div>
               </div>
 
