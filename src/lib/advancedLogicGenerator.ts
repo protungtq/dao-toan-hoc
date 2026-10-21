@@ -47,50 +47,66 @@ function makeMatchstickQuestion(id: string, qNum: number): ChoiceQuestion {
     {
       eq: '6 + 4 = 4',
       correct: '0 + 4 = 4',
-      distractors: ['5 + 4 = 9', '6 - 4 = 2', '8 - 4 = 4'],
+      distractors: ['5 + 4 = 9', '6 - 4 = 2', '8 + 4 = 12'],
       clue: 'Nhấc thanh ngang ở giữa số 6 biến số 6 thành số 0!',
-      hint: 'Nhấc que diêm nằm ngang ở giữa số 6 để biến số 6 thành số 0 tròn trĩnh!',
-      expl: 'Nhấc que diêm nằm ngang ở giữa số 6, biến số 6 thành số 0. Ta được phép tính đúng: 0 + 4 = 4!'
+      hint: 'Nhấc que diêm nằm ngang ở giữa số 6 để biến số 6 thành số 0 tròn!',
+      expl: 'Nhấc que diêm nằm ngang ở giữa số 6 biến số 6 thành số 0, ta được phép tính đúng: 0 + 4 = 4!'
     },
     {
-      eq: '6 - 1 = 7',
-      correct: '6 + 1 = 7',
-      distractors: ['8 - 1 = 7', '5 + 2 = 7', '7 - 1 = 6'],
-      clue: 'Di chuyển 1 que diêm ở số 6 hoặc phép tính!',
-      hint: 'Lấy 1 que ở số 6 hoặc chuyển que để đổi dấu trừ thành dấu cộng!',
-      expl: 'Có thể lấy 1 que ở số 6 chuyển vào dấu trừ để thành phép cộng: 6 + 1 = 7 (hoặc 8 - 1 = 7).'
+      eq: '7 - 1 = 2',
+      correct: '1 + 1 = 2',
+      distractors: ['7 - 1 = 6', '8 - 1 = 7', '7 + 1 = 8'],
+      clue: 'Nhấc thanh ngang ở số 7 (biến thành số 1) đặt vào dấu trừ để biến thành dấu cộng (+)!',
+      hint: 'Số 7 có thanh ngang phía trên. Hãy nhấc que ngang đó để số 7 trở thành số 1, rồi đặt vào dấu trừ (-)!',
+      expl: 'Nhấc que ngang ở đầu số 7 biến số 7 thành số 1, đặt que đó vào dấu trừ (-) để biến thành dấu cộng (+). Ta được phép tính đúng: 1 + 1 = 2!'
     },
     {
-      eq: '9 - 5 = 2',
-      correct: '9 - 7 = 2',
-      distractors: ['8 - 6 = 2', '7 - 5 = 2', '9 - 5 = 4'],
-      clue: 'Di chuyển 1 que diêm ở số 5!',
-      hint: 'Đổi que diêm ở số 5 để biến thành số 7!',
-      expl: 'Chuyển que diêm ở số 5 để tạo thành số 7, ta có phép tính đúng: 9 - 7 = 2.'
-    },
-    {
-      eq: '8 - 4 = 6',
-      correct: '8 - 4 = 4',
-      distractors: ['6 - 4 = 2', '8 - 2 = 6', '9 - 3 = 6'],
-      clue: 'Di chuyển 1 que diêm ở số 6 để thành số 4!',
-      hint: 'Bỏ 1 que ở đáy số 6 dời lên để số 6 biến thành số 4!',
-      expl: 'Chuyển 1 que diêm ở số 6 để tạo thành số 4, ta được đẳng thức đúng: 8 - 4 = 4.'
-    },
-    {
-      eq: '3 + 5 = 9',
-      correct: '3 + 6 = 9',
-      distractors: ['5 + 4 = 9', '4 + 5 = 9', '3 + 5 = 8'],
-      clue: 'Đổi chỗ 1 que diêm ở số 5 để thành số 6!',
-      hint: 'Nhấc 1 que của số 5 dời sang bên trái dưới để thành số 6!',
-      expl: 'Chuyển 1 que diêm trong số 5 để tạo thành số 6: 3 + 6 = 9!'
+      eq: '6 - 1 = 6',
+      correct: '5 + 1 = 6',
+      distractors: ['6 + 1 = 7', '7 - 1 = 6', '6 - 0 = 6'],
+      clue: 'Lấy 1 que ở số 6 (biến thành số 5) đặt vào dấu trừ để biến thành dấu cộng (+)!',
+      hint: 'Số 6 bớt 1 que dọc dưới bên trái sẽ biến thành số 5. Lấy que đó đặt vào dấu trừ để tạo thành dấu cộng (+)!',
+      expl: 'Lấy 1 que dọc ở phía dưới bên trái của số 6 biến số 6 thành số 5, đặt que đó vào dấu trừ (-) để biến thành dấu cộng (+). Ta có phép tính đúng: 5 + 1 = 6!'
     },
     {
       eq: '5 + 7 = 2',
       correct: '9 - 7 = 2',
-      distractors: ['8 - 6 = 2', '5 + 2 = 7', '7 - 5 = 2'],
-      clue: 'Lấy 1 que từ dấu cộng sang số 5!',
-      hint: 'Dấu cộng nhấc 1 que thành dấu trừ, đặt que đó vào số 5 để thành số 9!',
-      expl: 'Nhấc thanh dọc ở dấu + (thành dấu -) và đặt vào số 5 để biến thành số 9. Phép tính đúng: 9 - 7 = 2.'
+      distractors: ['5 + 2 = 7', '8 - 6 = 2', '7 - 5 = 2'],
+      clue: 'Lấy que dọc ở dấu cộng (thành dấu trừ) đặt vào số 5 để biến thành số 9!',
+      hint: 'Dấu cộng (+) nhấc 1 que dọc thành dấu trừ (-), đặt que đó vào số 5 để tạo thành số 9!',
+      expl: 'Nhấc thanh dọc ở dấu + (biến thành dấu -) và đặt vào số 5 để biến thành số 9. Ta có phép tính đúng: 9 - 7 = 2!'
+    },
+    {
+      eq: '8 - 1 = 9',
+      correct: '9 - 1 = 8',
+      distractors: ['8 + 1 = 9', '7 - 1 = 6', '8 - 0 = 8'],
+      clue: 'Lấy 1 que ở số 8 (thành số 9) chuyển sang ghép vào số 9 ở kết quả (thành số 8)!',
+      hint: 'Số 8 bớt 1 que thành số 9, số 9 thêm 1 que thành số 8!',
+      expl: 'Lấy que dọc dưới bên trái của số 8 (số 8 biến thành số 9), đem que đó ghép vào vị trí dọc dưới bên trái của số 9 (số 9 biến thành số 8). Ta được phép tính đúng: 9 - 1 = 8!'
+    },
+    {
+      eq: '7 - 5 = 6',
+      correct: '1 + 5 = 6',
+      distractors: ['7 - 1 = 6', '8 - 2 = 6', '7 + 5 = 12'],
+      clue: 'Lấy thanh ngang ở số 7 (thành số 1) đặt vào dấu trừ để biến thành dấu cộng (+)!',
+      hint: 'Số 7 nhấc thanh ngang phía trên sẽ biến thành số 1. Đặt que đó vào dấu trừ để tạo dấu cộng!',
+      expl: 'Nhấc thanh ngang trên của số 7 biến số 7 thành số 1, đặt que đó vào dấu trừ biến thành dấu cộng (+). Ta có phép tính đúng: 1 + 5 = 6!'
+    },
+    {
+      eq: '6 + 1 = 5',
+      correct: '5 + 1 = 6',
+      distractors: ['6 - 1 = 5', '6 + 0 = 6', '4 + 1 = 5'],
+      clue: 'Lấy 1 que ở số 6 bên trái (thành số 5) chuyển sang số 5 ở vế phải (thành số 6)!',
+      hint: 'Số 6 bớt 1 que thành số 5, số 5 thêm 1 que thành số 6!',
+      expl: 'Lấy que dọc dưới bên trái của số 6 (biến thành số 5), đặt vào vị trí dọc dưới bên trái của số 5 ở kết quả (biến thành số 6). Ta có phép tính đúng: 5 + 1 = 6!'
+    },
+    {
+      eq: '9 - 4 = 7',
+      correct: '3 + 4 = 7',
+      distractors: ['9 - 2 = 7', '9 + 4 = 13', '8 - 1 = 7'],
+      clue: 'Nhấc 1 que ở số 9 (thành số 3) đặt vào dấu trừ để biến thành dấu cộng (+)!',
+      hint: 'Số 9 nhấc que dọc trên bên trái sẽ biến thành số 3. Đặt que đó vào dấu trừ để thành dấu cộng!',
+      expl: 'Nhấc que dọc trên bên trái của số 9 biến số 9 thành số 3, đặt que đó vào dấu trừ biến thành dấu cộng (+). Ta được phép tính đúng: 3 + 4 = 7!'
     }
   ];
 

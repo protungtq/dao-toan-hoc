@@ -126,10 +126,10 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
         moveClue: 'Nhấc 1 que diêm ở số 6'
       }
     },
-    options: ['0 + 4 = 4', '5 + 4 = 9', '6 - 4 = 2', '8 - 4 = 4'],
+    options: ['0 + 4 = 4', '5 + 4 = 9', '6 - 4 = 2', '8 + 4 = 12'],
     correctAnswer: '0 + 4 = 4',
-    hint: 'Nhìn vào số 6: nhấc que diêm nằm ngang ở giữa số 6 bỏ ra ngoài hoặc dời đi, số 6 sẽ biến thành số 0 tròn trĩnh!',
-    explanation: 'Nhấc que diêm nằm ngang ở giữa số 6 biến số 6 thành số 0. Ta được phép tính đúng: 0 + 4 = 4! (Hoặc lấy que từ dấu + sang số 4 để thành 6 - 4 = 2).'
+    hint: 'Nhìn vào số 6: nhấc que diêm nằm ngang ở giữa số 6 biến số 6 thành số 0 tròn!',
+    explanation: 'Nhấc que diêm nằm ngang ở giữa số 6 biến số 6 thành số 0. Ta được phép tính đúng: 0 + 4 = 4!'
   },
   {
     id: 'cau-2-que-diem-doi-cho-so-0',
@@ -189,23 +189,23 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     explanation: 'Nhấc que diêm thứ 2 (dọc trên bên trái) dời sang vị trí dọc trên bên phải, số 5 sẽ lập tức biến thành số 3!'
   },
   {
-    id: 'cau-5-que-diem-xep-tu-3-que',
+    id: 'cau-5-que-diem-7-tru-1',
     questionNumber: 5,
     type: 'matchstick',
     categoryTitle: 'Toán Que Diêm',
-    title: 'Có thể xếp được các chữ số nào chỉ từ đúng 3 que tính (que diêm)?',
-    titleEn: 'Which numbers can be formed using exactly 3 matches?',
+    title: 'Phép tính que diêm: 7 - 1 = 2. Chỉ được di chuyển ĐÚNG 1 QUE DIÊM để được phép tính đúng. Đó là phép tính nào?',
+    titleEn: 'Matchstick puzzle: Move exactly 1 matchstick in "7 - 1 = 2" to make a correct equation.',
     visualContent: {
       type: 'matchstick',
       data: {
-        equation: '3 que tính = ?',
-        moveClue: 'Đếm số que tính cấu tạo từng chữ số'
+        equation: '7 - 1 = 2',
+        moveClue: 'Nhấc thanh ngang ở số 7 đặt vào dấu trừ để biến thành dấu cộng (+)'
       }
     },
-    options: ['Số 1, 4, 7', 'Số 2, 4', 'Số 3, 5', 'Số 6, 9'],
-    correctAnswer: 'Số 1, 4, 7',
-    hint: 'Số 4 gồm 3 que (hoặc 4 que), số 7 gồm 3 que. Quan sát kỹ cấu tạo từng que tính nhé!',
-    explanation: 'Các chữ số 1, 4, 7 có thể tạo thành từ đúng 3 que tính đơn giản.'
+    options: ['1 + 1 = 2', '7 - 1 = 6', '8 - 1 = 7', '7 + 1 = 8'],
+    correctAnswer: '1 + 1 = 2',
+    hint: 'Nhìn vào số 7: nhấc que diêm nằm ngang ở trên cùng biến số 7 thành số 1, rồi đem que đó đặt vào dấu trừ (-) để biến thành dấu cộng (+)!',
+    explanation: 'Nhấc que ngang ở đầu số 7 biến số 7 thành số 1, đặt que đó vào dấu trừ (-) để biến thành dấu cộng (+). Ta được phép tính đúng: 1 + 1 = 2!'
   },
 
   // ==================== CHỦ ĐỀ 2: BÀI TOÁN XẾP HÀNG & BẬC THANG (EBOOK TRANG 47, 48, 49, 67, 69) ====================
