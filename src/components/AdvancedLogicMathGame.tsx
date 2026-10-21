@@ -114,12 +114,15 @@ export default function AdvancedLogicMathGame() {
 
   // Kiểm tra hoàn thành phiên học & Trao 3/3 Vé Minigame
   const checkSessionCompletion = useCallback((updatedCompleted: Record<string, boolean>) => {
-    // Phải kiểm tra trên TOÀN BỘ CÂU HỎI TRONG PHIÊN sessionQuestions (tất cả 37 câu bộ chuẩn, hoặc tất cả 10 câu bộ random)
+    // Phải kiểm tra trên TOÀN BỘ CÂU HỎI TRONG PHIÊN sessionQuestions
     const totalSessionCount = sessionQuestions.length;
-    const completedSessionCount = sessionQuestions.filter((q) => updatedCompleted[q.id]).length;
+    if (totalSessionCount === 0) return;
+
+    // TẤT CẢ các câu trong phiên phải hoàn thành (mỗi câu đều phải có giá trị true trong updatedCompleted)
+    const allCompleted = sessionQuestions.every((q) => Boolean(updatedCompleted[q.id]));
 
     // Chỉ khi đã hoàn thành ĐỦ tất cả các câu trong phiên học đó
-    if (completedSessionCount >= totalSessionCount && totalSessionCount > 0) {
+    if (allCompleted) {
       playFinalSound();
       // Nhận luôn 3/3 vé minigame theo yêu cầu đặc biệt của Toán Nâng Cao!
       const newTicketState = grantFullTickets(`advanced-session-${Date.now()}`);
@@ -299,6 +302,7 @@ export default function AdvancedLogicMathGame() {
     if (isCorrect) {
       setValidationResult('correct');
       playCorrectSound();
+      setShowAnswer(true);
       const updated = { ...completedQuestions, [currentQuestion.id]: true };
       setCompletedQuestions(updated);
       saveProgress(updated);
@@ -424,7 +428,7 @@ export default function AdvancedLogicMathGame() {
               <span className="text-2xl">🏆</span>
               <div>
                 <div className="text-[11px] font-bold uppercase text-amber-300">
-                  {isRandomSession ? 'Tiến độ phiên ngẫu nhiên' : 'Tiến độ toàn phiên (37 câu)'}
+                  {isRandomSession ? 'Tiến độ phiên ngẫu nhiên' : `Tiến độ toàn phiên (${sessionQuestions.length} câu)`}
                 </div>
                 <div className="text-sm font-black">
                   {sessionCompletedCount} / {sessionQuestions.length} câu hoàn thành
@@ -1014,12 +1018,16 @@ export default function AdvancedLogicMathGame() {
                   ))}
                 </div>
 
-                <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-indigo-500/20 border-2 border-amber-400/60 dark:border-amber-600/60 text-center shadow-inner">
-                  <div className="text-4xl mb-2">
-                    {validationResult === 'correct' ? '🔓' : '🔐'}
+                <div className={`p-6 rounded-3xl border-2 text-center shadow-inner transition-all ${
+                  validationResult === 'correct'
+                    ? 'bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-emerald-500/20 border-emerald-400 dark:border-emerald-500'
+                    : 'bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-indigo-500/20 border-amber-400/60 dark:border-amber-600/60'
+                }`}>
+                  <div className="text-4xl mb-2 animate-bounce">
+                    {validationResult === 'correct' || (showAnswer && currentDigits.join('') === q.correctCode) ? '🔓' : '🔐'}
                   </div>
                   <div className="text-xs font-black uppercase text-amber-800 dark:text-amber-300 tracking-wider mb-4">
-                    Xoay các con số để mở khóa rương
+                    {validationResult === 'correct' ? '🎉 Đã giải mã thành công! Khóa đã mở!' : 'Xoay các con số để mở khóa'}
                   </div>
 
                   <div className="flex items-center justify-center gap-4 sm:gap-6">
@@ -1032,7 +1040,11 @@ export default function AdvancedLogicMathGame() {
                         >
                           ▲
                         </button>
-                        <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-slate-900 text-amber-400 font-mono font-black text-3xl sm:text-4xl flex items-center justify-center shadow-lg border-2 border-amber-400">
+                        <div className={`h-16 w-16 sm:h-20 sm:w-20 rounded-2xl text-amber-400 font-mono font-black text-3xl sm:text-4xl flex items-center justify-center shadow-lg border-2 ${
+                          validationResult === 'correct'
+                            ? 'bg-slate-900 border-emerald-400 ring-2 ring-emerald-300'
+                            : 'bg-slate-900 border-amber-400'
+                        }`}>
                           {digit}
                         </div>
                         <button
@@ -1045,6 +1057,13 @@ export default function AdvancedLogicMathGame() {
                       </div>
                     ))}
                   </div>
+
+                  {showAnswer && (
+                    <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-400 text-emerald-900 dark:text-emerald-200 font-black text-sm shadow-sm">
+                      <span>🔓 Mật mã mở khóa chính xác:</span>
+                      <span className="font-mono text-base tracking-widest text-emerald-700 dark:text-emerald-300 font-extrabold">{q.correctCode}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             );

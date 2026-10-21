@@ -666,33 +666,151 @@ function makeLogicGridQuestion(id: string, qNum: number): LogicGridQuestion {
   };
 }
 
-// 11. Máy tạo câu hỏi Phá khóa mật mã
+// 11. Máy tạo câu hỏi Phá khóa mật mã (ngẫu nhiên từ kho câu đố logic đã kiểm chứng 100% nghiệm duy nhất)
 function makeCodeBreakerQuestion(id: string, qNum: number): CodeBreakerQuestion {
+  const puzzles = [
+    {
+      title: 'Một chiếc vali mật mã 3 chữ số có các manh mối bảo mật. Hãy giải mã để mở vali:',
+      titleEn: 'Crack the 3-digit briefcase lock with the given security hints:',
+      correctCode: '042',
+      clueStrips: [
+        { code: '6 8 2', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '6 1 4', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
+        { code: '2 0 6', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+        { code: '7 3 8', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '7 8 0', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' }
+      ],
+      hint: 'Gạch bỏ các số 7, 3, 8 trước tiên vì manh mối số 4 khẳng định chúng hoàn toàn sai!',
+      explanation: 'Mật mã mở vali là 042.',
+      explanationSteps: [
+        'Bước 1: Dòng "7 3 8" không có số nào đúng => Loại bỏ hoàn toàn 7, 3, 8.',
+        'Bước 2: Dòng "7 8 0" loại 7 và 8 => Số 0 đúng nhưng sai vị trí thứ ba => 0 ở vị trí 1 hoặc 2.',
+        'Bước 3: Dòng "6 8 2" loại 8. Nếu 6 đúng vị trí 1 thì dòng "6 1 4" mâu thuẫn => Số 2 đúng vị trí hàng đơn vị: [?][?][2].',
+        'Bước 4: Dòng "2 0 6" có hai số đúng (2 và 0) đều sai vị trí. Vì 2 ở vị trí 3 nên 0 phải ở hàng trăm: [0][?][2].',
+        'Bước 5: Dòng "6 1 4" loại 6 => 4 là số đúng ở hàng chục: 042!'
+      ]
+    },
+    {
+      title: 'Chiếc két sắt mini thông minh cài mật mã 3 chữ số với các manh mối sau. Hãy tìm mã số mở két:',
+      titleEn: 'Crack the 3-digit smart safe passcode using the logic clues:',
+      correctCode: '384',
+      clueStrips: [
+        { code: '2 9 1', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '2 4 5', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
+        { code: '4 6 3', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+        { code: '5 7 8', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
+        { code: '3 8 7', description: 'Hai chữ số đúng và ĐỀU ĐÚNG VỊ TRÍ 🎯🎯', badge: '2 đúng vị trí' }
+      ],
+      hint: 'Loại bỏ hoàn toàn 2, 9, 1 trước. Ở dòng 5 có hai số đúng vị trí, hãy đối chiếu với dòng 4 để tìm số 8!',
+      explanation: 'Mật mã mở két sắt mini là 384.',
+      explanationSteps: [
+        'Bước 1: Dòng "2 9 1" không có chữ số nào đúng => Gạch bỏ 2, 9, 1.',
+        'Bước 2: Dòng "3 8 7" có 2 số đúng vị trí. Nếu 7 đúng thì mâu thuẫn với dòng "5 7 8" => Số 7 sai. Hai số đúng vị trí là 3 và 8: [3][8][?].',
+        'Bước 3: Vì 8 ở hàng chục, ở dòng "5 7 8" số đúng là 8 (5 và 7 đều sai).',
+        'Bước 4: Dòng "2 4 5" loại 2 và 5 => Số 4 là số đúng nhưng sai vị trí thứ 2 => Số 4 phải ở hàng đơn vị: [3][8][4].',
+        'Bước 5: Kiểm tra dòng "4 6 3": 4 và 3 đều đúng và đều sai vị trí (4 ở vị trí 1, 3 ở vị trí 3). Hoàn toàn chính xác: 384!'
+      ]
+    },
+    {
+      title: 'Một chiếc rương kho báu cổ có ổ khóa bánh xoay 3 chữ số. Hãy giải mã để mở rương:',
+      titleEn: 'Unlock the ancient 3-digit treasure chest lock with security hints:',
+      correctCode: '158',
+      clueStrips: [
+        { code: '2 4 6', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '1 3 7', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '5 1 9', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+        { code: '8 5 2', description: 'Một chữ số đúng vị trí và một chữ số sai vị trí 🎯🔄', badge: '1 đúng vị trí, 1 sai vị trí' },
+        { code: '4 8 5', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' }
+      ],
+      hint: 'Gạch bỏ 2, 4, 6 trước tiên. Ở dòng "8 5 2" loại số 2 thì còn lại đúng 8 và 5!',
+      explanation: 'Mật mã mở rương kho báu là 158.',
+      explanationSteps: [
+        'Bước 1: Dòng "2 4 6" không có số nào đúng => Loại bỏ 2, 4, 6.',
+        'Bước 2: Dòng "8 5 2" loại 2 => 8 và 5 đều là số đúng (một số đúng vị trí, một số sai vị trí).',
+        'Bước 3: Dòng "4 8 5" loại 4 => 8 và 5 đều sai vị trí (8 sai ở vị trí 2, 5 sai ở vị trí 3). Do đó ở dòng "8 5 2", số 5 đúng vị trí thứ hai [?][5][?], còn số 8 sai vị trí thứ nhất => 8 ở vị trí thứ ba: [?][5][8].',
+        'Bước 4: Dòng "5 1 9" có hai số đúng (5 và 1). Số 1 sai ở vị trí thứ hai => Số 1 ở vị trí thứ nhất: [1][5][8].',
+        'Bước 5: Kiểm tra dòng "1 3 7": Số 1 đúng vị trí hàng trăm. Chính xác tuyệt đối: 158!'
+      ]
+    },
+    {
+      title: 'Hộp thư bí mật của thám tử nhí có ổ khóa mã số 3 chữ số. Hãy tìm mật mã để mở hộp thư:',
+      titleEn: 'Find the 3-digit detective mailbox code using clues:',
+      correctCode: '942',
+      clueStrips: [
+        { code: '1 3 5', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '9 6 8', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '8 4 7', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '4 2 0', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+        { code: '2 9 4', description: 'Cả ba chữ số đều đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄🔄', badge: '3 đúng sai vị trí' }
+      ],
+      hint: 'Dòng cuối "2 9 4" cho biết cả 3 chữ số bí mật chính là {2, 9, 4}! Hãy dựa vào các dòng trên để xếp đúng vị trí.',
+      explanation: 'Mật mã mở hộp thư bí mật là 942.',
+      explanationSteps: [
+        'Bước 1: Dòng "2 9 4" khẳng định cả ba chữ số của mật mã là {2, 9, 4} nhưng cả ba đang xếp sai vị trí.',
+        'Bước 2: Dòng "9 6 8" có 1 chữ số đúng vị trí. Vì 9 thuộc bộ số nên số 9 đúng vị trí hàng trăm: [9][?][?].',
+        'Bước 3: Dòng "8 4 7" có 1 chữ số đúng vị trí. Vì 4 thuộc bộ số nên số 4 đúng vị trí hàng chục: [9][4][?].',
+        'Bước 4: Chữ số còn lại trong bộ ba là số 2 phải ở hàng đơn vị: [9][4][2].',
+        'Bước 5: Thử lại với dòng "4 2 0": hai số đúng là 4 và 2 đều sai vị trí (4 đứng ở vị trí 1, 2 đứng ở vị trí 2). Khớp 100%! Mật mã là 942!'
+      ]
+    },
+    {
+      title: 'Tủ đồ lưu trữ của câu lạc bộ toán có khóa vòng xoay 3 chữ số. Hãy giải mã để mở khóa tủ:',
+      titleEn: 'Crack the 3-digit padlock of the math club storage locker:',
+      correctCode: '618',
+      clueStrips: [
+        { code: '5 2 7', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '6 3 0', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '1 9 6', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+        { code: '8 1 3', description: 'Một chữ số đúng vị trí và một chữ số sai vị trí 🎯🔄', badge: '1 đúng vị trí, 1 sai vị trí' },
+        { code: '4 8 1', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' }
+      ],
+      hint: 'Gạch bỏ 5, 2, 7 trước. Ở dòng "6 3 0" kết hợp với "1 9 6" để xác định số 6 đứng ở hàng trăm!',
+      explanation: 'Mật mã mở tủ đồ là 618.',
+      explanationSteps: [
+        'Bước 1: Dòng "5 2 7" không có số nào đúng => Loại bỏ 5, 2, 7.',
+        'Bước 2: Dòng "6 3 0" có 1 số đúng vị trí. Đối chiếu với dòng "1 9 6" (số 6 sai vị trí 3) => Số 6 đúng vị trí hàng trăm: [6][?][?].',
+        'Bước 3: Dòng "1 9 6" có hai số đúng là 6 và 1 (1 sai vị trí 1 => 1 ở vị trí 2 hoặc 3).',
+        'Bước 4: Dòng "8 1 3" loại 3, có 1 đúng vị trí và 1 sai vị trí => Số 1 ở vị trí 2 đúng vị trí [6][1][?], số 8 ở vị trí 1 sai vị trí => Số 8 ở vị trí 3: [6][1][8].',
+        'Bước 5: Thử lại dòng "4 8 1" có hai số đúng (8 và 1) đều sai vị trí (8 ở vị trí 2, 1 ở vị trí 3). Hoàn toàn chính xác: 618!'
+      ]
+    },
+    {
+      title: 'Cánh cửa bảo mật của phòng thí nghiệm được khóa bằng mã 3 số. Hãy giải mã để mở cửa:',
+      titleEn: 'Crack the 3-digit code to unlock the logic lab door:',
+      correctCode: '729',
+      clueStrips: [
+        { code: '4 1 8', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+        { code: '7 3 5', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '9 7 2', description: 'Cả ba chữ số đều đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄🔄', badge: '3 đúng sai vị trí' },
+        { code: '6 2 4', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+        { code: '2 0 9', description: 'Một chữ số đúng vị trí và một chữ số sai vị trí 🎯🔄', badge: '1 đúng vị trí, 1 sai vị trí' }
+      ],
+      hint: 'Dòng "9 7 2" cho biết bộ ba số bí mật chính là {7, 2, 9}! Hãy đối chiếu với dòng "7 3 5" và "6 2 4".',
+      explanation: 'Mật mã mở cánh cửa là 729.',
+      explanationSteps: [
+        'Bước 1: Dòng "4 1 8" không có số nào đúng => Loại bỏ 4, 1, 8.',
+        'Bước 2: Dòng "9 7 2" khẳng định cả 3 số đúng là {7, 2, 9} nhưng cả 3 đều đứng sai vị trí.',
+        'Bước 3: Dòng "7 3 5" có 1 số đúng vị trí => Vì 7 thuộc bộ số nên 7 đúng vị trí hàng trăm: [7][?][?].',
+        'Bước 4: Dòng "6 2 4" loại 4, có 1 số đúng vị trí => Số 2 đúng vị trí hàng chục: [7][2][?].',
+        'Bước 5: Chữ số còn lại trong bộ ba là số 9 phải ở hàng đơn vị: [7][2][9]. Kiểm tra dòng "2 0 9": số 9 đúng vị trí hàng đơn vị, số 2 sai vị trí hàng trăm. Chuẩn xác 100%! Mật mã là 729!'
+      ]
+    }
+  ];
+
+  const p = pickRandom(puzzles);
   return {
     id,
     questionNumber: qNum,
     type: 'code-breaker',
     categoryTitle: 'Phá Khóa Mật Mã',
-    title: 'Một chiếc vali mật mã 3 chữ số có các manh mối bảo mật. Hãy giải mã để mở vali:',
-    titleEn: 'Crack the 3-digit briefcase lock with the given security hints:',
+    title: p.title,
+    titleEn: p.titleEn,
     digitsCount: 3,
-    clueStrips: [
-      { code: '6 8 2', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
-      { code: '6 1 4', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
-      { code: '2 0 6', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
-      { code: '7 3 8', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
-      { code: '7 8 0', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' }
-    ],
-    correctCode: '042',
-    hint: 'Gạch bỏ các số 7, 3, 8 trước tiên vì manh mối số 4 khẳng định chúng hoàn toàn sai!',
-    explanation: 'Mật mã mở rương là 042.',
-    explanationSteps: [
-      'Bước 1: Dòng "7 3 8" không có số nào đúng => Loại bỏ 7, 3, 8.',
-      'Bước 2: Dòng "7 8 0" loại 7 và 8 => Số 0 đúng nhưng sai vị trí thứ ba => 0 ở vị trí 1 hoặc 2.',
-      'Bước 3: Dòng "6 8 2" có 1 số đúng vị trí => Số 2 đúng vị trí ở hàng đơn vị [?][?][2].',
-      'Bước 4: Dòng "2 0 6" có hai số đúng là 2 và 0 => Số 0 phải đứng ở hàng trăm: [0][?][2].',
-      'Bước 5: Dòng "6 1 4" có 1 số đúng sai vị trí => 4 là số đúng ở hàng chục: 042!'
-    ]
+    clueStrips: p.clueStrips,
+    correctCode: p.correctCode,
+    hint: p.hint,
+    explanation: p.explanation,
+    explanationSteps: p.explanationSteps,
   };
 }
 

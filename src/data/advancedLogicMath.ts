@@ -720,13 +720,91 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     ],
     correctCode: '042',
     hint: 'Gạch bỏ các số 7, 3, 8 trước tiên vì manh mối số 4 khẳng định chúng hoàn toàn sai!',
-    explanation: 'Mật mã mở rương là 042.',
+    explanation: 'Mật mã mở vali là 042.',
     explanationSteps: [
-      'Bước 1: Dòng "7 3 8" không có số nào đúng => Loại bỏ 7, 3, 8.',
+      'Bước 1: Dòng "7 3 8" không có số nào đúng => Loại bỏ hoàn toàn 7, 3, 8.',
       'Bước 2: Dòng "7 8 0" loại 7 và 8 => Số 0 đúng nhưng sai vị trí thứ ba => 0 ở vị trí 1 hoặc 2.',
-      'Bước 3: Dòng "6 8 2" có 1 số đúng vị trí => Số 2 đúng vị trí ở hàng đơn vị [?][?][2].',
-      'Bước 4: Dòng "2 0 6" có hai số đúng là 2 và 0 => Số 0 phải đứng ở hàng trăm: [0][?][2].',
-      'Bước 5: Dòng "6 1 4" có 1 số đúng sai vị trí => 4 là số đúng ở hàng chục: 042!'
+      'Bước 3: Dòng "6 8 2" loại 8. Nếu 6 đúng vị trí 1 thì dòng "6 1 4" mâu thuẫn => Số 2 đúng vị trí hàng đơn vị: [?][?][2].',
+      'Bước 4: Dòng "2 0 6" có hai số đúng (2 và 0) đều sai vị trí. Vì 2 ở vị trí 3 nên 0 phải ở hàng trăm: [0][?][2].',
+      'Bước 5: Dòng "6 1 4" loại 6 => 4 là số đúng ở hàng chục: 042!'
+    ]
+  },
+  {
+    id: 'cau-38-ket-sat-thong-minh',
+    questionNumber: 38,
+    type: 'code-breaker',
+    categoryTitle: 'Phá Khóa Mật Mã',
+    title: 'Chiếc két sắt mini thông minh cài mật mã 3 chữ số với các manh mối sau. Hãy tìm mã số mở két:',
+    titleEn: 'Crack the 3-digit smart safe passcode using the logic clues:',
+    digitsCount: 3,
+    clueStrips: [
+      { code: '2 9 1', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+      { code: '2 4 5', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
+      { code: '4 6 3', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+      { code: '5 7 8', description: 'Một chữ số đúng nhưng SAI VỊ TRÍ 🔄', badge: '1 đúng sai vị trí' },
+      { code: '3 8 7', description: 'Hai chữ số đúng và ĐỀU ĐÚNG VỊ TRÍ 🎯🎯', badge: '2 đúng vị trí' }
+    ],
+    correctCode: '384',
+    hint: 'Loại bỏ hoàn toàn 2, 9, 1 trước. Ở dòng 5 có hai số đúng vị trí, hãy đối chiếu với dòng 4 để tìm số 8!',
+    explanation: 'Mật mã mở két sắt mini là 384.',
+    explanationSteps: [
+      'Bước 1: Dòng "2 9 1" không có chữ số nào đúng => Gạch bỏ 2, 9, 1.',
+      'Bước 2: Dòng "3 8 7" có 2 số đúng vị trí. Nếu 7 đúng thì mâu thuẫn với dòng "5 7 8" => Số 7 sai. Hai số đúng vị trí là 3 và 8: [3][8][?].',
+      'Bước 3: Vì 8 ở hàng chục, ở dòng "5 7 8" số đúng là 8 (5 và 7 đều sai).',
+      'Bước 4: Dòng "2 4 5" loại 2 và 5 => Số 4 là số đúng nhưng sai vị trí thứ 2 => Số 4 phải ở hàng đơn vị: [3][8][4].',
+      'Bước 5: Kiểm tra dòng "4 6 3": 4 và 3 đều đúng và đều sai vị trí (4 ở vị trí 1, 3 ở vị trí 3). Hoàn toàn chính xác: 384!'
+    ]
+  },
+  {
+    id: 'cau-39-ruong-kho-bau-co',
+    questionNumber: 39,
+    type: 'code-breaker',
+    categoryTitle: 'Phá Khóa Mật Mã',
+    title: 'Một chiếc rương kho báu cổ có ổ khóa bánh xoay 3 chữ số. Hãy giải mã để mở rương:',
+    titleEn: 'Unlock the ancient 3-digit treasure chest lock with security hints:',
+    digitsCount: 3,
+    clueStrips: [
+      { code: '2 4 6', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+      { code: '1 3 7', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+      { code: '5 1 9', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+      { code: '8 5 2', description: 'Một chữ số đúng vị trí và một chữ số sai vị trí 🎯🔄', badge: '1 đúng vị trí, 1 sai vị trí' },
+      { code: '4 8 5', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' }
+    ],
+    correctCode: '158',
+    hint: 'Gạch bỏ 2, 4, 6 trước tiên. Ở dòng "8 5 2" loại số 2 thì còn lại đúng 8 và 5!',
+    explanation: 'Mật mã mở rương kho báu là 158.',
+    explanationSteps: [
+      'Bước 1: Dòng "2 4 6" không có số nào đúng => Loại bỏ 2, 4, 6.',
+      'Bước 2: Dòng "8 5 2" loại 2 => 8 và 5 đều là số đúng (một số đúng vị trí, một số sai vị trí).',
+      'Bước 3: Dòng "4 8 5" loại 4 => 8 và 5 đều sai vị trí (8 sai ở vị trí 2, 5 sai ở vị trí 3). Do đó ở dòng "8 5 2", số 5 đúng vị trí thứ hai [?][5][?], còn số 8 sai vị trí thứ nhất => 8 ở vị trí thứ ba: [?][5][8].',
+      'Bước 4: Dòng "5 1 9" có hai số đúng (5 và 1). Số 1 sai ở vị trí thứ hai => Số 1 ở vị trí thứ nhất: [1][5][8].',
+      'Bước 5: Kiểm tra dòng "1 3 7": Số 1 đúng vị trí hàng trăm. Chính xác tuyệt đối: 158!'
+    ]
+  },
+  {
+    id: 'cau-40-hop-thu-tham-tu',
+    questionNumber: 40,
+    type: 'code-breaker',
+    categoryTitle: 'Phá Khóa Mật Mã',
+    title: 'Hộp thư bí mật của thám tử nhí có ổ khóa mã số 3 chữ số. Hãy tìm mật mã để mở hộp thư:',
+    titleEn: 'Find the 3-digit detective mailbox code using clues:',
+    digitsCount: 3,
+    clueStrips: [
+      { code: '1 3 5', description: 'KHÔNG CÓ chữ số nào đúng cả ❌', badge: '0 đúng (loại)' },
+      { code: '9 6 8', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+      { code: '8 4 7', description: 'Một chữ số đúng và ĐÚNG VỊ TRÍ 🎯', badge: '1 đúng vị trí' },
+      { code: '4 2 0', description: 'Hai chữ số đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄', badge: '2 đúng sai vị trí' },
+      { code: '2 9 4', description: 'Cả ba chữ số đều đúng nhưng ĐỀU SAI VỊ TRÍ 🔄🔄🔄', badge: '3 đúng sai vị trí' }
+    ],
+    correctCode: '942',
+    hint: 'Dòng cuối "2 9 4" cho biết cả 3 chữ số bí mật chính là {2, 9, 4}! Hãy dựa vào các dòng trên để xếp đúng vị trí.',
+    explanation: 'Mật mã mở hộp thư bí mật là 942.',
+    explanationSteps: [
+      'Bước 1: Dòng "2 9 4" khẳng định cả ba chữ số của mật mã là {2, 9, 4} nhưng cả ba đang xếp sai vị trí.',
+      'Bước 2: Dòng "9 6 8" có 1 chữ số đúng vị trí. Vì 9 thuộc bộ số nên số 9 đúng vị trí hàng trăm: [9][?][?].',
+      'Bước 3: Dòng "8 4 7" có 1 chữ số đúng vị trí. Vì 4 thuộc bộ số nên số 4 đúng vị trí hàng chục: [9][4][?].',
+      'Bước 4: Chữ số còn lại trong bộ ba là số 2 phải ở hàng đơn vị: [9][4][2].',
+      'Bước 5: Thử lại với dòng "4 2 0": hai số đúng là 4 và 2 đều sai vị trí (4 đứng ở vị trí 1, 2 đứng ở vị trí 2). Khớp 100%! Mật mã là 942!'
     ]
   }
 ];
