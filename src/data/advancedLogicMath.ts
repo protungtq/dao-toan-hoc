@@ -119,15 +119,11 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     categoryTitle: 'Toán Que Diêm',
     title: 'Phép tính que diêm: 6 + 4 = 4. Chỉ được di chuyển ĐÚNG 1 QUE DIÊM để được phép tính đúng. Đó là phép tính nào?',
     titleEn: 'Matchstick puzzle: Move exactly 1 matchstick in "6 + 4 = 4" to make a correct equation.',
-    clues: [
-      '• Phép tính que diêm ban đầu: 6 + 4 = 4 (chưa đúng)',
-      '• Yêu cầu: Nhấc 1 que diêm từ một vị trí và đặt sang vị trí khác để tạo thành phép tính đúng.'
-    ],
     visualContent: {
       type: 'matchstick',
       data: {
         equation: '6 + 4 = 4',
-        moveClue: 'Gợi ý: Nhấc thanh ngang ở giữa số 6 biến số 6 thành số 0!'
+        moveClue: 'Nhấc 1 que diêm ở số 6'
       }
     },
     options: ['0 + 4 = 4', '5 + 4 = 9', '6 - 4 = 2', '8 - 4 = 4'],
@@ -146,7 +142,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
       type: 'matchstick',
       data: {
         equation: 'Số 0 (gồm 6 que diêm)',
-        moveClue: 'Nhấc 1 que ở cạnh đứng đặt vào giữa!'
+        moveClue: 'Di chuyển 1 que diêm'
       }
     },
     options: ['Số 6 và Số 9', 'Số 2 và Số 3', 'Số 4 và Số 7', 'Số 1 và Số 8'],
@@ -165,7 +161,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
       type: 'matchstick',
       data: {
         equation: 'Ghép que diêm thành số 9',
-        moveClue: 'Số 9 điện tử gồm 6 que diêm: 3 que ngang (trên, giữa, dưới) và 3 que dọc (2 que trên, 1 que dưới phải)'
+        moveClue: 'Quan sát các nét que diêm'
       }
     },
     options: ['Gồm 6 que diêm hoàn chỉnh', 'Gồm 4 que diêm', 'Gồm 5 que diêm khuyết', 'Gồm 7 que diêm'],
@@ -184,7 +180,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
       type: 'matchstick',
       data: {
         equation: 'Số 5 -> Số 3',
-        moveClue: 'Que 2 đang nằm ở phía trên bên trái!'
+        moveClue: 'Quan sát thanh dọc cần đổi chỗ'
       }
     },
     options: ['Que diêm thứ 2', 'Que diêm thứ 3', 'Que diêm thứ 4', 'Que diêm thứ 5'],
@@ -203,7 +199,7 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
       type: 'matchstick',
       data: {
         equation: '3 que tính = ?',
-        moveClue: 'Số 7: 1 que ngang + 2 que dọc (hoặc 1 que ngang + 1 que chéo + que gạch ngang); số 1: có thể cần 2 que; số 4: 1 que dọc dài + 1 que ngang + 1 que dọc'
+        moveClue: 'Đếm số que tính cấu tạo từng chữ số'
       }
     },
     options: ['Số 1, 4, 7', 'Số 2, 4', 'Số 3, 5', 'Số 6, 9'],
@@ -220,19 +216,6 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     categoryTitle: 'Xếp Hàng & Bậc Thang',
     title: 'Có 3 người đứng trước cô Nga khi cô đang xếp hàng đi lên xe buýt. Cô Nga lại đứng thứ 4 từ cuối hàng lên. Hỏi có tất cả bao nhiêu người cùng xếp hàng?',
     titleEn: 'There are 3 people standing in front of Ms. Nga in a bus queue. Ms. Nga is the 4th person from the back. How many people are in the queue?',
-    clues: [
-      '• Đứng trước cô Nga: có 3 người.',
-      '• Bản thân cô Nga: 1 người.',
-      '• Đứng thứ 4 từ cuối hàng lên => có 3 người đứng sau cô Nga.'
-    ],
-    visualContent: {
-      type: 'lineup',
-      data: {
-        before: 3,
-        person: 'Cô Nga',
-        after: 3
-      }
-    },
     options: ['6 người', '7 người', '8 người', '9 người'],
     correctAnswer: '7 người',
     hint: 'Số người = (Người đứng trước) + (Cô Nga) + (Người đứng sau). Đứng thứ 4 từ dưới lên tức là sau cô có 3 người!',
@@ -297,11 +280,6 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     categoryTitle: 'Xếp Hàng & Bậc Thang',
     title: 'Một hàng ngang có 25 bạn, bên phải bạn Khang có 4 bạn. Hỏi số bạn bên trái bạn Khang nhiều hơn số bạn bên phải bao nhiêu bạn?',
     titleEn: 'In a row of 25 students, 4 students are to Khang’s right. How many more students are on his left than on his right?',
-    clues: [
-      '• Tổng số bạn: 25 bạn.',
-      '• Bên phải bạn Khang: 4 bạn.',
-      '• Bản thân bạn Khang: 1 bạn.'
-    ],
     options: [
       'Bên trái nhiều hơn và nhiều hơn 16 bạn',
       'Bên phải nhiều hơn và nhiều hơn 17 bạn',
@@ -440,16 +418,11 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     categoryTitle: 'Biểu Đồ Venn',
     title: 'Trong tiết Khoa học, bạn Lan đếm được tất cả 8 con vật. Trong đó có 5 con sống dưới nước và 5 con sống trên cạn. Hỏi có bao nhiêu con vật vừa sống dưới nước vừa sống trên cạn (lưỡng cư)?',
     titleEn: 'Lan counted 8 animals: 5 live in water and 5 live on land. How many animals live both in water and on land?',
-    clues: [
-      '• Tổng số con vật: 8 con.',
-      '• Vòng tròn A (Dưới nước): 5 con.',
-      '• Vòng tròn B (Trên cạn): 5 con.'
-    ],
     visualContent: {
       type: 'venn',
       data: {
-        circleA: 'Dưới nước (5 con)',
-        circleB: 'Trên cạn (5 con)',
+        circleA: 'Dưới nước',
+        circleB: 'Trên cạn',
         total: '8 con'
       }
     },
@@ -479,10 +452,6 @@ export const ADVANCED_QUESTIONS: AdvancedQuestion[] = [
     categoryTitle: 'Đồng Hồ & Lịch Tuần',
     title: 'Câu đố tư duy: "Ngày hôm sau của ngày mai là thứ Bảy." Hỏi hôm nay đang là thứ mấy trong tuần?',
     titleEn: 'Riddle: "The day after tomorrow is Saturday." What day is today?',
-    clues: [
-      '• Ngày hôm sau của ngày mai = 2 ngày nữa.',
-      '• 2 ngày nữa là thứ Bảy.'
-    ],
     options: ['Thứ Năm', 'Thứ Tư', 'Thứ Sáu', 'Chủ Nhật'],
     correctAnswer: 'Thứ Năm',
     hint: 'Lùi từng bước: Ngày hôm sau của ngày mai là thứ Bảy => Ngày mai là thứ Sáu => Hôm nay là thứ mấy?',

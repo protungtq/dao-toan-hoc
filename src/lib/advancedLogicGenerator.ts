@@ -101,11 +101,6 @@ function makeMatchstickQuestion(id: string, qNum: number): ChoiceQuestion {
     type: 'matchstick',
     categoryTitle: 'Toán Que Diêm',
     title: `Phép tính que diêm: ${p.eq}. Chỉ được di chuyển ĐÚNG 1 QUE DIÊM để được phép tính đúng. Đó là phép tính nào?`,
-    titleEn: `Matchstick puzzle: Move 1 match in "${p.eq}" to get a valid equation.`,
-    clues: [
-      `• Phép tính que diêm ban đầu: ${p.eq} (chưa đúng)`,
-      '• Yêu cầu: Nhấc 1 que diêm từ một vị trí và đặt sang vị trí khác để tạo thành phép tính đúng.'
-    ],
     visualContent: {
       type: 'matchstick',
       data: {
@@ -308,11 +303,6 @@ function makeVennQuestion(id: string, qNum: number): ChoiceQuestion {
       categoryTitle: 'Biểu Đồ Venn',
       title: `Trong tiết Khoa học, bạn ${name1} đếm được tất cả ${total} con vật. Trong đó có ${water} con có thể sống dưới nước và ${land} con có thể sống trên cạn. Hỏi có bao nhiêu con vật vừa sống dưới nước vừa sống trên cạn (lưỡng cư)?`,
       titleEn: `${name1} counted ${total} animals: ${water} can live in water and ${land} can live on land. How many live in both?`,
-      clues: [
-        `• Tổng số con vật thực tế: ${total} con.`,
-        `• Nhóm sống dưới nước: ${water} con.`,
-        `• Nhóm sống trên cạn: ${land} con.`
-      ],
       visualContent: {
         type: 'venn',
         data: {

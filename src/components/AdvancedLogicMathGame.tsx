@@ -114,18 +114,19 @@ export default function AdvancedLogicMathGame() {
 
   // Kiểm tra hoàn thành phiên học & Trao 3/3 Vé Minigame
   const checkSessionCompletion = useCallback((updatedCompleted: Record<string, boolean>) => {
-    const totalInList = filteredQuestions.length;
-    const completedInList = filteredQuestions.filter((q) => updatedCompleted[q.id]).length;
+    // Phải kiểm tra trên TOÀN BỘ CÂU HỎI TRONG PHIÊN sessionQuestions (tất cả 37 câu bộ chuẩn, hoặc tất cả 10 câu bộ random)
+    const totalSessionCount = sessionQuestions.length;
+    const completedSessionCount = sessionQuestions.filter((q) => updatedCompleted[q.id]).length;
 
-    // Khi hoàn thành tất cả câu hỏi trong danh mục hoặc phiên học
-    if (completedInList >= totalInList && totalInList > 0) {
+    // Chỉ khi đã hoàn thành ĐỦ tất cả các câu trong phiên học đó
+    if (completedSessionCount >= totalSessionCount && totalSessionCount > 0) {
       playFinalSound();
       // Nhận luôn 3/3 vé minigame theo yêu cầu đặc biệt của Toán Nâng Cao!
       const newTicketState = grantFullTickets(`advanced-session-${Date.now()}`);
       setCurrentTickets(newTicketState.tickets);
       setShowSessionCompletedModal(true);
     }
-  }, [filteredQuestions]);
+  }, [sessionQuestions]);
 
   // Tạo phiên ngẫu nhiên mới
   const handleStartNewRandomSession = (cat = selectedCategory) => {
@@ -141,6 +142,25 @@ export default function AdvancedLogicMathGame() {
     setChoiceState({});
     setShowSessionCompletedModal(false);
     setValidationResult(null);
+    setShowHelp(false);
+    setShowAnswer(false);
+  };
+
+  // Làm lại phiên học từ đầu (xoá tiến độ của phiên hiện tại để luyện lại)
+  const handleResetSessionProgress = () => {
+    playMiniGameSound('reset');
+    setCompletedQuestions({});
+    setGridState({});
+    setCodeBreakerState({});
+    setPyramidState({});
+    setChoiceState({});
+    setValidationResult(null);
+    setShowHelp(false);
+    setShowAnswer(false);
+    setShowSessionCompletedModal(false);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
   };
 
   // Quay lại bộ câu hỏi gốc
@@ -278,7 +298,6 @@ export default function AdvancedLogicMathGame() {
 
     if (isCorrect) {
       setValidationResult('correct');
-      setShowAnswer(true);
       playCorrectSound();
       const updated = { ...completedQuestions, [currentQuestion.id]: true };
       setCompletedQuestions(updated);
@@ -331,7 +350,11 @@ export default function AdvancedLogicMathGame() {
     if (currentIndex < filteredQuestions.length - 1) setCurrentIndex(currentIndex + 1);
   };
 
-  const completedCount = useMemo(() => {
+  const sessionCompletedCount = useMemo(() => {
+    return sessionQuestions.filter((q) => completedQuestions[q.id]).length;
+  }, [sessionQuestions, completedQuestions]);
+
+  const filteredCompletedCount = useMemo(() => {
     return filteredQuestions.filter((q) => completedQuestions[q.id]).length;
   }, [filteredQuestions, completedQuestions]);
 
@@ -400,10 +423,17 @@ export default function AdvancedLogicMathGame() {
             <div className="flex items-center gap-3 bg-black/20 backdrop-blur-md p-3 rounded-2xl border border-white/10">
               <span className="text-2xl">🏆</span>
               <div>
-                <div className="text-[11px] font-bold uppercase text-amber-300">Tiến độ phiên</div>
-                <div className="text-sm font-black">
-                  {completedCount} / {filteredQuestions.length} câu hoàn thành
+                <div className="text-[11px] font-bold uppercase text-amber-300">
+                  {isRandomSession ? 'Tiến độ phiên ngẫu nhiên' : 'Tiến độ toàn phiên (37 câu)'}
                 </div>
+                <div className="text-sm font-black">
+                  {sessionCompletedCount} / {sessionQuestions.length} câu hoàn thành
+                </div>
+                {selectedCategory !== 'all' && (
+                  <div className="text-[10px] text-indigo-200 mt-0.5">
+                    Mục hiện tại: {filteredCompletedCount} / {filteredQuestions.length} câu
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -485,19 +515,27 @@ export default function AdvancedLogicMathGame() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setShowHelp(!showHelp)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-xs font-bold transition cursor-pointer hover:bg-amber-100"
+              onClick={() => setShowHelp((prev) => !prev)}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                showHelp
+                  ? 'bg-amber-500 text-white border-amber-600 shadow-md ring-2 ring-amber-300'
+                  : 'border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100'
+              }`}
             >
               <span>💡</span>
-              <span>Gợi ý</span>
+              <span>{showHelp ? 'Ẩn gợi ý' : 'Gợi ý'}</span>
             </button>
             <button
               type="button"
-              onClick={() => setShowAnswer(!showAnswer)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition cursor-pointer hover:bg-emerald-100"
+              onClick={() => setShowAnswer((prev) => !prev)}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                showAnswer
+                  ? 'bg-emerald-600 text-white border-emerald-700 shadow-md ring-2 ring-emerald-300'
+                  : 'border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100'
+              }`}
             >
               <span>📖</span>
-              <span>Lời giải</span>
+              <span>{showAnswer ? 'Ẩn lời giải' : 'Lời giải'}</span>
             </button>
           </div>
         </div>
@@ -508,18 +546,24 @@ export default function AdvancedLogicMathGame() {
             {currentQuestion.title}
           </h2>
 
-          {/* Dữ kiện manh mối */}
-          {'clues' in currentQuestion && currentQuestion.clues && currentQuestion.clues.length > 0 && (
-            <div className="mt-4 rounded-2xl border-2 border-dashed border-indigo-200/90 dark:border-indigo-800/80 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 sm:p-5">
-              <div className="space-y-2 text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
-                {currentQuestion.clues.map((clue, idx) => (
-                  <p key={idx} className="leading-relaxed">
-                    {clue}
-                  </p>
-                ))}
+          {/* Dữ kiện manh mối: CHỈ HIỂN THỊ CHO DẠNG TOÁN THÁM TỬ (LOGIC GRID) */}
+          {currentQuestion.type === 'logic-grid' &&
+            'clues' in currentQuestion &&
+            currentQuestion.clues &&
+            currentQuestion.clues.length > 0 && (
+              <div className="mt-4 rounded-2xl border-2 border-dashed border-indigo-200/90 dark:border-indigo-800/80 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 sm:p-5">
+                <div className="text-xs font-black uppercase text-indigo-700 dark:text-indigo-300 tracking-wider mb-2">
+                  🕵️‍♂️ Manh mối thám tử cần suy luận:
+                </div>
+                <div className="space-y-2 text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
+                  {currentQuestion.clues.map((clue, idx) => (
+                    <p key={idx} className="leading-relaxed">
+                      {clue}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* DẠNG: TOÁN QUE DIÊM - RENDER QUE DIÊM THẬT VỚI THÂN GỖ & ĐẦU DIÊM ĐỎ! */}
           {currentQuestion.type === 'matchstick' && (
@@ -1174,20 +1218,37 @@ export default function AdvancedLogicMathGame() {
       {/* Danh sách câu hỏi Nâng cao & Nút tạo phiên mới */}
       <div className="mt-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <h3 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <span>🎯</span>
-            <span>
-              Danh sách câu hỏi {isRandomSession ? 'phiên ngẫu nhiên' : 'Nâng cao'} ({filteredQuestions.length} câu)
-            </span>
-          </h3>
-          <button
-            type="button"
-            onClick={() => handleStartNewRandomSession()}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800 transition cursor-pointer self-start sm:self-auto"
-          >
-            <span>🎲</span>
-            <span>Tạo phiên bài ngẫu nhiên mới</span>
-          </button>
+          <div>
+            <h3 className="text-sm font-black uppercase text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <span>🎯</span>
+              <span>
+                Danh sách câu hỏi {isRandomSession ? 'phiên ngẫu nhiên' : 'Toán Nâng Cao'} ({filteredQuestions.length} câu{selectedCategory !== 'all' ? ` / ${sessionQuestions.length} tổng phiên` : ''})
+              </span>
+            </h3>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              Đã làm đúng: <strong className="text-violet-600 dark:text-violet-400 font-black">{sessionCompletedCount}</strong> / {sessionQuestions.length} câu toàn phiên • Cần làm xong tất cả để nhận trọn vẹn 3/3 vé minigame
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleResetSessionProgress}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-300 dark:border-slate-700 transition cursor-pointer"
+              title="Xoá tiến độ đã làm để luyện lại toàn bộ phiên này từ đầu"
+            >
+              <span>🔄</span>
+              <span>Làm lại từ đầu</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleStartNewRandomSession()}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800 transition cursor-pointer"
+            >
+              <span>🎲</span>
+              <span>Tạo phiên bài ngẫu nhiên</span>
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2.5">
@@ -1229,10 +1290,10 @@ export default function AdvancedLogicMathGame() {
               <span>🌟 Hoàn thành xuất sắc!</span>
             </div>
             <h3 className="text-2xl font-black text-slate-900 dark:text-white">
-              Bé đã chinh phục trọn vẹn phiên Toán Nâng Cao!
+              Bé đã chinh phục trọn vẹn cả {sessionQuestions.length}/{sessionQuestions.length} câu Toán Nâng Cao!
             </h3>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Tư duy logic và suy luận tuyệt vời. Bé được thưởng trọn vẹn 3/3 vé chơi minigame!
+              Tất cả {sessionQuestions.length} câu đố tư duy logic & suy luận đã được giải chính xác. Bé được thưởng trọn vẹn 3/3 vé chơi minigame!
             </p>
 
             <div className="my-6 p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 border-2 border-amber-300 dark:border-amber-700 flex items-center justify-center gap-3">

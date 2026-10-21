@@ -224,13 +224,6 @@ export default function MatchstickDisplay({ equation, highlightStick, showHint =
           );
         })}
       </div>
-
-      {showHint && highlightStick && (
-        <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-bold border border-amber-300 dark:border-amber-700 animate-fadeIn">
-          <span>🥢</span>
-          <span>{highlightStick}</span>
-        </div>
-      )}
     </div>
   );
 }
